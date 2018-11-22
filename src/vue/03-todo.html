@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>todo-demo</title>
+  <script src="../assets/js/vue-2.5.13.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <div>
+      <input v-model="title">
+      <button v-on:click="add">submit</button>
+    </div>
+    <div>
+      <ul>
+        <li v-for="item in list">{{item}}</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    ///////////////
+    // vue 2.3 开始支持预编译
+    // 开发环境：写模板
+    // 编译打包： 
+    // 生产环境： js
+    var data = {
+      title: '',
+      list: []
+    }
+    var vm = new Vue({
+      el: '#app',
+      data: data,
+      methods: {
+        add: function () {
+          this.list.push(this.title)
+          this.title = ''
+        }
+      }
+    })
+  </script>
+
+  <script>
+
+    // vue 源码中的 render 
+    // code.render => 10677
+    // this = vm
+    // _c : 当当于 snabbdom h 函数
+    function render2() {
+      with(this){
+        return _c('div', 
+          {attrs:{"id":"app"}},
+          [_c('div',
+            [_c('input',
+              {
+                directives:[
+                  {
+                    name:"model",
+                    rawName:"v-model",
+                    value:(title),
+                    expression:"title"
+                  }
+                ],
+                domProps:{"value":(title)},
+                on:{
+                  "input": function($event){
+                    if($event.target.composing)return;
+                    title = $event.target.value
+                  }
+                }
+              }),
+              _v(" "),
+              _c('button',
+                {
+                  on:{"click":add}
+                },
+                [_v("submit")]
+              )
+            ]), // end div
+            _v(" "), // 空字符串文本节点
+            _c('div',
+              [_c('ul',
+                _l( // vm._l
+                  (list),
+                  function(item) {
+                    return _c('li',
+                      [_v(_s(item))]
+                    )
+                  }
+                )
+              )]
+            )
+          ]
+        ) // end div
+      }
+    }
+    // vm._c 相当于 snabbdom 中的 h 函数
+    // render 函数执行后，返的是 vnode 
+    // updateComponent 中实现了 vdom 的 patch 
+
+    
+  </script>
+
+</body>
+
+</html>

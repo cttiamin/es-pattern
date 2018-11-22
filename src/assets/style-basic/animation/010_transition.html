@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>transition-过渡</title>
+  <style>
+    /*
+    transition: 补间动画
+    keyframe: 关键帧动画 => animation
+     */
+    #wrapper {
+      width: 1024px;
+      margin: 0 auto;
+    }
+
+    .progress-bar {
+      height: 40px;
+      width: 40px;
+      background-color: rgb(80, 168, 255);
+    }
+
+    .progress-bar:hover {
+      width: 960px;
+    }
+
+    #bar1 {
+      /* transition: width 5s linear; 
+      transition-property: width/transform;
+      transition-duration: 1s;
+      transition-timing-function: linear;
+      */
+      transition: all 5s;
+      transition-timing-function: linear;
+    }
+
+    #bar2 {
+      -webkit-transition: width 5s ease;
+    }
+
+    #bar3 {
+      -webkit-transition: width 5s ease-in;
+    }
+
+    #bar4 {
+      -webkit-transition: width 5s ease-out;
+    }
+
+    #bar5 {
+      -webkit-transition: width 5s ease-in-out;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="wrapper">
+    <p>linear</p>
+    <div class="progress-bar" id="bar1"></div>
+
+    <p>ease</p>
+    <div class="progress-bar" id="bar2"></div>
+
+    <p>ease-in</p>
+    <div class="progress-bar" id="bar3"></div>
+
+    <p>ease-out</p>
+    <div class="progress-bar" id="bar4"></div>
+
+    <p>ease-in-out</p>
+    <div class="progress-bar" id="bar5"></div>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title> IE BUG 双空白边浮动 </title>
+        <style type="text/css">
+
+            * {
+                margin:0; 
+                padding:0;
+            }
+
+            body {
+                font:11px Verdana, Geneva, sans-serif; padding:10px; 
+            }
+
+            ul {
+                list-style:none;
+            }
+
+            /*
+            display:block;
+            display:inline-block; 使用内联块解决IE6出现空白
+
+            IE6支持
+            position:absolute;
+            width:1%;   
+            height:1%;
+
+            IE7
+            overflow: 触发layout
+            min-width:
+            position: fixed;
+            max-width:  除none之外
+            */
+
+
+            .box-model a {
+                display:inline-block;
+                padding:10px; background:#cf0;
+                border:1px solid black;
+            }
+
+            .box-model-layout {
+                border:1px solid red;
+                margin-top:10px;
+                padding:10px 0px;
+                /*position:absolute;*/ /*width:1%; */  /*height:1%;*/  
+                overflow:hidden;
+                height:1%;
+            }
+
+            .box-model-layout div {
+                width:100px;
+                height:100px;
+                background:#cf0;
+                border:1px solid black;
+                padding:10px;
+                float:left;
+                margin:0 10px;
+            }
+
+            /*清除IE6双边距*/
+            .box-model-layout .box-model-01 {
+                /*display:inline;*/
+            }
+
+            .box-model-layout .box-model-02 {
+                /*display:inline;*/
+            }
+
+        </style>
+    </head>
+
+    <body>
+
+        <ul class="box-model">
+            <li><a href="#">box-model-01</a></li>
+            <li><a href="#">box-model-02</a></li>
+            <li><a href="#">box-model-03</a></li>
+        </ul>
+
+        <br>
+        border-left : IE6双边距Bug.
+        <div class="box-model-layout">
+            <div class="box-model-01">box-model-01</div>
+            <div class="box-model-02">box-model-02</div>
+        </div>
+
+
+    </body>
+</html>

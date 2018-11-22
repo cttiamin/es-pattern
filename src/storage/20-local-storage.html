@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Storage</title>
+</head>
+<body>
+    <h2>简单留言板</h2>
+    <script type="text/javascript">
+
+        function saveStorage2(id){
+            var data = document.getElementById(id).value;
+            var time = new Date().getTime();
+            localStorage.setItem(time, data);
+            console.log('data saved');
+            loadStorage2('msg2');
+        }
+
+        function loadStorage2(id){
+            var result = '<table border="1">';
+                for(var i = 0; i < localStorage.length; i++){
+                    var key = localStorage.key(i);
+                    var value = localStorage.getItem(key);
+                    var date = new Date();
+                    date.setTime(key);
+                    result += '<tr><td>'+value+'</td><td>'+ date +'</td></tr>';
+                }
+                result += '</table>';
+                var target = document.getElementById(id);
+                target.innerHTML = result;
+        }
+
+        function clearStorage2(){
+            localStorage.clear();
+            console.log('data cleared');
+            loadStorage2('msg2');
+        }
+
+
+    </script>
+
+    <p id="msg2"></p>
+    <textarea id="memo" name="memo" cols="60" rows="10"></textarea>
+    <br>
+    <input type="button" value="add data" onclick="saveStorage2('memo');">
+    <input type="button" value="delete data" onclick="clearStorage2()">
+
+    <h2>　作为简易数据库来利用　</h2>
+
+    <table>
+        <tr>
+            <td>姓名：</td>
+            <td><input type="text" id="name"></td>
+        </tr>
+        <tr>
+            <td>Email:</td>
+            <td><input type="text" id="email"></td>
+        </tr>
+        <tr>
+            <td>电话号码：</td>
+            <td><input type="text" id="tel"></td>
+        </tr>
+        <tr>
+            <td>备注</td>
+            <td><input type="text" id="memo2"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td> <input type="button" value="Save" onclick="saveStorage3()"> </td>
+        </tr>
+    </table>
+
+    <hr>
+
+<p>
+    <input type="text" id="find">
+    <input type="button" value="检索" onclick="findStorage3('msg3')">
+</p>
+<p id="msg3"></p>
+
+<script type="text/javascript">
+    function saveStorage3(){
+        var data = new Object;
+        data.name = document.getElementById("name").value;
+        data.email = document.getElementById("email").value;
+        data.tel = document.getElementById("tel").value;
+        data.memo = document.getElementById("memo2").value;
+        var str = JSON.stringify(data);
+        localStorage.setItem(data.name, str);
+        console.log('data saved');
+    }
+
+    function findStorage3(id){
+        var find = document.getElementById('find').value;
+        var str = localStorage.getItem(find);
+        var data = JSON.parse(str);
+        var result = "姓名: " + data.name + "<br>";
+        result += "姓名: " + data.email + "<br>";
+        result += "姓名: " + data.tel + "<br>";
+        result += "姓名: " + data.memo + "<br>";
+        var target = document.getElementById(id);
+        target.innerHTML = result;
+    }
+
+</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>表单属性选择器</title>
+    <style>
+        .test input[type="text"]:hover
+        {
+            background-color: darkviolet;
+        }
+
+        .test input[type="text"]:focus
+        {
+            background-color: aqua;
+        }
+
+        .test input[type="text"]:active
+        {
+            background-color: darkgoldenrod;
+        }
+
+        /* checked*/
+        .test2 input[type="checkbox"]:checked
+        {
+            outline: 2px solid gold;
+        }
+
+        /*enabled, desabled */
+        .test3 input[type="text"]:enabled
+        {
+            background-color: gold;
+        }
+        .test3 input[type="text"]:disabled
+        {
+            background-color: dimgrey;
+        }
+
+        .test4 div ~ p{
+            background-color:gold;
+        }
+
+    </style>
+</head>
+<body>
+    <p>CSS3 sum 17: e:hover, e:active, e:focus, e:disabled, e:read-only, e:checked, e:default, e:indeterminate, e:selection, e:invalid, e:valid, e:required, e:optional, e:in-range</p>
+
+
+    <h2>e:hover, e:active, e:focus</h2>
+
+    <div class="test">
+        <input type="text" name="name">
+        <input type="text" name="age">
+    </div>
+<hr>
+
+    <h2>e:checked</h2>
+    <div class="test2">
+        <input type="checkbox">check1
+        <input type="checkbox">check2
+        <input type="checkbox">check3
+        <input type="checkbox">check4
+    </div>
+
+<hr>
+<h2> e:disabled, </h2>
+<script>
+    function radio_change(){
+        var radio1 = document.getElementById("radio1")
+        var radio2 = document.getElementById("radio2")
+        var text = document.getElementById("text3");
+        if(radio1.checked){
+            text.disabled = ""
+        }else{
+            text.value = "";
+            text.disabled = "disabled";
+        }
+    }
+</script>
+    <div class="test3">
+        <input type="radio" id="radio1" name="radio" onchange="radio_change()">可用
+        <input type="radio" id="radio2" name="radio" onchange="radio_change()">不可用
+        <input type="text" id="text3" disabled>
+    </div>
+
+<hr>
+<h2>通用相连的兄弟选择器</h2>
+<div class="test4">
+    <div>
+        <p>P element is div sub element</p>
+        <p>P element is div sub element</p>
+    </div>
+    <p>P element is div sub element</p>
+    <p>P element is div sub element</p>
+    <p>P element is div sub element</p>
+
+
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>最小高度</title>
+<style type="text/css">
+
+    * {
+        margin:0; 
+        padding:0;
+    }
+
+    body {
+        font: 11px Verdana, Geneva, sans-serif;
+        padding: 10px; 
+    }
+
+/*
+min-height:100px; 设置最小高度(标准浏览器支持)
+
+height:auto !important; height:100px; 让标准浏览器和IE6都支持最小高度
+
+_height:100px; 第二种方法
+*/
+
+.box-model {
+    width:300px;
+    /*height:auto !important; height:100px;  */
+
+    _height:100px;
+    min-height:100px;
+
+    background:#cf0;
+    border: 1px solid black;
+    padding:10px;
+    line-height:180%;
+}
+
+
+</style>
+
+</head>
+
+<body>
+
+<div class="box-model">
+
+    Mozill Firefox is of a so no think welecome to American Ruassn French Japan China<br/>
+
+    Mozill Firefox is of a so no think welecome to American Ruassn French Japan China<br/>
+     Mozill Firefox is of a so no think welecome to American Ruassn French Japan China
+</div>
+
+
+</body>
+</html>

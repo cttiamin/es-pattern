@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+
+  <script>
+    // DOM中的范围
+    //    document.createRange: ie9+
+    //      startContainer:包含范围起点的节点( 即选区中第一个节点的 父节点 )
+    //      startOffset:范围在startContainer中起点的偏移量. 如果
+    //          startContainer是文本节点,注释,或CDATA节点,
+    //      endContainer:包含范围终点的节点(即选区中最后一个节点的父节点)
+    //      endOffset:范围在endContainer 中终点的偏移量( 与
+    //          startOffset 遵循相同的取值规则 ).
+    //      commonAncestorContainer:startContainer和endContainer 
+    //          共同的袓先节点在文档树中位置最深的那个
+    //      selectNode(): 设置该范围的边界点，包含指定的节点和所有子孙节点
+    //      selectNodeContents(): 只选择节点的子节点
+  </script>
+</head>
+
+<body>
+  <p id="p05"><b>Hello</b> world!</p>
+  <input type="button" value="Use Ranges 06" onclick="useRanges06()" />
+  <table border="0">
+    <tr>
+      <td>
+        <fieldset>
+          <legend>range1</legend>
+          Start Container:
+          <input type="text" id="txtStartContainer1" />
+          <br/> Start Offset:
+          <input type="text" id="txtStartOffset1" />
+          <br/> End Container:
+          <input type="text" id="txtEndContainer1" />
+          <br/> End Offset:
+          <input type="text" id="txtEndOffset1" />
+          <br/> Common Ancestor:
+          <input type="text" id="txtCommonAncestor1" />
+          <br/>
+        </fieldset>
+      </td>
+      <td>
+        <fieldset>
+          <legend>range2</legend>
+          Start Container:
+          <input type="text" id="txtStartContainer2" />
+          <br/> Start Offset:
+          <input type="text" id="txtStartOffset2" />
+          <br/> End Container:
+          <input type="text" id="txtEndContainer2" />
+          <br/> End Offset:
+          <input type="text" id="txtEndOffset2" />
+          <br/> Common Ancestor:
+          <input type="text" id="txtCommonAncestor2" />
+          <br/>
+        </fieldset>
+      </td>
+    </tr>
+  </table>
+
+  <hr>
+  <p id="p07"><b>He</b><b>ll</b>world!</p>
+  <input type="button" value="Use Ranges 07" onclick="useRanges07()">
+
+  <input type="button" value="Delete Content" onclick="deleteContent()" />
+  <input type="button" value="Extract Content" onclick="extractContent()">
+  <input type="button" value="Clone Content" onclick="cloneContent()">
+  <input type="button" value="Insert Content" onclick="insertContent()">
+  <input type="button" value="Insert Content2" onclick="insertContent2()" />
+  <input type="button" value="Compare Ranges" onclick="compare()" />
+
+
+  <script>
+    // 检测是否支持范围
+    document.implementation.hasFeature("Range", "2.0");//true
+    typeof document.createRange() == "function";    //false
+
+    function useRanges05() {
+      var range1 = document.createRange();
+      var range2 = document.createRange();
+      var p1 = document.getElementById("p05");
+      // 包含指定的节点和所有子孙节点
+      range1.selectNode(p1);          //<p id="p1"><b>Hello</b> world!</p>
+      // 不包含指定的节点本身。
+      range2.selectNodeContents(p1);  //<b>Hello</b> world!
+
+      console.log(
+        'txtStartContainer:', range1.startContainer.tagName,  //body
+        // 33,等于给定节点在其父节点的 childNodes 集合中的索引.
+        // 兼空DOM的浏览器将空格算作一个文本节点
+        'txtStartOffset1:', range1.startOffset,
+        'txtEndContainer1:', range1.endContainer,
+        'txtEndOffset1:', range1.endOffset,
+        'txtCommonAncestor1:', range1.commonAncestorContainer,
+        'txtStartContainer2:', range2.startContainer,
+        'txtStartOffset2:', range2.startOffset,
+        'txtEndContainer2:', range2.endContainer,
+        'txtEndOffset2:', range2.endOffset,
+        'txtCommonAncestor2;', range2.commonAncestorContainer.tagName
+      );
+    }
+
+    function useRanges06() {
+      var range1 = document.createRange(),
+        range2 = document.createRange(),
+        p1 = document.getElementById("p05"),
+        p1Index = -1,
+        i, len;
+      // Start from father node:"<body>" 
+      for (i = 0, len = p1.parentNode.childNodes.length; i < len; i++) {
+        //console.log(p1.parentNode.childNodes[i].tagName);
+        if (p1.parentNode.childNodes[i] == p1) {
+          p1Index = i;    //33
+          break;
+        }
+      }
+      // console.log(p1Index);
+      range1.setStart(p1.parentNode, p1Index);
+      //参照节点:body, 偏移量
+      range1.setEnd(p1.parentNode, p1Index + 1);  //
+      range2.setStart(p1, 0); //p05下子节点
+      range2.setEnd(p1, p1.childNodes.length);   //
+
+      document.getElementById("txtStartContainer1").value = range1
+        .startContainer.tagName;
+      document.getElementById("txtStartOffset1").value = range1.startOffset;
+      document.getElementById("txtEndContainer1").value = range1
+        .endContainer.tagName;
+      document.getElementById("txtEndOffset1").value = range1.endOffset;
+      document.getElementById("txtCommonAncestor1").value = range1
+        .commonAncestorContainer.tagName;
+
+      document.getElementById("txtStartContainer2").value = range2.
+        startContainer.tagName;
+      document.getElementById("txtStartOffset2").value = range2.startOffset;
+      document.getElementById("txtEndContainer2").value = range2
+        .endContainer.tagName;
+      document.getElementById("txtEndOffset2").value = range2.endOffset;
+      document.getElementById("txtCommonAncestor2").value = range2
+        .commonAncestorContainer.tagName;
+    }
+
+    /**
+     * 从元素中取出 Hello world!
+     */
+    function useRanges07() {
+      var p1 = document.getElementById("p05"),
+        helloNode = p1.firstChild.firstChild,     // 取得第一 孙节点
+        worldNode = p1.lastChild,                 // 最后 子节点
+        range = document.createRange();           // 创建范围
+      console.log(helloNode.nodeValue);   // => Hello
+      console.log(worldNode.nodeValue);   // => world!
+      range.setStart(helloNode, 2);        // llo, 从第二位开始
+      range.setEnd(worldNode, 3);          // rld, 从第三位之前结束
+      document.getElementById("txtStartContainer1").value = range
+        .startContainer.nodeValue;
+      document.getElementById("txtStartOffset1").value = range
+        .startOffset;
+      document.getElementById("txtEndContainer1").value = range
+        .endContainer.nodeValue;
+      document.getElementById("txtEndOffset1").value = range.endOffset;
+      document.getElementById("txtCommonAncestor1").value = range
+        .commonAncestorContainer.tagName;
+    }
+
+    /**
+     * 3.操作DOM 范围中的内容
+     *      <p><b>He</b><b>ll</b>world!</p>
+     *      deleteContents(): 从文档中删除范围所包含的内容.
+     */
+    function deleteContent() {
+      var p1 = document.getElementById("p07"),
+        helloNode = p1.firstChild.firstChild,
+        worldNode = p1.lastChild,
+        range = document.createRange();
+      range.setStart(helloNode, 2); // llo
+      range.setEnd(worldNode, 3); // wor 
+      range.deleteContents();
+    }
+
+    //extractContents() :与deleteContents()方法相同,但会返回范围的文档片段,
+    function extractContent() {
+      var p1 = document.getElementById("p07"),
+        helloNode = p1.firstChild.firstChild,
+        worldNode = p1.lastChild,
+        range = document.createRange();
+      range.setStart(helloNode, 2);
+      range.setEnd(worldNode, 3);
+      var fragment = range.extractContents();
+      p1.parentNode.appendChild(fragment);
+    }
+    //cloneContents():创建范围对象的一个副本, 然后在文档的其他地方插入该副本
+    function cloneContent() {
+      var p1 = document.getElementById("p07"),
+        helloNode = p1.firstChild.firstChild,
+        worldNode = p1.lastChild,
+        range = document.createRange();
+      range.setStart(helloNode, 2);
+      range.setEnd(worldNode, 3);
+      var fragment = range.cloneContents();
+      p1.parentNode.appendChild(fragment);
+    }
+
+    /**
+     * 4.插入DOM范围中的内容
+     * insertNode(): 插入文档的开始点
+     */
+    function insertContent() {
+      var p1 = document.getElementById("p07"),
+        helloNode = p1.firstChild.firstChild,
+        worldNode = p1.lastChild,
+        range = document.createRange(),
+        span = document.createElement("span");
+      span.style.color = "red";
+      span.appendChild(document.createTextNode("Inserted text"));
+      range.setStart(helloNode, 2);
+      range.setEnd(worldNode, 3);
+      range.insertNode(span);
+    }
+    //surroundContents() : 球绕内容插入内容,
+    function insertContent2() {
+      var p1 = document.getElementById("p07"),
+        helloNode = p1.firstChild.firstChild,
+        worldNode = p1.lastChild,
+        range = document.createRange();
+      range.selectNode(helloNode);
+      var span = document.createElement("span");
+      span.style.backgroundColor = "yellow";
+      range.surroundContents(span);
+    }
+
+    function compare() {
+      var range1 = document.createRange(),
+        range2 = document.createRange(),
+        p1 = document.getElementById("p07");
+      range1.selectNodeContents(p1);
+      range2.selectNodeContents(p1);
+      range2.setEndBefore(p1.lastChild);
+      console.log(range1.compareBoundaryPoints(Range.START_TO_START, range2));
+      //outputs 0
+      console.log(range1.compareBoundaryPoints(Range.END_TO_END, range2));
+      //outputs 1
+    }
+
+
+
+  </script>
+
+</body>
+
+</html>

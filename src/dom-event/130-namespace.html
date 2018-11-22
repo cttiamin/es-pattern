@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dom-针对XML命名空间的变化</title>
+  <script>
+    //    DOM(2, 3) 子集 :
+    //        DOM2级核心(DOM Level 2 Core):在1级核基础上构建,为节点添加了更
+    //            多方法和属性
+    //        DOM2级视图(DOM Level 2 Views):为文档定义了基于样式信息的不同视图
+    //        DOM2级事件(DOM Level 2 Events):说明了如何使用事件与DOM文档交互
+    //        DOM2级样式(DOM Level 2 Style): 定义了如何编程方式来访问和改变
+    //            CSS样式信息
+    //        DOM2级遍历和范围(DOM Level 2 Traversal and Range): 引入了遍历
+    //        DOM2级HTML(DOM Level 2 HTML): 在1级HTML基础上构建,添加了更多属
+    //            性,方法和新接口
+    //
+    //    document DOM2新增:
+    //    createElementNS(namespaceURI, tagName); 使用给定的tagName创建
+    //        一个属于命名空间namespaceURI的新元素
+    //    createAttributeNS(namespaceURI, attributeName):使用给定的
+    //        attributeName创建一个属于命名空间namespaceURI新特性
+    //    getElementsByTagNameNS(namespaceURI, tagName);返回属于命名空间
+    //        namespaceURI的tagName元素的NodeList
+    //
+    //    Element 类型的变化, DOM2新增:
+    //    getAttributeNS(namespaceURI, localName) : 取得属于命名空间
+    //        namespaceURI且名为localName的特性
+    //    getAttributeNodeNS(namespaceURI, localName);取得属性命名空间
+    //        namespaceURI且名为localName特性节点
+    //    hasAttributeNS(namespaceURI, localName):确定当前元素是否存在
+    //        loaclName特性,而且该特性
+    //    removeAttributeNS(namespaceURI, localName):删除属于命名空间
+    //        namespaceURI且名为localName
+    //    setAttributeNS(namespaceURI, qualifiedName, value): 调置属于命
+    //        名空间namespaceURI且名为qualifiedName特性值为value
+    //    setAttributeNodeNS(attNode):设置属于命名空间namespaceURI的特性
+    //        节点
+    //
+    //    NamedNodeMap 类型的变化:
+    //    getNamedItemNS(namespaceURI, localName): 取得属于命名空间 
+    //        namespaceURI 且名为localName的项
+    //    removeNamedItemNS(namespaceURI, localName): 移除属于命名空间
+    //        namespaceURI 且名为localName的项
+    //    setNamedItemNS(node):
+
+
+  </script>
+</head>
+
+<body>
+  <script>
+    //浏览器对DOM的支持
+    document.implementation.hasFeature("Core", "2.0");//true, support DOM2 core
+    document.implementation.hasFeature("Core", "3.0");//true DOM3
+    document.implementation.hasFeature("HTML", "2.0");//true,DOM2 HTML
+    document.implementation.hasFeature("Views", "2.0");//true,DOM2 Views
+    document.implementation.hasFeature("XML", "2.0");//true,DOM2 XML
+    /**
+     * 12.1.1 针对XML命名空间的变化
+     *      HTML不支持XML命名空间, XHTML支持XML命名空间
+     *      xmlns特性来指定, XHTML的命名空间是 http://www.w3.org/1999/html
+     *      此节代码在xml文件中实现
+     */
+
+    /*
+     <html xmlns="http://www.w3.org/1999/xhtml">
+     <head>
+     <title>Example XHTML page</title>
+     </head>
+     <body>
+     Hello world!
+     </body>
+     </html>
+     */
+
+    /*  明确的为XML命名空间 创建前缀 xhtml
+     <xhtml:html xmlns:xhtml="http://www.w3.org/1999/xhtml">
+     <xhtml:head>
+     <xhtml:title>Example XHTML page</xhtml:title>
+     </xhtml:head>
+     <xhtml:body xhtml:class="home">
+     Hello world!
+     </xhtml:body>
+     </xhtml:html>
+     */
+
+    /* 混合了XHTML和SVG语言的文档
+     通过设置命名空间, 将<svg>标识为了与包含文档无关的元素. 此时,<svg>元素的所有子元素,以及特性
+     都被认为属于 http://www.w3.org/2000/svg 命名空间
+     <html xmlns="http://www.w3.org/1999/xhtml">
+     <head>
+     <title>Example XHTML page</title>
+     </head>
+     <body>
+     <svg xmlns="http://www.w3.org/2000/svg" version="1.1"
+     viewBox="0 0 100 100" style="width: 100%; height:100%">
+     <rect x="0" y="0" width="100" height="100" style="fill:red"/>
+     </svg>
+     </body>
+     </html>
+     */
+
+
+    /**
+     * 1.Node 类型的变化
+     *      DOM2级中,Node 类型包含的 特定于命名空间的属性
+     *      localName: 不带命名空间前缀的节点名称
+     *      namespaceURI:命名空间URI或者(在未指定的情况下是): null
+     *      profix: 命名空间前缀或者(在未指定的情况下是) null
+     *
+     *      see images/120_Namespace.xml
+     */
+    /*
+     <html xmlns="http://www.w3.org/1999/xhtml">
+     <head>
+     <title>Example XHTML page</title>
+     </head>
+     <body>
+     <s:svg xmlns="http://www.w3.org/2000/svg" version="1.1"
+     viewBox="0 0 100 100" style="width: 100%; height:100%">
+     <rect x="0" y="0" width="100" height="100" style="fill:red"/>
+     </svg>
+     </body>
+     </html>
+     */
+
+    // Document 类型的变化
+    //创建一个新的SVG元素
+    var svg = document
+      .createElementNS("http://www.w3.org/2000/svg", "svg");
+    //创建一个属于某个命名空间的新特性
+    var att = document
+      .createAttributeNS("http://www.w3.org/2000/svg", "random");
+    //获得所有XHTML元素
+    var elems = document
+      .getElementsByTagNameNS("http://www.w3.org/2000/svg", "*");
+
+    /***************
+     * 12.1.2 其它方面的变化
+     *      1.DocumentType类型的变化,新增3个属性: publicId,systemId,internalSubset
+     *          
+     *      !DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www
+     *      .w3.org/TR/html4/strict.dtd" [<!ELEMENT name (#PCDATA)>] >
+     *          publicId : "-//W3C//DTD HTML 4.01//EN"
+     *          systemId : "http://www.w3.org/TR/html4/strict.dtd"
+     */
+    (document.doctype.publicId);
+    (document.doctype.systemId);
+    (document.doctype.internalSubset);
+
+
+    /**
+     * 2.Document类型的变化
+     *      与命名空间无关方法是:
+     *      importNode(要复制节点, 是否复制子节点): XML中常用
+     *      implementation.createDocumentType(): 创建新的DocumentType
+     *      implementation.createDocument( 文档中的namespaceURI, 文档元素的标
+     *          签名, 新文档的文档类型 );
+     */
+    //导入节点及其所有子节点
+    //var newNode = document.importNode(oldNode, true);   
+    //document.body.appendChild(newNode);
+    //确定文档归属窗口
+    var parentWindow = document.defaultView || document.parentWindow;
+    var doctype = document.implementation.createDocumentType("html"
+      , "-//W3C//DTD HTML 4.01//EN"
+      , "http://www.w3.org/TR/html4/strict.dtd");
+    var doc = document.implementation.createDocument("", "root", null);
+    //opera, safari
+    var htmldoc = document.implementation.createHTMLDocument("New Doc");
+    (htmldoc.title);         //New Doc
+    (typeof htmldoc.body);   //object
+
+
+    /**
+     * 3.Node 类型的变化
+     * isSupported(特性名, 版本号):  与 hasFeature()类似
+     *
+     * DOM3 辅助比较节点方法:
+     *  isSameNode(): 两个节点引用一个对象
+     *  isEqualNode(): 两个节点是相同类型
+     *  setUserData(); 将数据指定给节点
+     */
+    //执行只有DOM2级HTML才支持的操作
+    //        if(document.body.isSupported("HTML", "2.0")){}
+    var div1 = document.createElement("div");
+    div1.setAttribute("class", "box");
+    var div2 = document.createElement("div");
+    div2.setAttribute("class", "box");
+    //      ( div1.isSameNode(div1) );     //true
+    (div1.isEqualNode(div2));    //true
+    //        (div1.isSameNode(div2));     //false
+    var div2 = document.createElement("div");
+
+    // div2.setUserData("name", "Nicholas"
+    //   , function (operation, key, value, src, dest) {
+    //     if (operation == 1) {
+    //       dest.setUserData(key, value, function () { });
+    //     }
+    //   });
+    // var newDiv = div.cloneNode(true);
+    // (newDiv.getUserData("name"));    //"Nicholas"
+
+
+    /**
+     * 4.框架的变化
+     *      HTMLFrameElement
+     *      HTMLFrameElement
+     */
+    //        var iframe = document.getElementById("myIframe");
+    //        var iframeDoc = iframe.contentDocument;  //在IE8以前的版本中无效
+    // var iframe = document.getElementById("myIframe");
+    // var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+
+
+  </script>
+
+</body>
+
+</html>

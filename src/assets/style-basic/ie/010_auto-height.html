@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>IE Bug - 错误的扩展</title>
+        <style type="text/css">
+
+            * {
+                margin:0; padding:0;
+            }
+
+            body {
+                font:11px Verdana, Geneva, sans-serif; 
+                padding:10px; 
+            }
+
+            .box-model-01 {
+                width:300px;
+                height:100px;
+                border:1px solid black;
+                padding:10px;
+                background:#cf0; 
+                line-height:180%;
+                /*overflow: hidden;*/
+            }
+
+            .box-model-02 {
+                width:300px;  
+                border:1px solid black; 
+                padding:10px; 
+                background:#cf0; 
+                line-height:180%; 
+                margin-bottom:10px;
+                /*overflow: hidden;*/
+            }
+
+        </style>
+    </head>
+
+    <body>
+
+        <div class="box-model-02" onclick="this.style.color='red';this.style.backgroundColor='grey'">
+            Mozilla Firefox (the official abbreviation for the fx, an informal acorym for the FF)
+        </div>
+
+        IE6 会扩展下列元素 宽度和高度: 
+        <div class="box-model-02">
+            MozillaFirefox(theofficialabbreviationforthefx,aninformalacorymfortheFF)
+        </div>
+
+        <div class="box-model-01">
+            Mozill Firefox is of a so no think welecome to American Ruassn French Japan China Mozill Firefox is of a so no think welecome to American Ruassn French Japan China Mozill Firefox is of a so no think welecome to American Ruassn French Japan China Mozill Firefox is of a so no think welecome to American Ruassn French Japan China Mozill Firefox is of a so no think welecome to American Ruassn French Japan China Mozill Firefox is of a so no think welecome to American Ruassn French Japan China Mozill Firefox is of a so no think welecome to American Ruassn French Japan China
+        </div>
+    </body>
+</html>

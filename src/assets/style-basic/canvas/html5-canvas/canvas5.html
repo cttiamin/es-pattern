@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<style>
+body{ background:black;}
+#c1{ background:white;}
+span{ color:white;}
+</style>
+<script>
+    window.onload = function(){
+        var oC = document.getElementById('c1');
+        var oGC = oC.getContext('2d'); 
+        //getContext  获取绘图的绘制环境,webgl是支持3d绘图的
+        oGC.beginPath();   //画线的开始与closePath闭合联合用
+        oGC.moveTo(100,100);//从坐标某点开始
+        oGC.lineTo(200,200);//从坐标某点结束
+        oGC.lineTo(300,200);
+        oGC.closePath();//起点和终止点闭合
+        oGC.stroke();       //默认黑色钱，将两点连接画线
+
+        oGC.beginPath();
+        oGC.moveTo(100,200);
+        oGC.lineTo(200,300);
+        oGC.lineTo(300,300);
+        oGC.closePath();
+        oGC.fill(); //默认填充
+    };
+</script>
+</head>
+
+<body>
+    <canvas id="c1" width="400" height="400">
+        <span>不支持canvas浏览器</span>
+    </canvas><!--默认宽300，高150-->
+</body>
+</html>

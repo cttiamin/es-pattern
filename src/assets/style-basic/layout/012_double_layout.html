@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>浮动布局-双飞翼布局</title>
+
+<style>
+    *{
+        margin:0;
+        padding:0;
+        font-size: 12px;
+    }
+    .header {
+        background:orange;
+        height:100px;
+    }
+    .footer {
+        background:yellow;
+        height: 100px;
+    }
+
+    .article {
+        background:green;
+        /*
+        padding-left:150px;
+        padding-right:100px;
+        */
+        overflow:hidden;
+    }
+
+    .article .left {
+        background-color:blue;
+        float:left;
+        color:white;
+        height: 16px;
+        width: 150px;
+        /*add */
+        margin-left: -100%;
+        /*position: relative;
+        left: -150px;*/
+        /*自适应伸高*/
+        padding-bottom: 9999px;
+        margin-bottom: -9999px;
+    }
+    .article .right{
+        background-color:aquamarine;
+        width:100px;
+        /*height:16px;*/
+        /*add */
+        float:left;
+        margin-left:-100px;
+        /*
+        position: relative;
+        right: -100px;*/
+
+        /*自适应伸高*/
+        padding-bottom:9999px;
+        margin-bottom: -9999px;
+    }
+    .article .middle{
+        background-color:red;
+        /*height:16px;*/
+        /* add */
+        float:left;
+        width:100%;
+        /*自适应伸高*/
+        padding-bottom: 9999px;
+        margin-bottom: -9999px;  
+    }
+    .inner
+    {
+        padding-left:150px;
+        padding-right:100px;
+    }
+</style>
+</head>
+
+<body>
+
+    <div class="header">
+        I'm heading
+    </div>
+
+    <div class="article">
+
+        <div class="middle">
+            <div class="inner">
+                我是中间
+                <p>我是中间</p><p>我是中间</p><p>我是中间</p>
+                <p>我是中间</p><p>我是中间</p><p>我是中间</p>
+                <p>我是中间</p><p>我是中间</p><p>我是中间</p>
+                <p>我是中间</p><p>我是中间</p><p>我是中间</p>
+                <p>我是中间</p><p>我是中间</p><p>我是中间</p>
+                <p>我是中间</p><p>我是中间</p><p>我是中间</p>
+            </div>
+        </div>
+
+        <div class="left">
+            I'm left
+        </div>
+
+        <div class="right">
+            I'm right
+        </div>
+
+    </div>
+
+    <div class="footer">
+        IPC 
+    </div>
+
+
+</body>
+</html>
+

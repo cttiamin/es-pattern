@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+    <title>Chapter 18, JavaScript 与 XML</title>
+</head>
+<body>
+
+<script type="text/javascript">
+/*********************************
+ *  Chapter 18 JavaScript 与 XML
+ *      18.1 浏览器对 XML, DOM的支持
+ *          18.1.1 DOM2级核心
+ *          18.1.2 DOMParser类型
+ *          18.1.3 XMLSerializer类型
+ *          18.1.4 IE8及之前版本中的XML
+ *          18.1.5 跨浏览器处理XML
+ *      18.2 浏览器对XPash的支持
+ *          18.2.1 DOM3 级 XPath
+ *          18.2.2 IE 中的 XPath
+ *          18.2.3 跨浏览器使用 XPath
+ *      18.3 浏览器对XSLT的支持
+ *          18.3.1 IE中的XSLT
+ *          18.3.2 XSLTProcessor类型
+ *          18.3.3 跨浏览器使用XSLT
+ *
+ * 18.1.1 DOM2级核心
+ *      创建一个XML DOM文档, 支持DOM2,
+ *
+ *      document.implementation.createDocument(namespaceUri, root, doctype)
+ *          root: 指定XML DOM文档元素的标签名
+ *          namespaceUri很少用,JavaScript管理命名空间比较困难
+ *          doctyp 用得更少
+ **/
+    var xmldom = document.implementation.createDocument("", "root", null);
+    console.log(xmldom.documentElement.tagName);//root
+    var child = xmldom.createElement("child");
+    xmldom.documentElement.appendChild(child);
+
+//    var hasXmlDom = document.implementation.hasFeature("XML", "2.0");
+//检测浏览器是否支持DOM2级XML
+
+/** 18.1.2 DOMParser类型
+ *      support:IE9, Safari, chrome, FireFox
+ *      DOMParser: object, 将xml转为DOM文档
+ *      parseFromString(要解析的XML字符串, 内容类型): 返回Document实例
+ *      parsererror:(element) 返回的解析错误元素,例:html不能解析为html
+ */
+    var parser = new DOMParser();
+    var xmldom = parser.parseFromString("<root><child/></root>", "text/xml");
+    //console.log(xmldom.documentElement.tagName); //root
+    //console.log(xmldom.documentElement.firstChild.tagName); //child
+    var anotherChild = xmldom.createElement("child");
+    xmldom.documentElement.appendChild(anotherChild);
+    var children = xmldom.getElementsByTagName("child");
+    //console.log(children.length); //2
+
+//    var parser = new DOMParser(),
+//通过getElementsByTagName()来查找文档是否存在<parsererror>元素
+//            xmldom,
+//            errors;
+//    try {
+//        xmldom = parser.parseFromString("<root></root>", "text/html");
+//        errors = xmldom.getElementsByTagName("parsererror");
+//        if(errors.length > 0){
+//            throw new Error("Parsing error!");
+//        }
+//    } catch (ex){
+//        console.log("Parsing error!");
+//    }
+
+/** 18.1.3 XMLSerializer 类型
+ *      XMLSerializer: 将DOM文档序列化为xml字符串,
+ *          serializeToString():
+ */
+//    var serializer = new XMLSerializer();
+//    var xml = serializer.serializeToString(xmldom);
+//    console.log(xml);
+
+/** 18.1.4 IE8之间版本中的XML
+ *      ActiveXObject 类型, 可传入 6种不同的XML文档:
+ *          Microsoft.XmlDom : 最初同IE发布,不建议使用
+ *          MSXML2.DOMDocument : 为方便脚本处理而更新的版本,
+ *              建议公在特殊情况下作为后备版本使用
+ *          MSXML2.DOMDocumnet.3.0 : 为了在JavaScript中使用,
+ *              这是最低的建议版本
+ *          MSXML2.DOMDocumnet.4.0 : 在通过脚本处理时并不可靠,
+ *              使用这个版本可能导致安全警告
+ *          MSXML2.DOMDocumnet.5.0 : 在通过脚本处理时并不可靠,
+ *              使用这个版本同样可能导致安全警告
+ *          MSXML2.DOMDocument.6.0 : 通过脚本能够可靠处理的最新版本
+ *      loadXML(): 解析XML
+ *      parseError 属性找到错误消息,
+ *              errorCode:错误类型的数值编码, 在没有发生错误时值为0
+ *              filePos:文件中导致错误发生的位置
+ *              line:发生错误的行
+ *              linepos:发行错误的行中的字符
+ *              reason: 对错误的文本解释
+ *              srcText: 导致错误的代码
+ *              url: 导致错误的文件的URL(如果有这个文件)
+ *              valueOf()方法返回errorCode的值.
+ */
+
+//function createDocument() {
+
+    //通过尝试每个版本的实例并观察是否有错误发生,可以确定哪个版本可用
+//    if (typeof arguments.callee.activeXString != "string") {
+//        var versions = ["MSXML2.DOMDocument.6.0", "MSXML2.DOMDocument.3.0",
+//                    "MSXML2.DOMDocument"],
+//                i, len;
+//        for (i = 0, len = versions.length; i < len; i++) {
+//            try {
+//                var xmldom = new ActiveXObject(versions[i]);
+//                arguments.callee.activeXString = versions[i];
+//                return xmldom;
+//            } catch (ex) {
+//                //skip
+//            }
+//        }
+//    }
+//    return new ActiveXObject(arguments.callee.activeXString);
+//}
+
+//var xmldom = createDocument();
+//如果版本无效,创建ActiveXObject的调用就会抛出错误
+//    xmldom.loadXML("<root><child/></root>");//解析XML,
+//    alert(xmldom.documentElement.tagName);  //"root"
+//    alert(xmldom.documentElement.firstChild.tagName); //"child"
+//    var anotherChild = xmldom.createElement("child");
+//    xmldom.documentElement.appendChild(anotherChild);
+//    var children = xmldom.getElementsByTagName("child");
+//    alert(children.length);   //2
+//    alert(xmldom.xml);
+
+//    if (xmldom.parseError != 0) {//检测是否发生解析错误
+//        console.log("Parsing error occurred.");
+//    }
+
+//    xmldom.loadXML("<root>");
+//    if (xmldom.parseError != 0) {
+//在loadXML()之后, 查询文档之前, 检查是否发生了解析错误
+//        alert("An error occurred:\nError Code: "
+//                + xmldom.parseError.errorCode + "\n"
+//                + "Line: " + xmldom.parseError.line + "\n"
+//                + "Line Pos: " + xmldom.parseError.linepos + "\n"
+//                + "Reason: " + xmldom.parseError.reason);
+//    }
+
+
+/** 1.序列化XML
+ *      xmldom.xml : 每个DOM都有一个xml属性
+ *      alert(xmldom.xml);
+ *
+ *  2.加载XML文件
+ *      async: 加载文件的方式: true:表示异步, false:同步
+ *      load(要加载的XML文件的URL): 启动下载过程,
+ */
+//    xmldom.async = false;//使用同步,在解析完之前,代码不会执行
+//    xmldom.load("images/180_example.xml");
+//    if (xmldom.parseError != 0) {
+//        //handle error: alert("An error occurred:\nError Code ....
+//    } else {
+//        alert(xmldom.documentElement.tagName);  //"root"
+//        alert(xmldom.documentElement.firstChild.tagName); //"child"
+//        var anotherChild = xmldom.createElement("child");
+//        xmldom.documentElement.appendChild(anotherChild);
+//        var children = xmldom.getElementsByTagName("child");
+//        alert(children.length);   //2
+//        alert(xmldom.xml);
+//    }
+
+
+/** 异步加载XML文件的情况下, 需要为XML DOM文档的
+ *      onreadystatechange事件 指定处理程序,有4个就绪状态
+ *          readyState:
+ *          1:DOM正在加载数据
+ *          2:DOM已经加载完数据
+ *          3:DOM已经可以使用,但某些部分可能还无法访问
+ *          4.DOM已经完全可以使用.
+ */
+//    xmldom.async = true;
+//    xmldom.onreadystatechange = function () {
+//        if (xmldom.readyState == 4) {
+//            if (xmldom.parseError != 0) {
+//                //handle error: alert("An error occurred:\nError Code ....
+//            } else {
+//                alert(xmldom.documentElement.tagName);  //"root"
+//                alert(xmldom.documentElement.firstChild.tagName); //"child"
+//                var anotherChild = xmldom.createElement("child");
+//                xmldom.documentElement.appendChild(anotherChild);
+//                var children = xmldom.getElementsByTagName("child");
+//                alert(children.length);   //2
+//                alert(xmldom.xml);
+//            }
+//        }
+//    }
+//    xmldom.load("images/180_example.xml");
+
+
+/**************************************
+  18.1.5 跨浏览器处理 XML
+ */
+
+//function parseXml(xml) {//兼容 xml解析
+//    var xmldom = null;
+//    if (typeof DOMParser != "undefined") {//fireFox
+//        xmldom = (new DOMParser()).parseFromString(xml, "text/xml");
+//        var errors = xmldom.getElementsByTagName("parsererror");
+//        if (errors.length) {
+//            throw new Error("XML parsing error:" + errors[0].textContent);
+//        }
+//    } else if (typeof ActiveXObject != "undefined") {//IE8 ago
+//        xmldom = createDocument();
+//        xmldom.loadXML(xml);
+//        if (xmldom.parseError != 0) {
+//            throw new Error("XML parsing error: " + xmldom.parseError.reason);
+//        }
+//    } else {
+//        throw new Error("No XML parser available.");
+//    }
+//    return xmldom;
+//}
+//var xmldom = null;
+//try {
+//    xmldom = parseXml("<root><child/></root>");
+//} catch (ex) {
+//    alert(ex.message);
+//}
+
+//function serializeXml(xmldom) {//兼窜的xml 序列化
+//    if (typeof XMLSerializer != "undefined") {
+//        return (new XMLSerializer()).serializeToString(xmldom);
+//    } else if (typeof  xmldom.xml != "undefined") {
+//        return xmldom.xml;
+//    } else {
+//        throw new Error("Could not serialize XML DOM.");
+//    }
+//}
+//var xml = serializeXml(xmldom);
+
+
+/** 18.2 浏览器对XPath的支持
+ *      18.2.1 DOM3级XPath
+ *          XPathEvaluator: 在特定的的上下文中对XPath表达式求值
+ *              createExpression(expression, nsresolver):
+ *              将XPath表达式及相应的命名空间信息转换成一个XPathExpression
+ *              createNSResolver(node):跟据node的命名空间信息
+ *                  创建一个新的XPathNSResolver对象
+ *              evaluate(XPath表达式, 上下文节点, 命名空间求解器, 
+ *                  返回结果类型, 保存结果的XPathResult对象):
+ *                  对XPath表达式求值返回结果类型：
+ *                      XPathResult.ANY_TYPE:返回与XPath表达式匹配的数据类型
+ *                      XPathResult.NUMBER_TYPE:返回数值
+ *                      XPathResult.STRING_TYPE：字符串值
+ *                      XPathResult.BOOLEAN_TYPE: 返回布尔值
+ *                      XPathResult.UNORDERED_NODE_ITERATOR_TYPE:
+ *  返回匹配的节点集合,但集合中节点的次序不一定与它们在文档中的次序一致
+ *                      XPathResult.ORDERED_NODE_ITERATOR_TYPE:
+ *  返回匹配的节点集合,集合中节点的次序与它们在文档中的次序一致
+ *                      XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE:
+ *  返回集合的快照
+ *                      XPathResult.ORDERED_NODE_SNAPSHOT_TYPE:返回集合的快照
+ *                      XPathResult.ANY_UNORDERED_NODE_TYPE:
+ *  返回匹配节点的集合,但集合中节眯的次序不一定与它们在文档中的次序一致
+ *                      XPathResult.FIRST_ORDERED_NODE_TYPE:
+ * 返回包含一个节点的节点集合
+ *          XPathResult:
+ *
+ */
+
+//var supportXPath = document.implementation.hasFeature("XPath", "3.0");//检测是否支持XPath
+
+var xmldom = (new DOMParser()).parseFromString("<employees><employee title=\"Software Engineer\"><name>Nicholas C. Zakas</name></employee><employee title=\"Salesperson\"><name>Jim Smith</name></employee></employees>", "text/xml");
+var serializer = new XMLSerializer();
+var result = xmldom.evaluate("employee/name", xmldom.documentElement, null,
+        XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+var message = "";
+var count = 0;
+var element = result.iterateNext();
+while (element) {
+    message += serializer.serializeToString(element) + "\n";
+    count++;
+    element = result.iterateNext()
+}
+message = "There are " + count + " matching nodes.\n" + message;
+console.log(message);
+
+
+</script>
+
+
+
+<!--
+19.1 E4X类型
+    19.1.1 XML类型
+    19.1.2 XMLList类型
+    19.1.3 Namespace类型
+    19.1.4 QName 类型
+19.2 一般用法
+    19.2.1 访问特性
+    19.2.2 其它特性
+    19.2.3 查询
+    19.2.4 构建和操作XML
+    19.2.5 解析和序列化
+    19.2.6 命名空间
+-->
+
+
+
+</body>
+</html>

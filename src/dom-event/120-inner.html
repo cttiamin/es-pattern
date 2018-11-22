@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Inner</title>
+  <script>
+    //  插入标记
+    //    innerHTML(): 插入HTML字符
+    //        outerHTML(): 指定HTML字符串
+    //    insertAdjacentHTML(插入位置, HTML文本): 插入标记
+    //       beforebegin: 在当前元素前, 插入一个紧邻的同辈元素
+    //       afterbegin: 在当前元素之下插新的子元素 放在第一个子元素之前
+    //       beforeend: 在当前元素之下插新的子元素或在最后一个子元素之后
+    //       afterend: 在当前元素后插入一个紧邻的同辈元素
+    //  插入文本
+    //    innerText: 元素中文本内容去除HTML IE4+/FireFox不支持
+    //    textContent: 同上, Firefox/Ie9+
+    //    outerText(): 读取时一样, 写入时替换整个元素/火狐不支持
+  </script>
+</head>
+
+<body>
+  <script>
+    //innerHTML 属性 : 返回元素所有子元素,
+    var div4 = document.createElement('div');
+    document.body.appendChild(div4);
+    div4.innerHTML = "Hello & welcome, <b>\"reader\"!</b> ";
+    // => Hello & welcome, <b>\"reader\"!</b>
+
+    // ie8以前 style 没有作用域元素
+    // div4.innerHTML = 
+    // "<style type=\"text/css\">body {background-color: while;}</style> ";
+
+    // outerHTML: 返回调用它的元素及所有子节点
+    div4.outerHTML;
+    //=> "<div>Hello &amp; welcome, <b>"reader"!</b> </div>"
+
+
+    /**
+     * FireFox 较早的版本不支持 Element.outerHTML 属性
+     * 例15-5: 使用 innerHTML 实现 outerHTML属性
+     */
+    (function () {
+      // If we already have outerHTML return without doing anything
+      if (document.createElement("div").outerHTML) return;
+
+      // Return the outer HTML of the element referred to by this
+      function outerHTMLGetter() {
+        var container = document.createElement("div"); // Dummy element
+        container.appendChild(this.cloneNode(true));   // Copy this to dummy
+        return container.innerHTML;                    // Return dummy content
+      }
+
+      // Set the outer HTML of the this element to the specified value
+      function outerHTMLSetter(value) {
+        // Create a dummy element and set its content to the specified value
+        var container = document.createElement("div");
+        container.innerHTML = value;
+        // Move each of the nodes from the dummy into the document
+        while (container.firstChild)  // Loop until container has no more kids
+          this.parentNode.insertBefore(container.firstChild, this);
+        // And remove the node that has been replaced
+        this.parentNode.removeChild(this);
+      }
+
+      // Now use these two functions as getters and setters for the
+      // outerHTML property of all Element objects. Use ES5 Object.defineProperty
+      // if it exists and otherwise fall back on __defineGetter__ and Setter__.
+      if (Object.defineProperty) {
+        Object.defineProperty(Element.prototype, "outerHTML", {
+          get: outerHTMLGetter,
+          set: outerHTMLSetter,
+          enumerable: false, configurable: true
+        });
+      }
+      else {
+        Element.prototype.__defineGetter__("outerHTML", outerHTMLGetter);
+        Element.prototype.__defineSetter__("outerHTML", outerHTMLSetter);
+      }
+    }());
+
+
+    // 3.insertAdjacentHTML(插入位置, HTML文本): 插入标记
+    var insertAdjacent = document.createElement('div');
+    document.body.appendChild(insertAdjacent);
+    // // 前同辈
+    // insertAdjacent.insertAdjacentHTML("beforebegin", "<p>beforebegin!</p>");
+    // // 第一子元素
+    // insertAdjacent.insertAdjacentHTML("afterbegin", "<p>afterbgein</p>"); 
+    // // 最后子元素
+    // insertAdjacent.insertAdjacentHTML("beforeend", "<p>beforeend</p>");
+    // // 后同辈
+    // insertAdjacent.insertAdjacentHTML("afterend", "<p>afterend</p>");
+
+
+    // 例15-6: 使用innerHTML实现insertAdjacentHTML()
+    var Insert = (function () {
+      // If elements have a native insertAdjacentHTML, use it in four HTML
+      // insertion functions with more sensible names.
+      if (document.createElement("div").insertAdjacentHTML) {
+        return {
+          before: function (e, h) {
+            e.insertAdjacentHTML("beforebegin", h);
+          },
+          after: function (e, h) {
+            e.insertAdjacentHTML("afterend", h);
+          },
+          atStart: function (e, h) {
+            e.insertAdjacentHTML("afterbegin", h);
+          },
+          atEnd: function (e, h) {
+            e.insertAdjacentHTML("beforeend", h);
+          }
+        };
+      }
+
+      // Otherwise, we have no native insertAdjacentHTML. Implement the same
+      // four insertion functions and then use them to define insertAdjacentHTML.
+
+      // First, define a utility method that takes a string of HTML and returns
+      // a DocumentFragment containing the parsed representation of that HTML.
+      function fragment(html) {
+        var elt = document.createElement("div");      // Create empty element
+        var frag = document.createDocumentFragment(); // Create empty fragment
+        elt.innerHTML = html;                         // Set element content
+        while (elt.firstChild)                         // Move all nodes
+          frag.appendChild(elt.firstChild);         //    from elt to frag
+        return frag;                                  // And return the frag
+      }
+
+      var Insert = {
+        before: function (elt, html) {
+          elt.parentNode.insertBefore(fragment(html), elt);
+        },
+        after: function (elt, html) {
+          elt.parentNode.insertBefore(fragment(html), elt.nextSibling);
+        },
+        atStart: function (elt, html) {
+          elt.insertBefore(fragment(html), elt.firstChild);
+        },
+        atEnd: function (elt, html) {
+          elt.appendChild(fragment(html));
+        }
+      };
+
+      // Now implement insertAdjacentHTML based on the functions above
+      Element.prototype.insertAdjacentHTML = function (pos, html) {
+        switch (pos.toLowerCase()) {
+          case "beforebegin":
+            return Insert.before(this, html);
+          case "afterend":
+            return Insert.after(this, html);
+          case "afterbegin":
+            return Insert.atStart(this, html);
+          case "beforeend":
+            return Insert.atEnd(this, html);
+        }
+      };
+      return Insert;  // Finally return the four insertion function
+    }());
+
+    // document.cloneNode()
+    var innerHtml = insertAdjacent;
+    Insert.before(innerHtml, "<p>before</p>");
+    Insert.after(innerHtml, "<p>after</p>");
+    Insert.atStart(innerHtml, "<p>atStart</p>");
+    Insert.atEnd(innerHtml, "<p>atEnd</p>");
+
+    var div5 = document.createElement('div');
+    div5.innerText = "Hello world!";
+    // div5.outerText = "Hello world!"; //写入文本
+
+    var text = document.createTextNode("Hello world!"); //写入文本
+    //div5.parentNode.replaceChild(text, div5);
+
+    // 兼容 textContent
+    function getInnerText(element) {
+      return (typeof element.textContent == "string") ?
+        element.textContent : element.innerText;
+    }
+    function setInnerText(element, text) {
+      if (typeof element.textContent == "string") {
+        element.textContent = text;
+      } else {
+        element.innerText = text;
+      }
+    }
+    // setInnerText(div5, "Hello & welcome, <b>\"reader\"!</b>");
+    // getInnerText(div5);
+  
+
+    // 通用 textContent
+    function textContent(element, value) {
+      // 检测textContent是否有定义
+      var content = element.textContent;
+      // 没有value, 返回当前文本
+      if (value === undefined) {
+        if (content !== undefined) {
+          return content;
+        }
+        else {
+          return element.innerText; //ie
+        }
+      }
+      // 传递了value, 因此设置文本
+      else {
+        if (content !== undefined) {
+          element.textContent = value;
+        }
+        else {
+          element.innerText = value;
+        }
+      }
+    }
+    textContent(div5, "Hello & welcome");
+
+    // 返回元素 text, 作为Text节点的元素内容
+    function textContent2(e) {
+      var child, type, s = "";
+      // s holds the text of all children
+      for (child = e.firstChild; child != null; child = child.nextSibling) {
+        type = child.nodeType;
+        // Text and CDATASection nodes
+        if (type === 3 || type === 4) {
+          s += child.nodeValue;
+        }
+        // Recurse for Element nodes
+        else if (type === 1) {
+          s += textContent2(child);
+        }
+
+      }
+      return s;
+    }
+
+
+  </script>
+</body>
+
+</html>

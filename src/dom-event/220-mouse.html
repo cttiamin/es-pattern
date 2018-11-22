@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>mouse-event</title>
+  <script type="text/javascript" src="../assets/js/client.js"></script>
+  <script type="text/javascript" src="../assets/js/event-util.js"></script>
+  <script type="text/javascript" src="./221-enclose.js"></script>
+
+  <script>
+    ////////////////////////
+    // 鼠标与滚轮事件
+    //  click:  单击主鼠标按钮(一般是左边的按钮)或按下回车键
+    //  contextmenu: 当上下文菜单即将出现时触发.
+    //  dblclick: 双击主鼠标按钮
+    //  mousedown: 按下了任意鼠标按钮时触发
+    //  mouseenter: 在鼠标光标从元素外部首次移动到元素范围之内时触发,不冒泡
+    //  mouseleave: 在位于元素上方的鼠标光标移动到元素范围之外时触发,不冒泡,
+    //  mousemove: 鼠标指针在元素内部移动时重复地触发, 不能通过键盘触发
+    //  mouseout: 鼠标指针位于一个元素上方 然后用户将其移入另一个元素时触发,
+    //  mouseover: 鼠标指针于素外部 然后将其首次移入另一个元素边界之内时触发
+    //  mouseup: 释放鼠标按钮时触发 不能通过键盘触
+    // 双击时触发顺序:  mousedown > mouseup > click > 
+    //      mousedown > mouseup > click > dblclick
+    // IE: mousedown > mouseup > click > mouseup > dbclick
+
+    //  pageX: 在页面位置横坐标 相对于整个页面
+    //      与clientX区别:　不随滚动条移动变化
+    //  pageY: = (clientY + scrollTop) = (clientY + pageYOffset())
+    //      IE8更早不支持事件对象上的页面坐标,使用客户区坐标*滚动信息可
+    //      以计算出来.需用:
+    //
+    //  document.body.scrollLeft/scrollTop: IE8及更早版本
+    //      (混杂模式)向右滚动信息,与pageXOffset相同
+    //  document.documentElement.scrollLeft / scrollTop:(标准模式)
+
+    //  clientX: 鼠标所在横坐标 对于浏览器
+    //  clientY: 鼠标所在纵坐标
+
+    //  pageXOffset() : 文档向右滚动过的像素数; Netscape属性
+    //  pageYOffset() : 文档向下滚动的像素数
+
+    //  offsetX : IE特有,鼠标相比较于触发事件的元素的位置,以元素盒子模型的
+    //      内容区域的左上角为参考点,如果有boder,可能出现负值
+    //  offsetY:　
+    //  layerX: FF特有,鼠标相比较于当前坐标系的位置,与offsetX相似,不同于以
+    //      内容为参考点.
+    //  layerY:
+    //  offsetLeft: 相对于父对象的左边距
+    //  offsetTop:
+
+    //  altKey: 当事件被触发时 alt 是否被按下
+    //  ctrlKey / shiftKey
+    //  metaKey: windows/Cmd
+
+    //  relatedTarget: 元素到元素信息 ie 不支持
+    //  button: 返回哪个鼠标按钮被点击。
+
+    // 滚轮事件
+    //  wheelDelta: 当向前/后滚时是 120/ -120 倍数 火狐不支持
+    //  DOMMouseScroll: 火狐支持
+    //      detail: 当向前滚动时值是 -3, 向后滚动时是 3 倍数.
+
+    // contextmenu: H5 右键上下文菜单 此事件是冒泡的
+    //    Support: IE/FireFox/Chrome/Safari/Opera11+
+    //
+
+
+
+    // 检测是否支持DOM2,除dbclick, mouseenter,mouseleave之外
+    document.implementation.hasFeature("MouseEvents", "2.0");
+    document.implementation.hasFeature("MouseEvents", "3.0");
+  </script>
+</head>
+
+<body>
+  <ul id="myMenu" style="position:absolute;visibility:hidden;background-color:silver">
+    <li>
+      <a href="http://www.nczonline.net">Nicholas' site</a>
+    </li>
+    <li>
+      <a href="http://www.wrox.com">Wrox site</a>
+    </li>
+    <li>
+      <a href="http://www.yahoo.com">Yahoo!</a>
+    </li>
+  </ul>
+
+
+  <script>
+    var div1 = document.createElement('div');
+    document.body.appendChild(div1);
+    div1.style.cssText = 'background-color:red;height:100px;width:100px;padding:30px;margin:30px';
+
+    EventUtil.addHandler(div1, "click", function (event) {
+      event = EventUtil.getEvent(event);
+
+      // 客户端坐标信息,相对于浏览器
+      console.log("client x-y:", event.clientX, event.clientY);
+
+      // 页面坐标
+      console.log("Page x-y:", event.pageX, event.pageY);
+      // IE8更早不支持事件对象上的页面坐标
+      // 用客户区坐标 + 滚动信息 计算出来
+      // document.body.scrollLeft/scrollTop/:(混杂模式)
+      // document.documentElement.scrollLeft/scrollTop:(标准模式)
+      var pageX = event.pageX;
+      var pageY = event.pageY;
+
+      if (pageX === undefined) {
+        pageX = event.clientX + (document.body.scrollLeft ||
+          document.documentElement.scrollLeft);
+      }
+      if (pageY === undefined) {
+        pageY = event.clientY + (document.body.scrollTop ||
+          document.documentElement.scrollTop);
+      }
+
+      // 屏幕坐标toElement
+      console.log("Screen: ", event.screenX, event.screenY);
+
+      // 修改键 
+      console.log("Keys: " + event.shiftKey, event.ctrlKey,
+        event.altKey, event.metaKey);
+
+      // relatedTarget:  ie 不支持
+      var target = EventUtil.getTarget(event);
+      var relatedTarget = EventUtil.getRelatedTarget(event);
+      console.log("Moused out of " + target.tagName + " to "
+        + relatedTarget.tagName);
+
+      // button: 返回按键信息 0/1/2
+      console.log(EventUtil.getButton(event));
+    });
+
+    // 鼠标滚轮事件 火狐不支持
+    EventUtil.addHandler(document, "mousewheel", function (event) {
+      event = EventUtil.getEvent(event);
+      console.log(event.wheelDelta);
+    });
+
+    // FireFox 支持
+    EventUtil.addHandler(window, "DOMMouseScroll", function (event) {
+      event = EventUtil.getEvent(event);
+      console.log(event.detail);
+    });
+
+    // 跨 browser 滚轮事件实现
+    (function () {
+      function handleMouseWheel(event) {
+        event = EventUtil.getEvent(event);
+        var delta = EventUtil.getWheelDelta(event);
+        console.log(delta);
+      }
+      EventUtil.addHandler(document, "mousewheel", handleMouseWheel);
+      EventUtil.addHandler(document, "DOMMouseScroll", handleMouseWheel);
+    })();
+
+    // include enclose.js
+    var div2 = document.createElement('div');
+    document.body.appendChild(div2);
+    div2.innerHTML = `按住 alt 动改变 frame 大小
+      a<br>a<br>a<br>a<br>
+      a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>
+      a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>
+      a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>
+      a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>
+    `;
+    div2.style.cssText = 'background-color:grey;width:200px;margin:30px;';
+    enclose(div2, 200, 200, 200, 200);
+
+
+    // contextmenu
+    EventUtil.addHandler(window, "load", function (event) {
+      // var div = document.getElementById("myDiv");
+      EventUtil.addHandler(div1, "contextmenu", function (event) {
+        event = EventUtil.getEvent(event);
+        EventUtil.preventDefault(event);    //屏蔽掉默认事件
+        var menu = document.getElementById("myMenu");
+        menu.style.left = event.clientX + "px";     //鼠标单击时坐标,用于定位像素
+        menu.style.top = event.clientY + "px";
+        menu.style.visibility = "visible";      //显示为可见
+      });
+      EventUtil.addHandler(document, "click", function (event) {
+        document.getElementById("myMenu").style.visibility = "hidden";
+      });
+    });
+
+  </script>
+
+
+
+
+</body>
+
+</html>

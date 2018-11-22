@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=
+  , initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>vue render</title>
+  <script src="../assets/js/vue-2.5.13.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <p>{{price}}</p>
+  </div>
+  <script>
+    var vm = new Vue({
+      el: '#app',
+      data: {
+        price: 100
+      }
+    });
+
+    // price = vm.price = data.price
+    // 手写 render 函数
+    function render() {
+      with (this) { // this 就是 vm
+        return _c(
+          'div',
+          {
+            attrs: { 'id': 'app' }
+          },
+          [
+            _c('p', [_v(_s(price))])
+          ]
+        )
+      }
+    }
+
+    // _c 函数
+    // _v 文本节点
+    // _s toString
+    function render1() {
+      return vm._c(
+        'div',
+        {
+          attrs: { 'id': 'app' }
+        },
+        [
+          vm._c('p', [vm._v(vm._s(vm.price))])
+        ]
+      )
+    }
+
+
+    
+  </script>
+</body>
+
+</html>

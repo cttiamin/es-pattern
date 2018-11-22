@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>三列布局的方法</title>
+    <style>
+        html * {
+            padding: 0;
+            margin: 0;
+        }
+
+        .layout article div {
+            min-height: 100px;
+        }
+
+        .layout {
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        body {
+            margin: 0;
+        }
+
+        div {
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 浮动布局  -->
+    <section class="layout float">
+        <style type="text/css">
+            .layout.float #left-right-center {
+                overflow: hidden;
+            }
+
+            /* 清除浮动第二种方式  after */
+            #left-right-center::after {
+                content: 'aaa';
+                clear: both;
+                display: block;
+                visibility: hidden;
+                height: 0;
+            }
+
+            .layout.float #left {
+                width: 120px;
+                float: left;
+            }
+
+            .layout.float #right {
+                width: 120px;
+                float: right;
+            }
+
+            .layout.float #main {
+                margin: 0 120px;
+            }
+        </style>
+        <article id="left-right-center">
+            <div id="left">此处显示 "left" 的内容</div>
+            <div id="right">此处显示 "right" 的内容</div>
+            <div id="main">使用浮动 </div>
+        </article>
+    </section>
+
+
+    <!-- 绝对布局 -->
+    <hr>
+    <section class="layout absolute">
+        <style>
+            .layout.absolute .left-center-right>div {
+                /* position: absolute; */
+            }
+            .left-center-right {
+                position: relative;
+            }
+
+            .layout.absolute .left {
+                top: 0;
+                left: 0;
+                width: 300px;
+                position: absolute;
+            }
+
+            .layout.absolute .center {
+                margin: 0 305px;
+            }
+
+            .layout.absolute .right {
+                top: 0;
+                right: 0;
+                width: 300px;
+                position: absolute;
+
+            }
+        </style>
+        <article class="left-center-right">
+            <div class="center">
+                <h2>绝对定位解决方案</h2>
+                1.这是三栏布局的绝对定位解决方案；
+                2.这是三栏布局的绝对定位解决方案；
+                3.这是三栏布局的绝对定位解决方案；
+                4.这是三栏布局的绝对定位解决方案；
+                5.这是三栏布局的绝对定位解决方案；
+                6.这是三栏布局的绝对定位解决方案；
+            </div>
+            <div class="left"></div>
+            <div class="right"></div>
+        </article>
+    </section>
+
+    <!-- flexbox 布局 -->
+    <hr>
+    <section class="layout flexbox">
+        <style>
+            .layout.flexbox {
+                /* margin-top: 160px; */
+            }
+
+            .layout.flexbox .left-center-right {
+                display: flex;
+            }
+
+            .layout.flexbox .left {
+                width: 300px;
+            }
+
+            .layout.flexbox .center {
+                flex: 1;
+            }
+
+            .layout.flexbox .right {
+                width: 300px;
+            }
+        </style>
+        <article class="left-center-right">
+            <div class="left"></div>
+            <div class="center">
+                <h2>flexbox 解决方案</h2>
+                1.这是三栏布局的浮动解决方案；
+                2.这是三栏布局的浮动解决方案；
+                3.这是三栏布局的浮动解决方案；
+                4.这是三栏布局的浮动解决方案；
+                5.这是三栏布局的浮动解决方案；
+                6.这是三栏布局的浮动解决方案；
+            </div>
+            <div class="right"></div>
+        </article>
+    </section>
+
+    <!-- 表格布局 -->
+    <section class="layout table">
+        <style>
+            .layout.table .left-center-right {
+                width: 100%;
+                height: 100px;
+                display: table;
+            }
+
+            .layout.table .left-center-right>div {
+                display: table-cell;
+            }
+
+            .layout.table .left {
+                width: 300px;
+            }
+
+            .layout.table .center {
+            }
+
+            .layout.table .right {
+                width: 300px;
+            }
+        </style>
+        <article class="left-center-right">
+            <div class="left"></div>
+            <div class="center">
+                <h2>表格布局解决方案</h2>
+                1.这是三栏布局的表格解决方案；
+                2.这是三栏布局的表格解决方案；
+                3.这是三栏布局的表格解决方案；
+                4.这是三栏布局的表格解决方案；
+                5.这是三栏布局的表格解决方案；
+                6.这是三栏布局的表格解决方案；
+            </div>
+            <div class="right"></div>
+        </article>
+    </section>
+
+    <!-- 网格布局 -->
+    <section class="layout grid">
+        <style>
+            .layout.grid .left-center-right {
+                width: 100%;
+                display: grid;
+                /* grid-template-rows: 100px; */
+                grid-template-columns: 300px auto 300px;
+            }
+
+            .layout.grid .left-center-right>div {}
+
+            .layout.grid .left {
+                width: 300px;
+            }
+
+            .layout.grid .center {
+            }
+
+            .layout.grid .right {
+                width: 300px;
+            }
+        </style>
+        <article class="left-center-right">
+            <div class="left"></div>
+            <div class="center">
+                <h2>网格布局解决方案</h2>
+                1.这是三栏布局的网格解决方案；
+                2.这是三栏布局的网格解决方案；
+                3.这是三栏布局的网格解决方案；
+                4.这是三栏布局的网格解决方案；
+                5.这是三栏布局的网格解决方案；
+                6.这是三栏布局的网格解决方案；
+            </div>
+            <div class="right"></div>
+        </article>
+    </section>
+
+    <!-- 流式布局 -->
+    <hr>
+    <section class="layout stream">
+        <style>
+            /* 
+            问题: 在窗口宽度较小的时候列会变得非常窄,有必要使用 min-width
+            设计者使用宽度960; 
+            大多数窗口设置为:1250; (960 / 1250) * 100 = 76.8%
+            (670/920) * 100 = 72.82%
+            */
+
+            .content05 {
+                overflow: hidden;
+            }
+
+            .content05 .left {
+                width: 25%;
+                float: left;
+                display: inline;
+            }
+
+            .content05 .right {
+                width: 72.82%;
+                float: right;
+                display: inline;
+            }
+
+            .content05 .right .left {
+                width: 59.7%;
+                float: left;
+            }
+
+            .content05 .right .right {
+                width: 34.33%;
+                padding-right: 2.63%;
+                float: right;
+                display: inline;
+            }
+        </style>
+        <h3>宽度 100% 自适应-流式布局</h3>
+        <div class="content05">
+            <div class="right">
+                <div class="left">
+                    right-left
+                </div>
+                <div class="right">
+                    right-right
+                </div>
+            </div>
+            <div class="left">
+                left
+            </div>
+        </div>
+    </section>
+
+    <!-- 高度自适应-->
+    <hr>
+    <section class="layout auto-height">
+        <!-- 
+            高度与最长列相等的三列布局
+            -->
+        <style type="text/css">
+            h3 {
+                overflow: hidden;
+                clear: both;
+            }
+
+            .wrapper03 {
+                width: 100%;
+                overflow: hidden;
+                /* 列在最高点被载切 */
+                position: relative;
+                margin: 30px auto;
+            }
+
+            .box03 {
+                width: 250px;
+                float: left;
+                display: inline;
+                padding-left: 20px;
+                padding-right: 20px;
+                padding-top: 20px;
+                /*设置等高*/
+                padding-bottom: 520px;
+                margin-bottom: -520px;
+                margin-left: 20px;
+                background: #89ac10;
+            }
+
+            .bottom03 {
+                position: absolute;
+                bottom: 0;
+                height: 20px;
+                width: 290px;
+                background: #10a2ac;
+                margin-left: -20px;
+            }
+        </style>
+        <h3>高度自适应</h3>
+        <div class="wrapper03">
+            <div class="box03">
+                <h1>box03-1</h1>
+                <p>...</p>
+                <div class="bottom03"></div>
+            </div>
+            <div class="box03">
+                <h1>box03-2</h1>
+                <p>...</p>
+                <div class="bottom03"></div>
+            </div>
+            <div class="box03">
+                <h1>box03-3</h1>
+                <p>
+                    Richard RutterRichard RutterRichard RutterRichard RutterRichard RutterRichard RutterRichard
+                    RutterRichard RutterRichard RutterRichard
+                    RutterRichard RutterRichard RutterRichard
+                </p>
+                <div class="bottom03"></div>
+            </div>
+        </div>
+    </section>
+
+</body>
+
+</html>

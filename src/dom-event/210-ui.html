@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>window-event</title>
+  <script type="text/javascript" src="../assets/js/event-util.js"></script>
+  <!-- <script type="text/javascript" src="../assets/js/client.js"></script> -->
+  <!-- <script type="text/javascript" src="../assets/js/when-ready.js"></script> -->
+  <script>
+    ///////////////////////////////////
+    // UI事件(Window 事件)
+    //  load: 当页面完全加载后在 window 上触发, 
+    //    当图像加载完毕时在<\img>元素上触发
+    //  DOMContentLoaded: h5/ie9+,load之前执行,不考虑图像/js/css文件
+    //  beforeunload: h5,关闭窗口时弹出确认信息
+    //  unload: 当页面完全卸载后在 window 上面触发
+    //  readystatechange: 文档或加载状态有关信息
+    //    readyState:
+    //      uninitialized(未初始化): 对象存在但尚未始化
+    //      loading(正在加载): 对象正在加载数据
+    //      loaded(加载完毕):对象加载数据完成
+    //      interactive(交互):可以操作对象了, 但还没有完全加载
+    //      complete(完成):对象已经加载完毕
+    //  abort: 在用户停止下载过程 如果嵌入的内容没有加载完
+    //    则在 <\object> 元素上面触发
+    //  error: 当发生 javaScript 错误时在window上面触发
+    //  select: 当用户选择文本框(<\input>或<\texterea>)中的一个或多个字
+    //    符时触发
+    //  resize: 当窗口或框架的大小变化时在window或框架上面触发
+    //  scroll: 当用户滚动带滚动条的元素中的内容时,在该元素上面触发.<\body>
+    //    元素中包含所加载页面的滚动条
+    //  hashchange:H5, URL "#" 后面的字符串发生变化时 oldURL/newURL
+
+    // 焦点事件
+    //  focusout 在失去焦点的元素上触发
+    //  focusin 在获得焦点的元素上触发
+    //  blur 在失去焦点的元素上触发
+    //  focus 在获得焦点的元素上触发
+
+
+    // 确定 browser 是否 support DOM2级事件规定的HTML事件
+    document.implementation.hasFeature("HTMLEvents", "2.0");
+    // 确定browser是support DOM3级事件 定义的事件
+    document.implementation.hasFeature("UIEvent", "3.0");
+
+
+    // load 事件
+    EventUtil.addHandler(window, "load", function (event) {
+      console.log("load event");
+    });
+    // 第二种
+    // <body onload="alert('Loaded!')">
+
+    // 图像指定 onload 事件处理程序
+    // <img src="banner001.jpg" onload="alert('Image loaded')">
+
+    //在js 来实现同样的功能
+    //  <img src="images/banner001.jpg" id="myImage"/>
+    //  var image = document.getElementById("myImage");
+    //  EventUtil.addHandler(image, "load", function (event) {
+    //      event = EventUtil.getEvent(event);
+    //      console.log(EventUtil.getTarget(event).src);//图片路径
+    //  });
+
+    //创建新 <img>元素时 指定一个事件处理程序 图像加载完毕后给出提示
+    EventUtil.addHandler(window, "load", function () {
+      // var image = document.createElement("img");
+      var image = new Image();// 使用 Image 预先加载
+      EventUtil.addHandler(image, "load", function (event) {
+        event = EventUtil.getEvent(event);
+        console.log(EventUtil.getTarget(event).src);
+      });
+      document.body.appendChild(image);
+      image.src = "../assets/img/clock-icon.png";
+      image.width = "100";
+    });
+
+    //  为 script 元素指定事件处理程序
+    EventUtil.addHandler(window, "load", function () {
+      var script = document.createElement("script");  //加载 JS文件
+      EventUtil.addHandler(script, "load", function (event) {
+        console.log("script Loaded");
+      });
+      
+      script.src = "../assets/js/serialize.js";
+      document.body.appendChild(script);
+
+      var link = document.createElement("link");  //加载 CSS文件
+      link.type = "text/css";
+      link.rel = "stylesheet";
+      // EventUtil.addHandler(link, "load", function () { //opera only
+      //   console.log("css loaded");
+      // });
+      EventUtil.addHandler(link, "readystatechange", function (event) {
+          event = EventUtil.getEvent(event);
+          var target = EventUtil.getTarget(event);
+          if (target.readyState == "loaded" || target.readyState == "complete") {
+              EventUtil.removeHandler(target, "readystatechange", arguments.callee);
+              console.log("CSS Loaded");
+          }
+      });
+      link.href = "../assets/css/101-style.css";
+      document.getElementsByTagName("head")[0].appendChild(link);
+    });
+
+    // DOMContentLoaded h5 
+    EventUtil.addHandler(document, "DOMContentLoaded", function (event) {
+      console.log("DOMContentLoaded!");
+    });
+
+    //  unload 卸载之后触发
+    EventUtil.addHandler(window, "unload", function (event) {
+      alert("unload");
+    });
+
+    // beforeunload: h5 
+    // EventUtil.addHandler(window, "beforeunload", function (event) {
+    //   event = EventUtil.getEvent(event);
+    //   var message = "beforeunload";
+    //   event.returnValue = message;
+    //   return message;
+    // });
+
+    //resize 浏览器窗口大小改变时
+    EventUtil.addHandler(window, "resize", function (event) {
+      console.log("Resized");
+    });
+
+    // scroll 浏览器上/下拉 滚动时
+    EventUtil.addHandler(window, "scroll", function (event) {
+      //safair3.1之前不支持 document.compatMode
+      if (document.compatMode == "CSS1Compat") {
+        console.log(document.documentElement.scrollTop);
+      } else {
+        console.log(document.body.scrollTop);
+      }
+    });
+
+    // hashchange
+    ("onhashchange" in window) && 
+    (document.documentElement.documentMode === undefined 
+      || document.documentMode > 7);
+      
+    EventUtil.addHandler(window, "hashchange", function (event) {
+      console.log("Old URL : ", event.oldURL,
+        "\nNew URL: ", event.newURL,
+        "\nCurrent hash: ", location.hash);
+    });
+
+    document.implementation.hasFeature("FocusEvent", "3.0");
+
+  </script>
+</head>
+
+<body>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+</body>
+
+</html>

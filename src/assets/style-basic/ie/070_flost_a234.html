@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title> IE BUG - 断头台</title>
+        <style type="text/css">
+
+            * {
+                margin:0;
+                padding:0;
+            }
+
+            body {
+                font:11px Verdana, Geneva, sans-serif;
+                padding:10px; 
+            }
+
+            .box-model {
+                padding:10px; 
+                border:1px solid black; 
+                background:#cf0;
+            }
+
+            .box-float {
+                float:left;
+                padding:10px;
+                border:1px solid black;
+                background:#fc0;
+                width:80px;
+                height:120px;
+            }
+
+            a {
+                text-decoration:none;
+                display:block;
+            }
+
+            a:hover {
+                /**/background:#fff;
+                padding:1px;
+            }
+
+            /* 通过伪对象的方式*/
+            .clearfix:after {
+                content:""; /* 内容为空格 */
+                display:block; /* 显示模式为块级 */
+                height:0; /* 高度为0*/
+                clear:both; /* 清除块 */
+                visibility:hidden; /* 显示模式设置隐藏 */
+            }
+
+            /*IE6*/
+            .clearfix {
+                display:inline-block;
+            }
+
+            /*
+            第二种：
+要解决这个问题,书本提供的方法存在一点多余和累赘的成分,经过测试,其实从问题出发会找到更好的解决方案.在之前的分析就已经知道,问题的关键在于背景框高度的计算.所以,要解决这个问题,根本就是要让背景框的高度得到正确的计算.由此,这个问题又演变成"高度不能自适应"问题了.我发现,只要让背景框的底部能达到正确的长度即可,所以我在最下面(连接4的标签下面)加入一个占位框<div class="clear-div"></div>,只要让这个占位框在原来不应该计高度的的底部存在占位即可,所以加入CSS语句:.clear-div{height:0;overflow:hidden;clear:left;}其中最重要的是clear:left,这个语句可以使其占位框真正位于最下方
+*/
+
+/*
+            .clear-div{
+                height: 0;
+                overflow: hidden;
+                clear: left;
+                
+            }
+            
+                
+                
+                */
+
+        </style>
+
+    </head>
+
+    <body>
+        <div>
+打开IE6,测试后,发现当鼠标移到连接2,3,4上时,发现div被砍掉一半,这就是IE6的一个著名的bug"断头台".
+        </div>
+        <div class="box-model clearfix">
+
+            <div class="box-float">浮动元素</div>
+
+            <a href="#">碰到我会砍掉一些内容</a>
+            <a href="#">碰到我会砍掉一些内容</a>
+            <a href="#">碰到我会砍掉一些内容</a>
+            <a href="#">碰到我会砍掉一些内容</a>
+
+            <!--
+解决：
+在a 标签 包装div
+-->
+<div class="clear-div"></div>
+        </div>
+
+    </body>
+</html>
+
+
+

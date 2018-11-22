@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Selection对象与Range对象的使用</title>
+</head>
+<body>
+
+    <script>
+        /**********************************************
+         * getSelection: 返回先中内容
+         * */
+        function rangeTest(){
+            var html;
+            showRangeDiv = document.getElementById("showRange");
+            selection = document.getSelection();
+
+            if(selection.rangeCount > 0){
+                html = "您选择了>"+ selection.rangeCount + "<内容<br/>";
+                for(var i=0; i < selection.rangeCount; i++){
+                    var range = selection.getRangeAt(i);
+                    html += "第"+(i+1)+"段内容为: "+range+"<br/>";
+                }
+                showRangeDiv.innerHTML = html;
+            }
+        }
+    </script>
+
+    Selection对象与Range对象的使用
+    <input type="button" value="clickme" onclick="rangeTest()">
+    <div id="showRange"></div>
+
+
+    <h3>SelectNode, SelectNodeContents, deleteContents</h3>
+    <script>
+        /***********************************
+         * SelectNode: 选中节点
+         * SelectNodeContents： 选中元素
+         * deleteContents：删除内容
+         * **/
+        function deleteRangeContent(onlyContent){
+            var div = document.getElementById("div1");
+            var rangeObj = document.createRange();
+            if(onlyContent){
+                rangeObj.selectNodeContents(div);
+                /*选取内容*/
+                rangeObj.deleteContents();
+            }else{
+                rangeObj.selectNode(div);
+                //选取节点
+                rangeObj.deleteContents();
+            }
+
+        }
+    </script>
+<div id="div1" style="background-color: #e0a0b0; width: 300px; height: 50px;">
+元素内容
+</div>
+<button onclick="deleteRangeContent(true)">删除内容</button>
+<button onclick="deleteRangeContent(false)">删除元素</button>
+
+
+<h2>setStart, setEnd, setStartBefore, setStartAfter, setEndBefore, setEndAfter</h2>
+<h3>setStart, setEnd</h3>
+    <script>
+        /****************************
+         *  setStart: 选取区间
+         *  setEnd
+         ***/
+        function deleteChar(){
+            var div = document.getElementById("myDiv");
+            var textNode = div.firstChild;
+            var rangeObj = document.createRange();
+            rangeObj.setStart(textNode, 1);
+            rangeObj.setEnd(textNode, 4);
+            rangeObj.deleteContents();
+        }
+    </script>
+<div id="myDiv" style="color:red">
+    This world is delete.
+</div>
+<button onclick="deleteChar()">delete world</button>
+
+
+<h3>setStartBefore, setEndAfter</h3>
+<script>
+    /**************************************
+     * setStartBefore：当前元素前做为开始区间
+     * setEndAfter
+     ***/
+    function deleteRow(){
+        var table = document.getElementById("myTable");
+        if(table.rows.length > 0){
+            var row = table.rows[0];
+            var rangeObj = document.createRange();
+            rangeObj.setStartBefore(row);
+            rangeObj.setEndAfter(row);
+            rangeObj.deleteContents();
+        }
+    }
+</script>
+<table id="myTable" border="1" cellspacing="0" cellspadding="0">
+        <tr>
+            <td>content1</td>
+            <td>content2</td>
+        </tr>
+        <tr>
+            <td>content1</td>
+            <td>content2</td>
+        </tr>
+</table>
+<button onclick="deleteRow()">delete row</button>
+
+<h2>cloneRange, cloneContents, extractContents,  </h2>
+<h2>insertNode, compareBoundaryPoints,</h2>
+<h2>collapse, detach</h2>
+
+<h3>cloneRange</h3>
+<script>
+    /******************************************
+     * cloneRange: 复制内容
+     * 返回Range对象
+     * **/
+    function cloneRange(){
+        var rangeObj = document.createRange();
+        rangeObj.selectNodeContents(document.getElementById("p2"));
+        var rangeClone = rangeObj.cloneRange();
+        //var rangeClone = rangeObj.cloneContents();
+        console.log(rangeClone );
+    }
+</script>
+
+<p id="p2">这里是随便书写的内容</p>
+<button onclick="cloneRange()">clone</button>
+
+<h3>cloneContents</h3>
+<script>
+    /******************************************
+     * cloneContents: 以节点对象方式,和子节点
+     * 返回 DocumentFragment 对象
+     * **/
+    function cloneContent(){
+        var div = document.getElementById("div2");
+        var rangeObj = document.createRange();
+        rangeObj.selectNodeContents(div);
+        var docFrangMent = rangeObj.cloneContents();
+        div.appendChild(docFrangMent);
+    }
+</script>
+<div id="div2">
+    How are you?
+    <br/>
+    <button onclick="cloneContent()">cloneContent</button>
+    <br/>
+</div>
+
+
+<h3>extractContents</h3>
+<script>
+    /*********************
+     * extractContents
+     * */
+function moveContent(){
+    var srcDiv = document.getElementById("srcDiv");
+    var disDiv = document.getElementById("disDiv");
+    var rangeObj = document.createRange();
+    rangeObj.selectNodeContents(srcDiv);
+    var docFragment = rangeObj.extractContents();
+    disDiv.appendChild(docFragment);
+}
+</script>
+<div id="srcDiv" style="width: 300px; height: 50px;">移动字体</div>
+<div id="disDiv" style="width: 300px; height: 50px;"></div>
+<button onclick="moveContent()">移动元素</button>
+
+
+<h2>insertNode, compareBoundaryPoints</h2>
+
+<h3>insertNode: 移动当前按钮 </h3>
+<script>
+    /**********************************
+     *
+     * */
+    function moveButton(){
+        var btn = document.getElementById("button");
+        var selection = document.getSelection();
+        if(selection.rangeCount > 0 ){
+
+            var range = selection.getRangeAt(0);
+            //console.log(selection.rangeCount);
+            range.insertNode(btn);
+        }
+    }
+
+</script>
+<div onmouseup="moveButton()" style="width: 400px;">
+    This is my auto write world, This is my auto write world
+</div>
+<button id="button">button</button>
+
+<h3>compareBoundaryPoints</h3>
+<script>
+function testPlace(){
+    var boldText = document.getElementById("boldTest");
+    var boldRange = document.createRange();
+    boldRange.selectNodeContents(boldText.firstChild);
+    var selection = document.getSelection();
+    if(selection.rangeCount > 0){
+        var selRange = selection.getRangeAt(0);
+        if(selRange.compareBoundaryPoints(Range.START_TO_END, boldRange) <= 0){
+            console.log("selection world at before strong");
+        }else{
+            if(selRange.compareBoundaryPoints(Range.END_TO_START, boldRange) >=0 ){
+                console.log("selection world at after strong");
+            }
+        }
+    }
+}
+</script>
+<p>
+    This is a section world.
+    <b id="boldTest">know</b>
+    This is a section world.
+</p>
+<button onclick="testPlace()">位置比较</button>
+
+
+<H3>cllapse, detach</H3>
+<script>
+    var rangeObj = document.createRange();
+    function selectRangeContents(){
+        var div = document.getElementById("div3");
+        rangeObj.selectNode(div);
+        //rangeObj.detach();   //释放资源
+    }
+    function unselect(){
+        rangeObj.collapse(false);
+    }
+    function showRange(){
+        console.log( rangeObj.toString() );
+    }
+
+</script>
+<div id="div3" style="background-color: bisque; width: 300px; height: 50px;">element</div>
+<button onclick="selectRangeContents()" >select Element</button>
+<button onclick="unselect()">cancel element</button>
+<button onclick="showRange()">show element</button>
+
+
+</body>
+</html>

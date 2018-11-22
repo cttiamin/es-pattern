@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="../assets/js/get-scroll-offsets.js"></script>
+  <script type="text/javascript" src="../assets/js/event-util.js"></script>
+  <script src="./261_drag.js"></script>
+  <script src="../assets/js/when-ready.js"></script>
+
+  <script>
+    // 当拖动元素时将依次触发:
+    //   dragstart:按下并开始拖动时
+    //   drag: 在元素被拖动期间会持续触发
+    //   dragend : 拖动停止时当元素被移动到一个放置目标上, 鼠标的按键被释放时触发的事件
+    //   dragenter: 当拖进入有效的放置目标时触发
+    //   dragover: 被拖动的元素 还在 放置目标的范围内移动时
+    //   dragleave: 在可拖动的元素移出 放置目标时执触发
+    //   dragexit: 为拖动至区域外而触发
+    //   dragdrop:为释放拖动而触发
+    //   drop: 拖动元素放置在目标区域时触发
+
+    // 拖动事件传送数据API => event.dataTransfer
+    // .setData(sFormat,sData):将指定格式的数据赋值给dataTransfer
+    // .getData(sFormat):从dataTransfer或者clipboardData中获取值
+    // .clearData([sFormat]):删除某种格式的数据
+    // .setDragImage(src, x, y);指定图片
+  </script>
+</head>
+
+<body>
+  <h3>可拖动文档元素</h3>
+  <div style="width:250px;
+    position:static; 
+    left:100px;
+    top:100px;
+    background-color:white; 
+    border: solid black;
+    ">
+    <div id="msg-head" style="background-color: gray; 
+      border-bottom:dotted black;
+      padding: 3px; 
+      font-family: sans-serif;
+      cursor: pointer;
+      font-weight: bold;">
+      Invoke function drag()
+    </div>
+    <p>This is a test, testing, testing, </p>
+  </div>
+  <script>
+    var msgHead = document.getElementById('msg-head');
+    EventUtil.addHandler(msgHead, "mousedown", function (event) {
+      var event = EventUtil.getEvent(event);
+      drag(event.target.parentNode, event);
+      // onmousedown="drag(this.parentNode, event);"
+    });
+  </script>
+
+  <hr>
+
+  <h3>一个自定义拖放源</h3>
+
+  <style>
+    #clock {
+      font: bold 24pt sans;
+      background: #ddf;
+      padding: 10px;
+      border: solid black 2px;
+      border-radius: 10px;
+    }
+  </style>
+  <span id="clock"></span>
+  <textarea cols=45 rows=6></textarea>
+  <script>
+    // 一个自定义拖放源
+    whenReady(function () {
+      var clock = document.getElementById("clock");  // The clock element
+      var icon = new Image();                        // An image to drag
+      icon.src = "../assets/img/clock-icon.png";     // Image URL
+
+      // Display the time once every minute
+      function displayTime() {
+        var now = new Date();               // Get current time
+        var hrs = now.getHours(), mins = now.getMinutes();
+        if (mins < 10) mins = "0" + mins;
+        clock.innerHTML = hrs + ":" + mins; // Display current time
+        setTimeout(displayTime, 60000);     // Run again in 1 minute
+      }
+      displayTime();
+      // Make the clock draggable
+      // We can also do this with an HTML attribute: <span draggable="true">...
+      clock.draggable = true;
+      // Set up drag event handlers
+      clock.ondragstart = function (event) {
+        var event = event || window.event; // For IE compatability
+        // The dataTransfer property is key to the drag-and-drop API
+        var dt = event.dataTransfer;
+        // Tell the browser what is being dragged.
+        // The Date() constructor used as a function returns a timestamp string
+        dt.setData("Text", Date() + "\n");
+        // Tell the browser to drag our icon to represent the timestamp, in
+        // browsers that support that. Without this line, the browser may
+        // use an image of the clock text as the value to drag.
+        if (dt.setDragImage) {
+          dt.setDragImage(icon, 0, 0);
+        }
+      };
+    });
+  </script>
+  <hr> 例17-4: 多个列表拖拽
+  <ul class="dnd" style="border:1px solid #ccc;width:200px;">
+    <li>drag01</li>
+    <li>drag02</li>
+    <li>drag03</li>
+    <li>drag04</li>
+  </ul>
+  <ul class="dnd" style="border:1px solid #ccc;width:200px;">
+    <li>drag05</li>
+    <li>drag06</li>
+    <li>drag07</li>
+    <li>drag08</li>
+  </ul>
+  <ul class="dnd" style="border:1px solid #ccc;width:200px;">
+    <li>drag09</li>
+    <li>drag10</li>
+    <li>drag11</li>
+    <li>drag12</li>
+  </ul>
+  <script>
+    whenReady(function () {  // Run this function when the document is ready
+      // Find all <ul class='dnd'> elements and call the dnd() function on them
+      var lists = document.getElementsByTagName("ul");
+      var regexp = /\bdnd\b/;
+      for (var i = 0; i < lists.length; i++)
+        if (regexp.test(lists[i].className)) dnd(lists[i]);
+
+      // Add drag-and-drop handlers to a list element
+      function dnd(list) {
+        var original_class = list.className;  // Remember original CSS class
+        var entered = 0;                      // Track enters and leaves
+
+        // This handler is invoked when a drag first enters the list. It checks
+        // that the drag contains data in a format it can process and, if so,
+        // returns false to indicate interest in a drop. In that case, it also
+        // highlights the drop target to let the user know of that interest.
+        list.ondragenter = function (e) {
+          e = e || window.event;  // Standard or IE event
+          var from = e.relatedTarget; //事件节点的相关节点
+
+          // dragenter and dragleave events bubble, which makes it tricky to
+          // know when to highlight or unhighlight the element in a case like
+          // this where the <ul> element has <li> children. In browsers that
+          // define relatedTarget we can track that.
+          // Otherwise, we count enter/leave pairs
+
+          // If we entered from outside the list or if
+          // this is the first entrance then we need to do some stuff
+          entered++;
+          if ((from && !ischild(from, list)) || entered == 1) {
+
+            // All the DnD info is in this dataTransfer object
+            var dt = e.dataTransfer;
+
+            // The dt.types object lists the types or formats that the data
+            // being dragged is available in. HTML5 says the type has a
+            // contains() method. In some browsers it is an array with an
+            // indexOf method. In IE8 and before, it simply doesn't exist.
+            var types = dt.types;    // What formats data is available in
+
+            // If we don't have any type data or if data is
+            // available in plain text format, then highlight the
+            // list to let the user know we're listening for drop
+            // and return false to let the browser know.
+            if (!types ||   // IE
+              //HTML5
+              (types.contains && types.contains("text/plain")) ||
+              //Webkit
+              (types.indexOf && types.indexOf("text/plain") != -1)) {
+              list.className = original_class + " droppable";
+              return false;
+            }
+            // If we don't recognize the data type, we don't want a drop
+            return;   // without canceling
+          }
+          return false; // If not the first enter, we're still interested
+        };
+
+        // This handler is invoked as the mouse moves over the list.
+        // We have to define this handler and return false or the drag
+        // will be canceled.
+        list.ondragover = function (e) {
+          return false;
+        };
+
+        // This handler is invoked when the drag moves out of the list
+        // or out of one of its children. If we are actually leaving the list
+        // (not just going from one list item to another), then unhighlight it.
+        list.ondragleave = function (e) {
+          e = e || window.event;
+          var to = e.relatedTarget;//chrome return null
+
+          // If we're leaving for something outside the list or if this leave
+          // balances out the enters, then unhighlight the list
+          entered--;
+          if ((to && !ischild(to, list)) || entered <= 0) {
+            list.className = original_class;
+            entered = 0;
+          }
+          return false;
+        };
+
+        // This handler is invoked when a drop actually happens.
+        // We take the dropped text and make it into a new <li> element
+        list.ondrop = function (e) {
+          e = e || window.event;       // Get the event
+
+          // Get the data that was dropped in plain text format.
+          // "Text" is a nickname for "text/plain".
+          // IE does not support "text/plain", so we use "Text" here.
+          var dt = e.dataTransfer;       // dataTransfer object
+          var text = dt.getData("Text"); // Get dropped data as plain text.
+
+          // If we got some text, turn it into a new item at list end.
+          if (text) {
+            var item = document.createElement("li"); // Create new <li>
+            item.draggable = true;                   // Make it draggable
+            item.appendChild(document.createTextNode(text)); // Add text
+            list.appendChild(item);                  // Add it to the list
+
+            // Restore the list's original style and reset the entered count
+            list.className = original_class;
+            entered = 0;
+
+            return false;
+          }
+        };
+
+        // Make all items that were originally in the list draggable
+        var items = list.getElementsByTagName("li");
+        for (var i = 0; i < items.length; i++)
+          items[i].draggable = true;
+
+        // And register event handlers for dragging list items.
+        // Note that we put these handlers on the list and let events
+        // bubble up from the items.
+
+        // This handler is invoked when a drag is initiated within the list.
+        list.ondragstart = function (e) {
+          var e = e || window.event;
+          var target = e.target || e.srcElement;
+
+          // If it bubbled up from something other than a <li>, ignore it
+          if (target.tagName !== "LI") return false;
+          // Get the all-important dataTransfer object
+          var dt = e.dataTransfer;
+          // Tell it what data we have to drag and what format it is in
+          dt.setData("Text", target.innerText || target.textContent);
+          // Tell it we know how to allow copies or moves of the data
+          dt.effectAllowed = "copyMove";
+        };
+
+        // This handler is invoked after a successful drop occurs
+        list.ondragend = function (e) {
+          e = e || window.event;
+          var target = e.target || e.srcElement;
+
+          // If the drop was a move, then delete the list item.
+          // In IE8, this will be "none" unless you explicitly set it to
+          // move in the ondrop handler above.  But forcing it to "move" for
+          // IE prevents other browsers from giving the user a choice of a
+          // copy or move operation.
+          console.log(e.dataTransfer.dropEffect);
+          if (e.dataTransfer.dropEffect === "copy")
+            target.parentNode.removeChild(target);
+          if (e.dataTransfer.dropEffect === "move")
+            target.parentNode.removeChild(target);
+        }
+
+        // This is the utility function we used in ondragenter and ondragleave.
+        // Return true if a is a child of b.
+        function ischild(a, b) {
+          for (; a; a = a.parentNode) if (a === b) return true;
+          return false;
+        }
+      }
+    });
+  </script>
+
+
+</body>
+
+</html>

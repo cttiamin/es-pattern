@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>transform:/scale/skew/rotate</title>
+
+    <style type="text/css">
+    /*  
+    变换 transform :
+    translate / scale / skew/ rotate
+    */
+        .div1,
+        .div2,
+        .div3,
+        .div4,
+        .div5,
+        .div6 {
+            width: 100px;
+            height: 100px;
+            background-color: blue;
+            color: #fff;
+            border: 1px solid #fff;
+        }
+
+        /* 旋转 */
+        .div3 {
+            transform: rotate(200deg);
+            -webkit-transform: rotate(100deg, 100deg);
+            /* safari chrome */
+            -ms-transform: rotate(200deg, 100deg);
+            /*IE*/
+            -o-transform: rotate(200deg, 100deg);
+            /*opera*/
+            -moz-transform: rotate(-90deg);
+            /*Firefox*/
+        }
+
+
+        /*缩放  scale(x, y) */
+        .div4 {
+            margin-top: 200px;
+            transform: scale(1, 2);
+            /* (宽,高):　宽不变，高为原来2倍 */
+            -webkit-transform: scale(1, 2);
+            /* safari chrome */
+            -ms-transform: scale(1, 2);
+            /*IE*/
+            -o-transform: scale(1, 2);
+            /*opera*/
+            -moz-transform: scale(0.8, 0.8);
+            /*Firefox*/
+        }
+
+
+        /* 倾斜: skew(x, y) */
+
+        .div5 {
+            margin-top: 50px;
+            overflow: hidden;
+            clear: both;
+            transform: skew(5deg, 5deg);
+            /*x: 20deg, y: 20deg*/
+        }
+
+
+        /* 3D 旋转*/
+
+        .div6 {
+            /* transform: rotateX(120deg);
+        -webkit-transform: rotateX(100deg);
+        -moz-transform: rotateX(120deg); */
+            transform: rotateY(10deg);
+        }
+
+
+        /* 过渡效果 transition: */
+
+        .div7 {
+            width: 100px;
+            height: 100px;
+            background-color: blue;
+            /* 宽度, 高度属性的过渡效果, 时长为2秒, 默认:0 */
+            transition: width 2s, height 2s;
+            -webkit-transition: width 2s, height 2s, -webkit-transform 2s;
+            /* Safari and Chrome */
+            -o-transition: width 2s, height 2s, -o-transform 2s;
+            /* Opera */
+            -moz-transition: width 2s, height 2s, -moz-transform 2s;
+            /* Firefox 4 */
+        }
+
+        /*过渡效果, 当鼠标放上后发生 旋转*/
+
+        .div7:hover {
+            width: 200px;
+            height: 200px;
+
+            transform: rotate(180deg);
+            -moz-transform: rotate(180deg);
+            /* Firefox 4 */
+            -webkit-transform: rotate(180deg);
+            /* Safari and Chrome */
+            -o-transform: rotate(180deg);
+            /* Opera */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="div3">.div3: transform: rorate 旋转</div>
+    <div class="div4">.div4: transform: scale 缩放</div>
+    <br>
+    <div class="div5">.div5: transform: skew 倾斜</div>
+
+    <h2>3D</h2>
+    <div class="div6">.div6: rotateX: 3D</div>
+
+    <h2>过度效果</h2>
+    <div class="div7">旋转效果</div>
+
+</body>
+
+</html>

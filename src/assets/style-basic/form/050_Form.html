@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Chapter 7, 对表单和数据表格应用格式</title>
+</head>
+
+<body>
+    <!-- 7.1.1 表格特有的元素
+1.summary 和 caption
+-->
+
+    <table class="cal" summary="A calendar style date picker">
+        <caption>
+            <a href="#" rel="prev">&lt;</a> January 2008
+            <a href="#" rel="next">&gt;</a>
+        </caption>
+    </table>
+
+    <hr>
+
+    <!-- 3.col 和 colgroup
+7.1.2 数据表格标记
+7.1.3 表格对应样式
+    CSS 规范有两个表格边盒模型: 单独的和叠加的,
+        单独模型中: 在各个单元周围有边框,
+        叠加模型中:　单元格共享边框，　
+    大多数浏览器采用单独模型，　但叠加模型更有用
+-->
+    <style type="text/css">
+        table.cal {
+            border-collapse: seperate;
+            /*单元格之间行距;IE7+,so在table上加老式的 cellspacing=0 */
+            border-spacing: 0;
+            text-align: center;
+            color: #333;
+        }
+
+        .cal th,
+        .cal td {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* title style */
+
+        .cal caption {
+            font-size: 1.25em;
+            padding-top: 0.692em;
+            padding-bottom: 0.692em;
+            background-color: #d4dde6;
+        }
+
+        .cal caption [rel="prev"] {
+            float: left;
+            margin-left: 0.2em;
+        }
+
+        .cal caption [rel="next"] {
+            float: right;
+            padding-right: 0.2em;
+        }
+
+        .cal caption a:link,
+        .cal caption a:visited {
+            text-decoration: none;
+            color: #333;
+            padding: 0 0.2em;
+        }
+
+        .cal caption a:hover,
+        .cal caption a:active,
+        .cal caption a:focus {
+            background-color: #6d8ab7;
+        }
+
+        .cal thead th {
+            background-color: #d4dde6;
+            border-bottom: 1px solid #a9bacb;
+            font-size: 0.875em;
+        }
+
+        .cal tbody {
+            color: #a4a4a4;
+            text-shadow: 1px 1px 1px 1px white;
+            background-color: #d0d9e2;
+        }
+
+        .cal tbody td {
+            border-top: 1px solid #e0e0e1;
+            border-right: 1px solid #9f9fa1;
+            border-bottom: 1px solid #acacad;
+            border-left: 1px solid #dfdfe0;
+        }
+
+        .cal tbody a {
+            display: block;
+            text-decoration: none;
+            color: #333;
+            background-color: #c0c8d2;
+            font-weight: bold;
+            padding: 0.385em 0.692em 0.308em 0.692em;
+        }
+
+        .cal tbody a:hover,
+        .cal tbody a:focus,
+        .cal tbody a:active,
+        .cal tbody .selected a:link,
+        .cal tbody .selected a:visited,
+        .cal tbody .selected a:hover,
+        .cal tbody .selected a:focus,
+        .cal tbody .selected a:active {
+            background-color: #6d8ab7;
+            color: white;
+            text-shadow: 1px 1px 1px 2px #22456d;
+        }
+
+        .cal tbody td:hover,
+        .cal tbody td.selected {
+            border-top: 1px solid #2a3647;
+            border-right: 1px solid #465977;
+            border-bottom: 1px solid #576e92;
+            border-left: 1px solid #466080;
+        }
+    </style>
+    <table cellspacing="0" class="cal" summary="A caldendar style date picker">
+        <caption>
+            <a href="#" rel="prev">&lt;</a>January 2008
+            <a href="#" rel="next">&gt;</a>
+        </caption>
+        <colgroup>
+            <col id="sun" />
+            <col id="mon" />
+            <col id="tue" />
+            <col id="wed" />
+            <col id="thur" />
+            <col id="fri" />
+            <col id="sat" />
+        </colgroup>
+        <thead>
+            <tr>
+                <th scope="col">Sun</th>
+                <th scope="col">Mon</th>
+                <th scope="col">Tue</th>
+                <th scope="col">Wed</th>
+                <th scope="col">Tur</th>
+                <th scope="col">Fri</th>
+                <th scope="col">Sat</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="null">30</td>
+                <td class="null">31</td>
+                <td>
+                    <a href="#">1</a>
+                </td>
+                <td>
+                    <a href="#">2</a>
+                </td>
+                <td>
+                    <a href="#">3</a>
+                </td>
+                <td>
+                    <a href="#">4</a>
+                </td>
+                <td>
+                    <a href="#">5</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="#">6</a>
+                </td>
+                <td>
+                    <a href="#">7</a>
+                </td>
+                <td class="selected">
+                    <a href="#">8</a>
+                </td>
+                <td>
+                    <a href="#">9</a>
+                </td>
+                <td>
+                    <a href="#">10</a>
+                </td>
+                <td>
+                    <a href="#">11</a>
+                </td>
+                <td>
+                    <a href="#">12</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr> 7.2 简单的表单布局
+    <!--
+7.2 简单的表单布局
+表单元素: fieldset,
+        legend  浏览器之间有差异
+表单标签: label
+        属性:for :将标签和表单id关联起来.
+基本布局:
+
+7.2.3 其他元素
+-->
+    <style type="text/css">
+        fieldset {
+            margin: 1em 0;
+            padding: 1em;
+            border: 1px solid #ccc;
+            background: #f8f8f8;
+        }
+
+        legend {
+            font-weight: bold;
+        }
+
+        label {
+            /*
+        display: inline-block;
+        width: 150px;
+        */
+            float: left;
+            /* 将标签左浮动 */
+            width: 10em;
+            cursor: pointer;
+        }
+
+        /* 表单标签可能跨多行, 清理div容器 */
+
+        form div {
+            clear: left;
+        }
+
+        /*属性选择器在IE6之前是无效的*/
+
+        input[type=text] {
+            width: 20em;
+        }
+
+        textarea {
+            /*width: 100%;*/
+            width: 30em;
+            height: 10em;
+        }
+
+        /* IE6 将单选按钮的宽度设置为auto, 从而覆盖前面对输入元素的设置 */
+
+        input.radio,
+        input.checkbox,
+        input.submit {
+            width: auto;
+        }
+
+        /*加一点边距*/
+
+        #remember-yes,
+        #remember-no {
+            margin-right: 1em;
+        }
+
+        /* 7.2.4 修饰
+        在用户获得焦点时可以改变背景颜色
+        */
+
+        input[type="text"]:focus,
+        textarea:focus {
+            background: #ffc;
+        }
+
+        /*制定边框*/
+
+        input[type="text"],
+        textarea {
+            border-top: 2px solid #999;
+            border-left: 2px solid #999;
+            border-bottom: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+        }
+
+        /*必填域*/
+
+        .required {
+            font-size: 0.75em;
+            color: #760000;
+        }
+
+        /* 7.3.1 可访问的数据输入元素
+        lable标签隐藏  month, year; display:none;
+        会阻止许多屏幕阅读器访问它们
+        */
+
+        #monthOfBirthLabel,
+        #yearOfBirthLabel {
+            text-indent: -1000em;
+            width: 0;
+        }
+
+        /*设置各个, 用外边距控制它们的水平间距  */
+
+        input#dateOfBirth {
+            width: 3em;
+            margin-right: 0.5em;
+        }
+
+        select#monthOfBirth {
+            width: 10em;
+            margin-right: 0.5em;
+        }
+
+        input#yearOfBirth {
+            width: 5em;
+        }
+
+        /*
+    7.3.2 多列复选框
+    */
+
+        fieldset#favouriteColor {
+            margin: 0;
+            padding: 0;
+            border: none;
+            background: transparent;
+            /*透明背景*/
+        }
+
+        /* 字体设置为小字号 */
+
+        #favouriteColor h2 {
+            width: 10em;
+            float: left;
+            font-size: 1em;
+            font-weight: normal;
+            margin: 0;
+        }
+
+        /*创建两列的布局*/
+
+        #favouriteColor .col {
+            width: 8em;
+            float: left;
+            clear: none;
+            /* 覆盖被清理的声明 */
+        }
+
+        #favouriteColor label {
+            float: none;
+        }
+
+        /* 提交按钮
+        1.不要使用 a 来提交表单
+        问题: 无法只使用元素选择器选择它们,  可以使用属性选择器选择它们
+            IE老版本不支持这个属性, 所以只能用ID或类选择器直接选择它们
+            buttion元素会提供很强的灵活性
+            如果页面上有多个按钮, IE6会提交所有按钮内容
+        OS X等许多系统禁止修改 input 按钮样式, button元素不受这些限制
+        */
+
+        /* 关闭按钮的默认样式 */
+
+        button {
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+
+        button.two {
+            width: 200px;
+            height: 50px;
+            border: 1px solid #989898;
+            -moz-border-radius: 6px;
+            -webkit-border-radius: 6px;
+            border-radius: 6px;
+            background: url(images/040_02.jpg) #c5e063 bottom left repeat-x;
+            -moz-box-shadow: 2px 2px 2px #ccc;
+            -webkit-box-shadow: 2px 2px 2px #ccc;
+            box-shadow: 2px 2px 2px #ccc;
+            color: #fff;
+            font-size: 26px;
+            font-weight: bold;
+            text-shadow: 1px 1px 1px #666;
+        }
+
+        /*7.3.3 表单反馈
+        对反馈进行定位. 将表单的所有段落的position设置为relative, 从而建立一个新的定们上下文.
+        然后可以对反馈em进行绝对定位, 让它出现在文本输入元素的右边
+        */
+
+        form div {
+            position: relative;
+        }
+
+        form .feedback {
+            position: absolute;
+            left: 30em;
+            right: 0;
+            top: 0.5em;
+            /*IE6 更低的版本会将em宽度设置为最小宽度, 一种是条件注释*/
+            width: 25em;
+            /*把字体显示为红色的,并在消息的左边应用一个警告图像 */
+            font-weight: bold;
+            color: #760000;
+            padding-left: 18px;
+            background: url(images/040_02.jpg) no-repeat left top;
+        }
+    </style>
+    <form action="" method="post">
+        <fieldset>
+            <legend>You Contact Details</legend>
+            <div>
+                <label for="author">Name:
+                    <em class="required">(Required)</em>
+                </label>
+                <input name="author" id="author" type="text" />
+            </div>
+            <div>
+                <label for="email">Email Address:</label>
+                <em class="feedback">Incorrect email address. Please try again.</em>
+                <input type="text" name="email" id="email" />
+            </div>
+            <div>
+                <label for="url">Web Address:</label>
+                <input type="text" name="url" id="url" />
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>comments</legend>
+            <div>
+                <label for="text">Message:</label>
+                <textarea name="text" id="text"></textarea>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Remeber Me</legend>
+            <div>
+                <label for="remember-yes">
+                    <input id="remember-yes" name="remember" class="radio" value="yes" type="radio" />Yes
+                </label>
+            </div>
+            <div>
+                <label for="remember-no">
+                    <input id="remember-no" name="remember" class="radio" type="radio" value="no" />No
+                </label>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Personal Information</legend>
+            <div>
+                <label for="dateOfBirth">Date of Birth:</label>
+                <input name="dateOfBirth" id="dateOfBirth" type="text" value="24" />
+                <label id="monthOfBirthLabel" for="monthOfBirth">
+                    Month of Birth:</label>
+                <select name="monthOfBirth" id="monthOfBirth">
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                </select>
+                <label id="yearOfBirthLabel" for="yearOfBirth">Year of Birth:</label>
+                <input name="yearOfBirth" id="yearOfBirth" type="text" value="2014" />
+            </div>
+        </fieldset>
+
+        <fieldset id="favouriteColor">
+            <h2>Favorite Color:</h2>
+
+            <div class="col">
+                <div>
+                    <label>
+                        <input class="checkbox" id="red" name="red" type="checkbox" value="red">red</label>
+                </div>
+            </div>
+            <div class="col">
+                <div>
+                    <label>
+                        <input class="checkbox" id="blue" name="blue" type="checkbox" value="blue">blue</label>
+                </div>
+            </div>
+        </fieldset>
+
+        <!--提交按钮-->
+        <div>
+            <button type="submit">
+                <img src="images/040_02.jpg" alt="Book Now" width="200" height="50" />
+            </button>
+        </div>
+        <p>
+            <button type="submit" class="two">Book Now</button>
+        </p>
+    </form>
+
+
+
+</body>
+
+</html>

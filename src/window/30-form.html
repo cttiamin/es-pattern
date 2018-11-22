@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <title>Chapter 14,表单脚本</title>
+
+    <script type="text/javascript" src="lib/130_eventUtil.js"></script>
+    <script type="text/javascript" src="lib/090_client.js"></script>
+
+</head>
+<body>
+<!--
+Chapter 14,表单脚本 20140509， Friday
+14.1 表单的基础知识
+    表单是由form元素来表示的，而在JavaScript中表单对应的则是HTMLFormElement类型
+        HTMLFormElement 继承自 HTMLElement 属性和方法有：
+    acceptCharset: 服务器能够处理的字符集；等价于HTML中的accept-charset特性
+    action:接受请求的URL;等价于HTML中的action特性
+    elements:表单中所有控件的集合(HTMLCollection)
+    enctype:请求编码类型;等价于HTML中的enctype特性
+    length:表单中控件的数量
+    method:要发送HTTP请求类型, get/post
+    target : 用于发送请求和接收响应的窗口名称;等价于HTML的target特性
+
+    取得form元素引用方式有:
+        var form = document.getElementById("form1"); // form中的id是form1
+        或: 通过forms
+        var firstForm = document.forms[0];      // 取得页面中的第一个表单
+        var myForm = document.forms["form2"];   // 取得页面中名称为"form2"的表单
+
+14.1 表间的基础知识
+    14.1.1 提交表单
+        form.submit(): 提交表单
+    14.1.2 重置表单
+        form.reset(): 将所有表单域重置为默认值
+    14.1.3 表单字段
+        disabled: boolean, 表示当前字段是否被禁用.
+        form: 指向当前字段所属表单的指针, 只读
+        name: 当前字段的名称
+        readOnly : boolean,表示当前字段是否只读
+        tabIndex : 表示当前字段的切换(tab)序号
+        type: 当前字段的类型, 如"checkbox", "radio",等等
+        value: 当前字段将被提交给服务器的值,对文件字段来说,这个属性是只读
+            的,包含着文件在计算机中的路径
+        change: 对于input和textarea元素, 在它们失去焦点且value值改变时触发,
+            对于select元素, 在其选项改变时触发
+14.2 文本框脚本
+    14.2.1 选择文本
+        <\input>
+        size: 指定文本框中显示的字符数
+        maxlength: 指定文本框可以接受的最大符数
+                <\input type="text" size="25" MAXLENGTH="50"
+        select(): 选择文本框所有的文本
+        selectionStart: 保存基于0值, ie9+,
+        selectionEnd: ie9+
+        setSelectionRange();
+        createTextRange(): 创建一个范围
+        collapse() : 将范围折叠到文本框位置
+        moveStart() : 将范围的的起点和终点移动到相同的位置
+        moveEnd() : 传入要选择的字符总数
+        剪切板事件:
+            beforecopy:在发生复制操作前触发
+            copy:在发生复制操作时触发
+            beforecut:在发生剪切操作前触发
+            cut:在发生剪切操作时触发
+            beforepaste:在发生粘贴操作前触发
+            paste: 在发生粘贴操作时触发
+        clipboardData对象:
+            getData(text/url):从剪切片中取得数据,
+            setDate(text/url, 要放入剪切片的文本):
+            clearData()
+    14.2.2 过滤输入
+    14.2.3 自动切换焦点
+    14.2.4 自动切换焦点
+14.3 选择框脚本
+        Select.add(newOption, relOption): 向控件中插入新<option>元素
+        multipe: boolean, 表示是否允许多项选择
+        Select.option[]: 控件中所有<option>元素的HTMLCollection
+        Select.remove(index):移除给定位置选项
+        Select.selectedIndex: 基于0的选中项的索引,如果没有选中项,则值为-1
+        size: 选择框中可见的行数
+                第个<option>元素都有一个HTMLOptionElement对象表示,
+        Select.option[i].index: 当前在options集合中的索引.
+        label:当前选项的标签; 等价于HTML中的label特性
+        Select.option[i].selected:boolean, 表示当前选项是否被选中,
+                将这个属性设置为true 可以选中当前选项
+        Select.option[i].text: 选项的文本
+        Select.option[i].value: 选项的值(等价于HTML中的value特性)
+    14.3.1 选择选项
+    14.3.2 添加选项
+    14.3.3 移除选项
+    14.3.4 移动和重排选项
+14.4 表单序列化
+14.5 富文本编辑
+    14.5.1 使用content editable 属性
+    14.5.2 操作富文本
+    14.5.3 富文本选区
+    14.5.4 表单与富文本
+-->
+
+14.1.1 提交表单<br>
+<input type="submit" value="Submit Form"> 通过提交按钮<br>
+<button type="submit">Submit Form</button>
+自定义提交按钮 <br>
+
+<input type="image" width="120" height="50" src="images/banner001.jpg">
+图像按钮<br>
+
+
+解决重复提交表单:
+1.在第一提交后就禁提交按钮
+2.利用 onsubmit 事件处理程序取消后续的表单提交操作
+<script type="text/javascript">
+    //取消表单提交,
+        var myForm01 = document.getElementById("myForm");     //阻止表单提交
+        //EventUtil.addHandler(myForm01, "submit", function (event) {
+        //    event = EventUtil.getEvent(event);        //取得事件
+        //    EventUtil.preventDefault(event);        //阻止默认事件,
+        //});
+
+    //JS 提交表单, 表单可任何时提交
+    //    var form = document.getElementById("myForm");
+    //    form.submit();  
+    //submit()提交不会触发 submit 事件,单击submit按钮会触发submit事件
+</script>
+<hr>
+
+14.1.2 重置表单<br>
+通用: <input type="reset" value="Reset Form"><br>
+
+自定义:
+<button type="reset">Reset Form</button>
+<br>
+<script type="text/javascript">
+    /**
+     * form.reset()
+     */
+        //var form1 = document.getElementById("myForm");
+        //EventUtil.addHandler(form1, "reset", function (event) {
+        //    event = EventUtil.getEvent(event);  //取得事件对象
+        //    EventUtil.preventDefault(event);    //阻止表单重置
+        //});
+        //var form1 = document.getElementById("myForm");
+//form1.reset();       
+//与submit()不同, reset方法会像单击重置按钮一样触发reset事件
+</script>
+
+<hr>
+14.1.3 表单字段<br>
+
+<form method="post" id="myForm" action="javascript:console.log('Form submitted!');">
+    <ul>
+        <li><input type="radio" name="color" value="red">Red</li>
+        <li><input type="radio" name="color" value="green">Green</li>
+        <li><input type="radio" name="color" value="blue">Blue</li>
+        <li><input type="text" name="t1" value=""></li>
+    </ul>
+    <div>
+        <label for="comments">Type numbers:</label><br/>
+        <input type="text" id="txtNumbers" name="numbers"/>
+    </div>
+    <input type="submit" value="Submit Form" name="submit-btn">
+    <button type="button">Whatever</button>
+</form>
+
+<script type="text/javascript">
+    /**
+     * 14.1.3 表单字段
+     * elements[] : 包含表单中所有元素的数组, 有序列表
+     *  @param: numbers
+     *  @param: ["id"]
+     *  @param: name
+     * 
+     * <\input>,<\textarea>,<\button>,<\fieldset>
+     */
+    var form = document.getElementById("myForm");
+    //console.log(form.elements);
+
+    var field1 = form.elements[0];            //取得表单中的第一个字段
+    var field2 = form.elements["txtNumbers"]; 
+    //取得名为"textbox1"字段(id/name都可以)
+    var fieleCount = form.elements.length;    //取得表单中包含的字段数量
+
+    var colorFields = form.elements["color"];  //all radio
+    //    console.log(colorFields.length);     //3
+    var firstColorField = colorFields[0];      //red
+    var firstFormField = form.elements[0];     //the red element
+    //    console.log(firstColorField === firstFormField);   //true
+
+
+
+    /********************************************
+     * 1. 共有的表单字段属性
+     *  表间字段共有属性和方法 input类型
+     *      disabled: boolean, 表示当前字段是否被禁用.
+     *      form: 指向当前字段所属表单的指针, 只读
+     *      name: 当前字段的名称
+     *      readOnly : boolean,表示当前字段是否只读
+     *      tabIndex : 表示当前字段的切换(tab)序号
+     *      type: 当前字段的类型, 如"checkbox","radio",等等
+     *      value: 当前字段将被提交给服务器的值,对文件字段来说,
+     *          这个属性是只读的,包含着文件在计算机中的路径
+     */
+    var field = form.elements[0];      // red element
+    field.value = "Another value";     // 修改value值
+    //    console.log(field.form === form);   // true, 检查form属性的值
+    field.focus();                        // 把焦点设置到当前字段
+    field.disabled = true;  // 禁用当前字段
+    field.type = "checkbox"; // 修改type属性(不推荐,但对<input>来说是可行的)
+
+    /*******************************
+     * 避免多次提交表单
+     * 不能通过 onclick event 程序来实现这个功能:
+     *      原因是不同browser存在"时差"; 
+     *      有的browser触发表单的 submit event 之前触发 click event.
+     *      而有的则反,先触发 click 事件的browser,意味着会在提交发生之前禁用按钮,
+     *      结果永不提交最好是通过 submit事件 来禁用提交按钮
+     * input和button元素的type属性是可以动态修改的,而select元素的type属性是只读的
+     */
+    EventUtil.addHandler(form, "submit", function (event) { //禁用按钮
+        event = EventUtil.getEvent(event);
+        var target = EventUtil.getTarget(event);
+        var btn = target.elements["submit-btn"];    //提交按钮
+        btn.disabled = true;                        //禁用
+    });
+
+    /**
+     * 2.共有的表单字段方法
+     *  focus(): 将browser的焦点设置到表单字段,
+     *  blur(): 将焦点从调用这个方法的元素上移走而已
+     */
+    EventUtil.addHandler(window, "load", function (event) {
+        document.forms[0].elements[0].focus();
+    });
+    //    <input type="text" autofocus>     //html5 新属性
+
+    EventUtil.addHandler(window, "load", function () {
+        //是否用了autofoucus,如果没用则加上
+        var element = document.forms[0].elements[1];
+        // Green 元素
+        if (element.autofocus !== true) {
+            element.focus();
+        // console.log("JS focus");
+        }
+    });
+    //  document.forms[0].elements[0].blur(); //blur() 用法
+
+
+
+    /**********************************
+     * 3. 共有的表单字段事件
+     * blur: 当前字段失去焦点时触发
+     * change:对于input和textarea元素,在它们失去焦点且value值改变时触发,
+     *        对于select元素, 在其选项改变时触发
+     * focus: 当前字段获得焦点时触发.
+     * 在numbers 文本框里focus时背景为黄色, 输入值blur后背景为红色
+     */
+//    var textbox01 = document.forms[0].elements[0];
+    var textbox01 = document.forms[0].elements["numbers"];
+
+    EventUtil.addHandler(textbox01, "focus", function (event) {
+        event = EventUtil.getEvent(event);
+        var target = EventUtil.getTarget(event);
+        if (target.style.backgroundColor != "red") {
+            target.style.backgroundColor = "yellow";
+        }
+    });
+
+    EventUtil.addHandler(textbox01, "blur", function (event) {
+        event = EventUtil.getEvent(event);
+        var target = EventUtil.getTarget(event);
+        if (/[^\d]/.test(target.value)) {
+            // 如果事件的目标存在
+            target.style.backgroundColor = "red";
+        } else {
+            target.style.backgroundColor = "";
+        }
+    });
+
+    EventUtil.addHandler(textbox01, "change", function (event) {
+        event = EventUtil.getEvent(event);
+        var target = EventUtil.getTarget(event);
+        if (/[^\d]/.test(target.value) ) {
+            target.style.backgroundColor = "red";
+        } else {
+            target.style.backgroundColor = "";
+        }
+    });
+</script>
+
+
+
+<hr>
+14.2 文本框脚本<br>
+14.2.1 选择文本
+
+<form method="post" action="javascript:console.log('Form submitted!')" 
+    id="myForm2">
+    <div>
+        <label for="comments">Type something:</label>
+        
+        <br>
+        <textarea rows="10" cols="50" id="comments" name="comments">blah
+        </textarea>
+        
+        <br>
+        <input type="text" id="txtStuff" name="stuff" value="Default value">
+        
+        <br>
+        <button type="button" id="select-btn">#select-btn Select All</button>
+    </div>
+    <input type="submit" value="#submit-btn2 Submit Form" id="submit-btn2">
+</form>
+
+<script type="text/javascript">
+    /**
+     * 14.2 文本框脚本<\br>
+     *     <\input>
+     *      size: 指定文本框中显示的字符数
+     *      maxlength: 指定文本框可以接受的最大符数
+     *      <\input type="text" size="25" MAXLENGTH="50">
+     * 14.2.1 选择文本
+     *      select() : 选择文本框所有的文本.
+     */
+//var textbox = document.forms[1].elements["comments"];
+var textbox02 = document.forms[1].elements["comments"];
+    //表单中comments元素
+
+
+//全部选中文本框中的内容
+textbox02.addEventListener('focus', function(event){
+     var target = event.target;
+     target.select();
+}, false);
+
+
+    /**
+     * 1.选择(select)事件
+     *      select: 当全选文本框中内容触发此事件.
+     *  getSelectedText:
+     */
+
+//添加select事件
+textbox02.addEventListener('select', function(event){
+    console.log('Text selected: ' + textbox02.value);
+    console.log(getSelectedText(textbox02));
+}, false);
+
+
+    //Select All => 添加单击事件
+    EventUtil.addHandler(document.getElementById("select-btn"), 
+        "click", function (event) {
+        textbox02.select();
+        //调用select方法,全选文本框内容,触发select事件
+    });
+
+    /***********************************
+     * 2.取得选择的文本
+     *      selectionStart: 保存基于0值, ie9+
+     *      selectionEnd: ie9+,
+     */
+    function getSelectedText(textbox02) {
+        if (typeof textbox02.selectionStart == "number") { //是否支持此方法
+            return textbox02.value.substring(textbox02.selectionStart,
+                    textbox02.selectionEnd);
+        }
+        //ie8及更早版本不支持selectionStart,selectionEnd方法所以用以下方法
+        else if (document.selection) {
+            return document.selection.createRange().text;
+        }
+    }
+
+    /**
+     * 3.选择部分文本
+     *      setSelectionRange(第一个字符的索引, 最后一个字符索引) :
+     */
+        //textbox02.value = "Hello world!";
+        //textbox02.setSelectionRange(0, textbox02.value.length); //"Hello world"
+        //textbox02.setSelectionRange(0, 3);    //"Hello"
+        //textbox02.setSelectionRange(4, 7);    //"o w"
+        //textbox02.value = "blah";
+
+    /**
+     * IE8及更早版本的支持:
+     *      createTextRange(): 创建一个范围
+     *      collapse() : 将范围折叠到文本框位置
+     *      moveStart() :将范围的的起点和终点移动到相同的位置
+     *      moveEnd() : 传入要选择的字符总数
+     */
+    //    textbox.value = "Hello world!";
+    //    var range = textbox.createTextRange();
+    //    range.collapse(true);   //选择所有
+    //    range.moveStart("character", 0);
+    //    range.moveEnd("character", textbox.value.length);   //"Hello world!"
+    //    range.select();
+    //    range.collapse(true);   //选择 前3
+    //    range.moveStart("character", 0);
+    //    range.moveEnd("character", 3);
+    //    range.select();                    //"Hel"
+    //    range.collapse(true);   //选择 4 - 3
+    //    range.moveStart("character", 4);
+    //    range.moveEnd("character", 3);
+    //    range.select();                    //"Hel"
+
+    /**
+     * 选取部份文本 => 跨浏览器解决方案
+     */
+    function selectText(textbox, startIndex, stopIndex) {
+        if (textbox.setSelectionRange) {
+            textbox.setSelectionRange(startIndex, stopIndex);
+        } else if (textbox.createTextRange) {
+            var range = textbox.createTextRange();
+            range.collapse(true);
+            range.moveStart("character", startIndex);
+            range.moveEnd("character", stopIndex);
+            range.select();
+        }
+    }
+</script>
+<hr>
+14.2.2 过滤输入 <br>
+
+<form method="post" action="javascript:alert('Form submitted!')" id="myForm3">
+    <div>
+        <label for="txtPhone">Type a phone number:</label><br>
+        <input type="text" id="txtPhone" name="phone" value="">
+    </div>
+</form>
+<script type="text/javascript">
+    /**
+     * 14.2.2 过滤输入
+     *  1.屏蔽字符
+     *      keypress 事件: 响应文本框中插入字符操作
+     */
+    EventUtil.addHandler(textbox02, "keypress", function (event) {//屏蔽字符输入
+        event = EventUtil.getEvent(event);
+        EventUtil.preventDefault(event);
+    });
+
+    /*********只允许输入数字***********
+     * 在FireFox中,所有由非字符键触发的keypress事件对应的字符编码为0,
+     * Safari 3 以前版本中对应为 8. 只要不屏蔽那些字符编小于10的键即可
+     * 还要确定用户没有按下Ctrl键
+     */
+    var textbox03 = document.getElementById("txtPhone");
+    EventUtil.addHandler(textbox03, "keypress", function (event) {
+        //只允许输入数值
+        event = EventUtil.getEvent(event);
+        var target = EventUtil.getTarget(event);
+        var charCode = EventUtil.getCharCode(event);
+        if (!/\d/.test(String.fromCharCode(charCode))
+            && charCode > 9 && !event.ctrlKey) {
+            EventUtil.preventDefault(event);
+        }
+    });
+
+    /**
+     * 2.操作剪贴板
+     *      剪贴板事件
+     *          beforecopy:在发生复制操作前触发
+     *          copy:在发生复制操作时触发
+     *          beforecut:在发生剪切操作前触发
+     *          cut:在发生剪切操作时触发
+     *          beforepaste:在发生粘贴操作前触发
+     *          paste: 在发生粘贴操作时触发
+     *
+     *  clipboardData对象:
+     *      getData(text/url):从剪切片中取得数据,
+     *      setDate(text/url, 要放入剪切片的文本):
+     *      clearData()
+     */
+    EventUtil.addHandler(textbox03, "paste", function (event) {
+        event = EventUtil.getEvent(event);
+        var text = EventUtil.getClipboardText(event);
+        if (!/^\d*$/.test(text)) {  //if NaN
+            EventUtil.preventDefault(event);
+        }
+    });
+</script>
+
+
+<hr>
+14.2.3 自动切换焦点
+<br>
+<form method="post" action="http://www.nczonline.net">
+    <p>Enter your telephone number:</p>
+    <input type="text" name="tel1" id="txtTel1" size="3" maxlength="3">
+    <input type="text" name="tel2" id="txtTel2" size="3" maxlength="3">
+    <input type="text" name="tel3" id="txtTel3" size="4" maxlength="4">
+    <input type="submit" value="Submit">
+</form>
+<script type="text/javascript">
+    (function () {
+        function tabForward(event) {
+            event = EventUtil.getEvent(event);
+            var target = EventUtil.getTarget(event);
+            if (target.value.length == target.maxLength) {
+                var form = target.form;
+                for (var i = 0, len = form.elements.length; i < len; i++) {
+                    if (form.elements[i] == target) {
+                        if (form.elements[i + 1]) { //如果有下个元素
+                            form.elements[i + 1].focus(); //光标移到这里
+                        }
+                        return;
+                    }
+                }
+            }
+        }
+
+        var textbox1 = document.getElementById("txtTel1"),
+                textbox2 = document.getElementById("txtTel2"),
+                textbox3 = document.getElementById("txtTel3");
+        EventUtil.addHandler(textbox1, "keyup", tabForward);
+        EventUtil.addHandler(textbox2, "keyup", tabForward);
+        EventUtil.addHandler(textbox3, "keyup", tabForward);
+    })();
+</script>
+<hr>
+
+
+<!--
+14.2.4 HTML5约束验证API
+    1.必填字段 : required
+    <form><input type="text" name="username" required></form>
+    //检测某个表单字段是否为必填字段
+    var isUsernameRequired = document.forms[0].elements["username"].required;
+    //测试browser是否支持required
+    var isRequiredSupported = "required" in document.createElement("input");
+
+    2.其他输入类型
+    3.数值范围
+    4.输入模式
+    5.检测有效性
+    6.禁用验证 novalidate
+-->
+14.3 选择框脚本<br>
+14.3.1 选择选项<br>
+
+<form method="post" action="javascript:alert('Form submitted!')" id="myForm4">
+    <div>
+        <label for="selLocation">Where do you want to live?</label>
+        <select name="location" id="selLocation">
+            <option value="Sunnyvale, CA">Sunnyvale</option>
+            <option value="Los Angeles, CA">Los Angeles</option>
+            <option value="Mountain View, CA">Mountain View</option>
+            <option value="">China</option>
+            <option>Australia</option>
+        </select>
+    </div>
+    <div>
+        <input type="button" value="Select first option" id="btnFirst"/>
+        <input type="button" value="Select second option" id="btnSecond"/>
+        <input type="button" value="Get selected option" id="btnSelected"/>
+    </div>
+</form>
+<script type="text/javascript">
+    /**
+     * 14.3 选择框脚本
+     * Select. add(newOption, relOption): 向控件中插入新<\option>元素, 其位置在相关项(relOption)
+     * multipe:boolean,表示是否允许多项选择
+     * Select.selectedIndex: 基于0的选中项的索引,如果没有选中项则值为-1
+     * Select.option[]:控件中所有<\option>元素的HTMLCollection
+     * Select.remove(index):移除给定位置选项
+     * size:选择框中可见的行数
+     * Select.options[i].index: 当前在options集合中的索引.
+     * label:当前选项的标签; 等价于HTML中的label特性
+     * Select.options[i].selected, boolean, 表示当前选项是否被选中,将这个属性设置为true
+     *可以选中当前选项
+     * Select.options[i].text: 选项的文本
+     * Select.options[i].value: 选项的值(等价于HTML中的value特性)
+     *
+     * 14.3.1 选择选项
+     */
+    var btn1 = document.getElementById("btnFirst"),
+            btn2 = document.getElementById("btnSecond"),
+            btn3 = document.getElementById("btnSelected"),  //获取当前选中按钮
+            selectbox = document.getElementById("selLocation"); //select Id
+
+    EventUtil.addHandler(btn1, "click", function (event) {//控制表单选择第1项
+        selectbox.selectedIndex = 0;
+    });
+    EventUtil.addHandler(btn2, "click", function (event) {//控制表单选择第2项
+        selectbox.selectedIndex = 1;
+    });
+    //输出当前option中的索引,文本,值
+    EventUtil.addHandler(btn3, "click", function (event) {
+        var selIndex = selectbox.selectedIndex;
+        var selOption = selectbox.options[selIndex];
+        console.log("Selected index: " + selectbox.selectedIndex
+                + "\nSelected text: " + selOption.text + "\nSelected value: "
+                + selOption.value);
+    });
+
+    /**
+     * 多选列表：
+     * 使用遍历(for)的方法,输出当前选中选项的信息遍历选项集合,
+     * 测试每个选项selected属性,
+     * 如果有选项被选中,把这个option元素添加到result 数组
+     */
+    function getSelectedOptions(selectbox) {
+        var result = new Array();
+        var option = null;
+        for (var i = 0, len = selectbox.options.length; i < len; i++) {
+            option = selectbox.options[i];
+            if (option.selected) {
+                result.push(option);
+            }
+        }
+        return result;
+    }
+    EventUtil.addHandler(btn3, "click", function (event) {
+        var selectedOptions = getSelectedOptions(selectbox);
+        var message = "";
+        for (var i = 0, len = selectedOptions.length; i < len; i++) {
+            message += "Selected index: " + selectedOptions[i].index
+                    + "\nSelected text: " + selectedOptions[i].text
+                    + "\nSelected value: " + selectedOptions[i].value + "\n\n";
+        }
+        console.log(message);
+    });
+</script>
+
+
+<hr>
+14.3.2 添加选项<br>
+
+<form method="post" action="javascript:alert('Form submitted!')" id="myForm5">
+    <div>
+        <label for="selLocation">Where do you want to live?(按Ctrl 多选)</label>
+        <select name="location" id="selLocation5" size="5" multiple>
+            <option value="Sunnyvale, CA">Sunnyvale</option>
+            <option value="Los Angeles, CA">Los Angeles</option>
+            <option value="Mountain View, CA">Mountain View</option>
+            <option value="">China</option>
+            <option>Australia</option>
+        </select>
+    </div>
+    <fieldset>
+        <legend>Add a location</legend>
+        <label for="txtText">What should the text be?</label>
+        <input type="text" id="txtText" value=""><br>
+        <label for="txtValue">What should the value be?</label>
+        <input type="text" id="txtValue" value=""><br>
+        <input type="button" value="Add using DOM" id="btnAdd1">
+        <input type="button" value="Add using Option" id="btnAdd2">
+    </fieldset>
+    <fieldset>
+        <legend>Remove a location</legend>
+        <input type="button" value="Remove using DOM" id="btnRemove1">
+        <input type="button" value="Remove using remove()" id="btnRemove2">
+        <input type="button" value="Remove using null" id="btnRemove3">
+        <input type="button" value="Remove using all" id="btnRemove4">
+    </fieldset>
+</form>
+<script type="text/javascript">
+    /***********************
+     * 动态添加, 移除option标签
+     */
+    (function () {
+        var btn_add1 = document.getElementById("btnAdd1");//Add using DOM
+        var btn2 = document.getElementById("btnAdd2");//Add using Option
+        var btn4 = document.getElementById("btnRemove1");//Remove using DOM
+        var btn5 = document.getElementById("btnRemove2");//Remove using remove()
+        var btn6 = document.getElementById("btnRemove3");//Remove using null
+        var btn7 = document.getElementById("btnRemove4");//Remove using all
+        
+        /**
+         * 添加option标签到选项框
+         * 第1种:使用DOM创建后添加
+         */
+        EventUtil.addHandler(btn_add1, "click", function (event) {
+            var selectbox = document.getElementById("selLocation5");
+            var textTextbox = document.getElementById("txtText");
+            var valueTextbox = document.getElementById("txtValue");
+            var newOption = document.createElement("option");
+            newOption.appendChild(document.createTextNode(textTextbox.value));
+            //创建文本节点
+            newOption.setAttribute("value", valueTextbox.value);
+            //添加value属性和值
+            selectbox.appendChild(newOption);
+            //将元素添加到select元素下
+        });
+
+        /**
+         * 第2种:使用Option构造函数来创建新选项
+         *      new Option(textTextbox.value, valueTextbox.value): 创建option标签
+         *      Select.add(); 添加一个option标签
+         */
+        EventUtil.addHandler(btn2, "click", function (event) {
+            var selectbox = document.getElementById("selLocation5");
+            var textTextbox = document.getElementById("txtText");
+            var valueTextbox = document.getElementById("txtValue");
+            var newOption = new Option(textTextbox.value, valueTextbox.value);
+            //selectbox.appendChild(newOption);//在IE8及之前版本中有问题
+            selectbox.add(newOption, undefined);//第3种:使用选择框的add()方法
+        });
+
+        /**
+         * 14.3.3 移除选项
+         * 第1种:DOM的removeChild()方法
+         */
+        EventUtil.addHandler(btn4, "click", function (event) {
+            var selectbox = document.getElementById("selLocation5");
+            for (var i = 0; i < selectbox.options.length; i++) {
+                var option = selectbox.options[i];
+                if (option.selected) selectbox.removeChild(option);
+            }
+//            selectbox.removeChild(selectbox.options[0]);
+        });
+        
+        //第2种: Select.remove()方法
+        EventUtil.addHandler(btn5, "click", function (event) {
+            var selectbox = document.getElementById("selLocation5");
+            selectbox.remove(0);
+        });
+        //第3种:将相当的先项设置为null,
+        EventUtil.addHandler(btn6, "click", function (event) {
+            var selectbox = document.getElementById("selLocation5");
+            selectbox.options[0] = null;
+        });
+       
+        // 移除所有
+        EventUtil.addHandler(btn7, "click", function (event) {
+            var selectbox = document.getElementById("selLocation5");
+            for (var i = 0, len = selectbox.options.length; i < len; i++) {
+                selectbox.remove(i);
+            }
+        });
+    })();
+</script>
+<hr>
+14.3.4 移动和重排选项<br>
+
+<form>
+    <select id="selLocations1" size="5">
+        <option value="Sunnyvale, CA">Sunnyvale</option>
+        <option value="Los Angeles, CA">Los Angeles</option>
+        <option value="Mountain View, CA">Mountain View</option>
+        <option value="">China</option>
+        <option>Australia</option>
+    </select>
+    <select id="selLocations2" size="5"></select>
+
+    <p>Click the "Move" button to move the item with this position to the second list:<br>
+        <input type="text" id="txtIndex" value="0"><br>
+        <input type="button" value="Move" id="btnMove">
+        <input type="button" value="Shift Up" id="btnUp">
+        <input type="button" value="Shift Down" id="btnDown">
+    </p>
+</form>
+
+<script type="text/javascript">
+    /**
+     * 14.3.4 移动和重排选项
+     */
+    var btn = document.getElementById("btnMove");
+    EventUtil.addHandler(btn, "click", function (event) {
+        var selectbox1 = document.getElementById("selLocations1"),
+                selectbox2 = document.getElementById("selLocations2"),
+                textbox = document.getElementById("txtIndex");
+        selectbox2.appendChild(selectbox1.options[parseInt(textbox.value, 10)]);
+        // Conver 10进制
+    });
+
+    /**
+     * 重排选项次序的过程也十分类似,最好使用DOM方法
+     */
+    var btnUp = document.getElementById("btnUp");
+    var btnDown = document.getElementById("btnDown");
+    /**
+     * 要在选择框中 指定移动的索引 向上移动一个位置
+     */
+    EventUtil.addHandler(btnUp, "click", function (event) {
+        var selectbox = document.getElementById("selLocations1");
+        var textbox = document.getElementById("txtIndex");
+        //获取指定的option元素
+        var optionToMove = selectbox.options[parseInt(textbox.value, 10)];
+        if (optionToMove.index > 0) {//如果不是第一个
+            //将option插入前一位
+            selectbox.insertBefore(optionToMove, selectbox.options[optionToMove.index - 1]);
+        }
+    });
+    //指定移动索引,向下移动一个位置
+    EventUtil.addHandler(btnDown, "click", function (event) {
+        var selectbox = document.getElementById("selLocations1");
+        var textbox = document.getElementById("txtIndex");
+        var optionToMove = selectbox.options[parseInt(textbox.value, 10)];
+        selectbox.insertBefore(optionToMove, selectbox.options[optionToMove.index + 2]);
+    });
+</script>
+<hr>
+14.4 表单序列化 <br>
+
+<form method="post" action="javascript:alert('Form submitted!')" id="myForm6">
+    <ul>
+        <li><input type="radio" name="color" value="red">Red</li>
+        <li><input type="radio" name="color" value="green">Green</li>
+        <li><input type="radio" name="color" value="blue">Blue</li>
+    </ul>
+    <fieldset>
+        <legend>Locations</legend>
+        <div>
+            <label for="selLocation6">Where do you want to live?</label>
+            <select name="selLocation6" id="selLocation6">
+                <option value="Sunnyvale, CA">Sunnyvale</option>
+                <option value="Los Angeles, CA">Los Angeles</option>
+                <option value="Mountain View, CA">Mountain View</option>
+                <option value="">China</option>
+                <option>Australia</option>
+            </select>
+        </div>
+        <div>
+            <label for="selLocation7">Where do you want to work?</label>
+            <select name="selLocation7" id="selLocation7" multiple size="5">
+                <option value="Sunnyvale, CA">Sunnyvale</option>
+                <option value="Los Angeles, CA">Los Angeles</option>
+                <option value="Mountain View, CA">Mountain View</option>
+                <option value="">China</option>
+                <option>Australia</option>
+            </select>
+        </div>
+    </fieldset>
+    <div>
+        <label for="comments">Any other comments?</label><br>
+        <textarea rows="10" cols="50" id="comments6" name="comments"></textarea>
+    </div>
+    <input type="button" value="Serialize Form" id="serialize-btn">
+</form>
+<script src="lib/14.4.serialize.js"></script>
+<script type="text/javascript">
+
+    var btn = document.getElementById("serialize-btn");
+    EventUtil.addHandler(btn, "click", function (event) {
+        var form = document.forms["myForm6"];
+        console.log(serialize(form));
+    });
+
+</script>
+<hr>
+<!--
+14.5 富文本编辑
+    WYSIWYG(What You See Is What You Get, 所见即所得)
+    designMode: off/on
+<iframe name="richedit" style="height: 100px;width: 100px;" src="images/140_blank.html">
+</iframe>
+<script type="text/javascript">
+
+    EventUtil.addHandler(window, "load", function(){
+        frames["richeidt"].document.designMode = "on";
+    });
+</script>
+-->
+<!--
+14.5.1 使用contenteditable 属性
+<div class="editable" id="richedit" contenteditable></div>
+<script type="text/javascript">
+    var div = document.getElementById("richedit");
+    richedit.contentEditable = "true";  // true:开, false:闭, inherit:继承
+</script>
+-->
+
+14.5.2 操作富文本
+document.execCommand():
+
+<form method="post" action="javascript:alert('Form submitted!')">
+    <div id="divSimple">
+        <input type="button" value="Bold">
+        <input type="button" value="Italic">
+        <input type="button" value="Underline">
+        <input type="button" value="Indent">
+        <input type="button" value="Outdent">
+        <input type="button" value="Copy">
+        <input type="button" value="Cut">
+        <input type="button" value="Paste">
+    </div>
+    <div id="divComplex">
+        <input type="button" value="Create Link" id="btnCreateLink">
+        <input type="button" value="Change Font Size" id="btnChangeFontSize">
+        <input type="button" value="Highlight Text" id="btnHighlight">
+        <input type="button" value="Get HTML" id="btnGetHtml">
+        <input type="button" value="Get Selected Text" id="btnGetSelected">
+    </div>
+    <div id="divQuery">Is the current selection:
+        <input type="button" value="Bold">
+        <input type="button" value="Italic">
+        <input type="button" value="Underline">
+    </div>
+    <iframe name="richedit" style="height: 100px; width: 300px"
+            src="images/140_blank.htm"></iframe>
+    <input type="hidden" name="comments" value="">
+    <input type="submit" value="Submit Form">
+</form>
+<script type="text/javascript">
+    (function () {
+
+        EventUtil.addHandler(window, "load", function () {
+            frames["richedit"].document.designMode = "on";
+        });
+
+        var simple = document.getElementById("divSimple");
+        var complex = document.getElementById("divComplex");
+        var queryDiv = document.getElementById("divQuery");
+
+        EventUtil.addHandler(document.forms[0], "submit", function () {
+            event = EventUtil.getEvent(event);
+            var target = EventUtil.getTarget(event);
+
+            target.elements["comments"].value = frames["richedit"].document.body.innerHTML;
+        });
+
+        EventUtil.addHandler(simple, "click", function (event) {
+            event = EventUtil.getEvent(event);
+            var target = EventUtil.getTarget(event);
+
+            if (target.type == "button") {
+                frames["richedit"].document.execCommand(target.value.toLowerCase(),
+                        false, null);
+            }
+
+        });
+
+        EventUtil.addHandler(complex, "click", function (event) {
+            event = EventUtil.getEvent(event);
+            var target = EventUtil.getTarget(event);
+
+            switch (target.id) {
+                case "btnGetHtml":
+                    alert(frames["richedit"].document.body.innerHTML);
+                    break;
+                case "btnCreateLink":
+                    var link = prompt("What link?", "http://www.wrox.com");
+                    if (link) {
+                        frames["richedit"].document.execCommand("createlink", false, link);
+                    }
+                    break;
+                case "btnChangeFontSize":
+                    var size = prompt("What size? (1-7)", "7");
+                    if (size) {
+                        frames["richedit"].document.execCommand("fontsize", false,
+                                parseInt(size, 10));
+                    }
+                    break;
+                case "btnGetSelected":
+                    if (frames["richedit"].getSelection) {
+                        alert(frames["richedit"].getSelection().toString());
+                    } else if (frames["richedit"].document.selection) {
+                        alert(frames["richedit"].document.selection.createRange().text);
+                    }
+                    break;
+                case "btnHighlight":
+                    if (frames["richedit"].getSelection) {
+                        var selection = frames["richedit"].getSelection();
+
+                        //get the range representing the selection
+                        var range = selection.getRangeAt(0);
+
+                        //highlight the selected text
+                        var span = frames["richedit"].document.createElement("span");
+                        span.style.backgroundColor = "yellow";
+                        range.surroundContents(span);
+
+                    } else if (frames["richedit"].document.selection) {
+                        var range = frames["richedit"].document.selection.createRange();
+                        range.pasteHTML("<span style=\"background-color:yellow\">"
+                                + range.htmlText + "</span>");
+                    }
+                    break;
+            }
+
+        });
+
+        EventUtil.addHandler(queryDiv, "click", function (event) {
+            event = EventUtil.getEvent(event);
+            var target = EventUtil.getTarget(event);
+
+            if (target.type == "button") {
+                console.log(frames["richedit"].document
+                    .queryCommandState(target.value.toLowerCase(),false, null) );
+            }
+        });
+    })();
+</script>
+
+<!--
+14.5.3 富文本选区
+
+-->
+
+
+
+</body>
+</html>

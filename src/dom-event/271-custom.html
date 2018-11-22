@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<script type="text/javascript" src="../assets/js/event-util.js"></script>
+<script type="text/javascript" src="../assets/js/event-target.js"></script>
+
+<body>
+
+  <div id="myDiv" style="position:absolute;width:100px;height:100px;left:0px;
+    top:120px;background:beige;">mydiv</div>
+
+  <div id="myDiv1" class="draggable" style="position:absolute;width:100px;height:100px;left:0px;top:10px;
+         background:red;">mydiv1</div>
+
+  <div id="myDiv2" class="draggable" style="position:absolute;width:100px;height:100px;right:0px;top:10px;
+         background:cadetblue;">mydiv2</div>
+
+
+  <div style="background: aliceblue; text-align: center;visibility: hidden;
+    margin-top: 200px;" id="message">Message
+  </div>
+
+  <div id="status"></div>
+
+  <script>
+    // import './assets/js/event-util'
+    // import '../assets/js/event-target'
+
+    // 自定义事件
+    function handleMessage(event) {
+      console.log('Message received: ' + event.message)
+    }
+    var target = new EventTarget()
+    // 创建一个新对象
+    target.addHandler('message', handleMessage)
+    //添加一个事件处理程序
+    target.fire({ type: 'message', message: 'Hello world!' })
+    //触发事件
+    target.removeHandler('message', handleMessage)
+    //删除事件处理程序
+    target.fire({ type: 'message', message: 'Hello world!' })
+    //再次,应没有处理程序
+    console.log(EventTarget.addHandler)
+
+
+    //  Person类型使用了寄生组合继承(参见6章)方法来继承 EventTarget. 
+    //  一旦调用了 say 方法, 便触发了事件, 它包含了消息的细节.
+    function object(o) {
+      function F() {
+      }
+
+      F.prototype = o;
+      return new F();
+    }
+    function inheritPrototype(subType, superType) {//把superType拷贝一份
+      var prototype = object(superType.prototype);   //create object
+      prototype.constructor = subType;               //augment object
+      subType.prototype = prototype;                 //assign object
+    }
+    function Person(name, age) {
+      EventTarget.call(this);
+      this.name = name;
+      this.age = age;
+    }
+    inheritPrototype(Person, EventTarget);//寄生式继承
+    Person.prototype.say = function (message) {
+      this.fire({ type: "message", message: message });
+    };
+    function handleMessage(event) {
+      console.log(event.target.name + " says: " + event.message);
+    }
+    var person = new Person("Nicholas", 29);
+    //创建新person
+    person.addHandler("message", handleMessage);
+    //添加一个事件处理程序
+    person.say("Hi there.");
+    //在该对象上调用1个方法,它触发消息事件
+
+
+    /*******************************************************
+             * 22.5 拖放
+             *  创建一个绝对定位元素,使其可以用鼠标移动,
+             *  这个技术源自一种叫做"鼠标拖尾"的经典网页技巧
+             *  一个元素跟随指针在页面上移动.
+             */
+
+    // EventUtil.addHandler(document, "mousemove", function (event) {
+    //    var myDiv = document.getElementById("myDiv");
+    //    myDiv.style.left = event.clientX + "px";
+    //    myDiv.style.top = event.clientY + "px";
+    // });
+
+    /**
+     * 只要正确的时刻(当鼠标按钮按下的时候)实现该功能,并在之后删除它()
+     */
+    var DragDrop = function () {
+      var dragging = null;
+
+      function handleEvent(event) {
+        event = EventUtil.getEvent(event); //get event and target
+        var target = EventUtil.getTarget(event);
+        switch (event.type) { //determine the type of event
+          case "mousedown":
+            //检测class类是否包含draggable
+            if (target.className.indexOf("draggable") > -1) {
+              dragging = target;
+            }
+            break;
+          case "mousemove":
+            if (dragging !== null) {
+              //assign location
+              dragging.style.left = event.clientX + "px";
+              dragging.style.top = event.clientY + "px";
+            }
+            break;
+          case "mouseup":
+            dragging = null;
+            break;
+        }
+      };
+      return {//public interface
+        enable: function () {
+          EventUtil.addHandler(document, "mousedown", handleEvent);
+          EventUtil.addHandler(document, "mousemove", handleEvent);
+          EventUtil.addHandler(document, "mouseup", handleEvent);
+        },
+        disable: function () {
+          EventUtil.removeHandler(document, "mousedown", handleEvent);
+          EventUtil.removeHandler(document, "mousemove", handleEvent);
+          EventUtil.removeHandler(document, "mouseup", handleEvent);
+        }
+      }
+    }();
+    DragDrop.enable();
+
+
+
+    /***********************************************************
+     * 22.5.1 修缮拖动功能
+     *  问题: 元素的左上角总是和指针在一起,
+     */
+    var DragDrop = function () {
+      var dragging = null,
+        diffX = 0,
+        diffY = 0;
+
+      function handleEvent(event) {
+        event = EventUtil.getEvent(event);//get event and target
+        var target = EventUtil.getTarget(event);
+        switch (event.type) {
+          //determine the type of event
+          case "mousedown":
+            //检测class类是否包含draggable
+            if (target.className.indexOf("draggable") > -1) {
+              dragging = target;
+              diffX = event.clientX - target.offsetLeft;
+              diffY = event.clientY - target.offsetTop;
+              console.log(event.clientX);
+              console.log(target.offsetLeft);
+            }
+            break;
+          case "mousemove":
+            if (dragging !== null) {
+
+              dragging.style.left = (event.clientX - diffX) + "px";
+              dragging.style.top = (event.clientY - diffY) + "px";
+            }
+            break;
+          case "mouseup":
+            dragging = null;
+            break;
+        }
+      };
+
+      return {//public interface
+        enable: function () {
+          EventUtil.addHandler(document, "mousedown", handleEvent);
+          EventUtil.addHandler(document, "mousemove", handleEvent);
+          EventUtil.addHandler(document, "mouseup", handleEvent);
+        },
+        disable: function () {
+          EventUtil.removeHandler(document, "mousedown", handleEvent);
+          EventUtil.removeHandler(document, "mousemove", handleEvent);
+          EventUtil.removeHandler(document, "mouseup", handleEvent);
+        }
+      }
+    }();
+    DragDrop.enable();
+
+    /***************************************************
+     *  这些模块模式中的细小更改令 DragDrop 对象支持事件
+     *      dragstarg :
+     *      drag :
+     *      dragend :
+     */
+    var DragDrop = function () {
+
+      var dragdrop = new EventTarget(),//创建对象
+        dragging = null,
+        diffX = 0,
+        diffY = 0;
+
+      function handleEvent(event) {
+
+        //get event and target
+        event = EventUtil.getEvent(event);
+        var target = EventUtil.getTarget(event);
+
+        //determine the type of event
+        switch (event.type) {
+          case "mousedown":
+            if (target.className.indexOf("draggable") > -1) {
+              dragging = target;
+              diffX = event.clientX - target.offsetLeft;
+              diffY = event.clientY - target.offsetTop;
+
+              dragdrop.fire({
+                type: "dragstart", target: dragging, x: event.clientX,
+                y: event.clientY
+              });
+            }
+            break;
+
+          case "mousemove":
+            if (dragging !== null) {
+
+              //assign location
+              dragging.style.left = (event.clientX - diffX) + "px";
+              dragging.style.top = (event.clientY - diffY) + "px";
+
+              //fire custom event, 触发自定义事件
+              dragdrop.fire({
+                type: "drag", target: dragging, x: event.clientX,
+                y: event.clientY
+              });
+            }
+            break;
+
+          case "mouseup":
+            dragdrop.fire({
+              type: "dragend", target: dragging, x: event.clientX,
+              y: event.clientY
+            });
+            dragging = null;
+            break;
+        }
+      };
+
+      //public interface, 公共接口
+      dragdrop.enable = function () {
+        EventUtil.addHandler(document, "mousedown", handleEvent);
+        EventUtil.addHandler(document, "mousemove", handleEvent);
+        EventUtil.addHandler(document, "mouseup", handleEvent);
+      };
+
+      dragdrop.disable = function () {
+        EventUtil.removeHandler(document, "mousedown", handleEvent);
+        EventUtil.removeHandler(document, "mousemove", handleEvent);
+        EventUtil.removeHandler(document, "mouseup", handleEvent);
+      };
+      return dragdrop;
+    }();
+    DragDrop.enable();
+
+    DragDrop.addHandler("dragstart", function (event) {
+      var status = document.getElementById("status");
+      status.innerHTML = "Started dragging " + event.target.id;
+    });
+
+    DragDrop.addHandler("drag", function (event) {
+      var status = document.getElementById("status");
+      status.innerHTML += "<br>Dragged " + event.target.id + " to (" + event.x
+        + "," + event.y + ")";
+    });
+
+    DragDrop.addHandler("dragend", function (event) {
+      var status = document.getElementById("status");
+      status.innerHTML += "<br>Dropped " + event.target.id + " at (" + event.x
+        + "," + event.y + ")";
+    });
+
+
+
+  </script>
+</body>
+
+</html>

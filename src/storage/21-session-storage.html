@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    /**
+    * Web Storage 两个主要目标:
+    *  1.提供一种在cookie之外存储会话数据的途径
+    *  2.提供一种存储大量可以跨会话存在的数据
+    *  1.Storage 类型
+    *      setItem(name, value):指定的name设置一个对应的值
+    *      getItem(name):根据指定的名字name获取对应的值
+    *      key(index):获得index位置处的值的名字
+    *      removeItem(name):删除由name指定的名值对
+    *      clear():删除所有值;FireFox中没有实现
+    *  2.sessionStorage 对象
+    *      sessionStorage 存储数据的脚本所在的最顶层窗口或者是浏览器标签是一样的. 一旦标签页或窗
+    *      口被永久关闭了,所有的 sessionStorage 存储的数据也被删除
+    *      sessionStorage.begin():
+    *      sessionStorage.commit();
+    */
+
+    function saveStorage(id) {
+      var target = document.getElementById(id);
+      var str = target.value;
+      sessionStorage.setItem("message", str);
+      // sessionStorage.key = "message";
+      // another write way
+    }
+
+    function loadStorage(id) {
+      var target = document.getElementById(id);
+      var msg = sessionStorage.getItem("message");
+      target.innerHTML = msg;
+    }
+
+    for (var i = 0, len = sessionStorage.length; i < len; i++) {
+      var key = sessionStorage.key(i);
+      var value = sessionStorage.getItem(key);
+      console.log(key + "=" + value);
+    }
+
+    for (var key in sessionStorage) {
+      var value = sessionStorage.getItem(key);
+      console.log(key + "=" + value);
+    }
+
+    delete sessionStorage.name;//删除一个在WebKit中无效
+    // sessionStorage.removeItem("book");//使用方法删除
+
+    /**
+ * 5.storage 事件
+ *  onstorage:
+ * 事件的属性:
+ *      domain:发生变化的存储空间域名
+ *      key:设置或者删除的键名
+ *      newValue:如果是设置值,则是新值,如果是删除键,则是null
+ *      oldValue:键被更改之前的值
+ *      storageArea:
+ *      url:触发该存储变化脚本所在文本档的URL
+ */
+//    EventUtil.addHandler(document, "storage", function(event){
+//        console.log("Storage changed for " + event.domain);
+//    });
+
+
+  </script>
+  <p id="msg"></p>
+  <input type="text" id="input">
+  <input type="button" value="save data" onclick="saveStorage('input');">
+  <input type="button" value="read data" onclick="loadStorage('msg');">
+
+</body>
+
+</html>

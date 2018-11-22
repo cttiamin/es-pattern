@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <title>touch-event</title>
+  <script type="text/javascript" src="../assets/js/event-util.js"></script>
+  <!-- <script type="text/javascript" src="../assets/js/when-ready.js"></script> -->
+  <script>
+      // orientationchange 事件
+      //   苹果公司添加, 移动Safari的, 屏幕旋转事件, 只有苹果支持
+      // window.orientationchange:
+      //    0:肖像模式
+      //    90:左旋转的横向模式
+      //    -90:右旋转的横向模式
+
+      // MozOrientation 事件
+      //  FireFox 3.6 为检测设备的方向引入一个名为MozOrientation.新事件,
+      //  前缀"Moz"表示这是特定于浏览器开发商的事件, 不是标准事件, x, y, z
+      //  静止状态下: x:0, y:0, z:1 表示设备处于竖直状态
+      //  只有带加速计的设备才支持:Macbook,lenovo,Thinkpad,Windows(实验性的API,可能会被取代)
+
+      // deviceorientation 事件
+      //  静止状态下: x:0, y:0, z:0
+      //  x轴: 是从左往右, y轴: 是从下往上, z轴: 从后往前
+      //  事件对象包含以下5个属性:
+      //   alpha: 在围绕z轴旋转时(即左右旋转时),y轴的度数差; 是一个介于0到360之间的浮点数
+      //   beta:在围绕x轴旋转时(即前后旋转时),x轴的度数差;是一个介于 -180 到 180 之间的浮点数
+      //   gamma:在围绕y轴旋转时(即扭转设备时),yz的度数差;是一个介于 -90 到 90 之间的浮点数
+      //   absolute:布尔值, 在设备上是否返回一个绝对值
+      //   compassCalibrated: boolean, 表示设备的指南针是否校准过
+      //   输出alpha, beta, gamma:
+
+      // devicemotion 事件
+      //  acceleration:
+      //  accelerationIncludeingGravity:
+      //  interval:
+      //  rotationRate: 一个包含表示方向的 alpha, beta, a
+
+      // 触摸事件
+      //  touchstart:指触摸屏幕时触发
+      //  touchmove: 屏幕上滑动时连续地触发, preventDefault可阻止
+      //  touchend: 当手指从屏幕上移开时触发
+      //  touchcancel : 当系统停止跟踪触摸时触发 用于跟踪触摸的属性
+      //  touches: 当前跟踪的触摸操作的Touch对象数组
+      //  targetTouchs: 特定于事件目标的Touch对象的数组
+      //  changeTouches: 自上次触摸以来发生了什么改变的Touch对象数组
+      //  每个对象包含下属性:
+      //    clientX:触摸目标在视口中的x坐标
+      //    clientY;
+      //    identifier: 标识触摸的唯一ID
+      //    pageX:触摸目标在页面中的x坐标
+      //    pageY
+      //    screenX: 触摸目标在屏幕中的x坐标
+      //    screenY :
+      //    target: 触摸的DOM节点目标
+
+      // 手势事件  IOS2.0
+      //  gesturestart: 当一个手指已经按在屏幕上而另一个手指又触摸屏幕时触发
+      //  gesturechange: 当触摸屏幕的任何一个手指的位置发生变化时触发
+      //  gestureend: 当任何一个手指从屏幕上面移开时触发
+
+  </script>
+</head>
+
+<body>
+
+
+  <hr> orientationchange 事件
+  <div id="myDiv3"></div>
+  <div>This will only work on Safari on the iPhone or iPod Touch.</div>
+  <script type="text/javascript">
+    EventUtil.addHandler(window, "load", function (event) {
+      var div = document.getElementById("myDiv3");
+      div.innerHTML = "Current orientation is " + window.orientation;
+      EventUtil.addHandler(window, "orientationchange", function (event) {
+        div.innerHTML = "Current orientation is " + window.orientation;
+      });
+    });
+  </script>
+
+  <hr> MozOrientation 事件
+  <p>This example only works in Firefox 3.6+ in devices such as Macbooks, Thinkpads, Windows Mobile, or Android.</p>
+  <div id="output"></div>
+  <script type="text/javascript">
+    EventUtil.addHandler(window, "MozOrientation", function (event) {
+      var output = document.getElementById("output");
+      output.innerHTML = "X=" + event.x + ", Y=" + event.y + ", Z=" + event.z + "<br>";
+    });
+  </script>
+  <hr> deviceorientation事件
+  <p>This example only works in Chrome in devices such as Macbooks, Thinkpads, or Android, or on Safari for iOS 4.2+.</p>
+
+  <div id="output2"></div>
+  <div id="arrow2" style="background:#000;width:3px;height:300px;margin:0 auto;"></div>
+  <script>
+    EventUtil.addHandler(window, "deviceorientation", function (event) {
+      var output = document.getElementById("output2");
+      var arrow = document.getElementById("arrow2");
+      arrow.style.webkitTransform = "rotate(" + Math.round(event.alpha) + "deg)";
+      output.innerHTML = "Alpha=" + event.alpha + ", Beta=" + event.beta
+        + ", Gamma=" + event.gamma + "<br>";
+    });
+  </script>
+
+  <hr>devicemotion 事件
+  <p>This example only works in Chrome in devices such as Macbooks, Thinkpads, or Android , or on Safari for iOS 4.2+.</p>
+  <div id="output3"></div>
+  <script>
+    EventUtil.addHandler(window, "devicemotion", function (event) {
+      var output = document.getElementById("output");
+      if (event.rotationRate !== null) {
+        output.innerHTML += "Alpha=" + event.rotationRate.alpha + ", Beta=" +
+          event.rotationRate.beta + ", Gamma=" +
+          event.rotationRate.gamma;
+      }
+    });
+  </script>
+  <div id="output4"></div>
+  <script>
+    function handleTouchEvent(event) {
+      if (event.touches.length == 1) {//only for one touch, 只跟踪第一次
+        var output = document.getElementById("output");
+        switch (event.type) {
+          case "touchstart":
+            output.innerHTML = "Touch started (" + event.touches[0].clientX
+              + "," + event.touches[0].clientY + ")";
+            break;
+          case "touchend":
+            console.log("touchend");
+            output.innerHTML += "<br>Touch ended ("
+              + event.changedTouches[0].clientX + ","
+              + event.changedTouches[0].clientY + ")";
+            break;
+          case "touchmove":
+            event.preventDefault();  //prevent scrolling, 阻止滚动
+            output.innerHTML += "<br>Touch moved ("
+              + event.changedTouches[0].clientX + ","
+              + event.changedTouches[0].clientY + ")";
+            break;
+        }
+      }
+    }
+    //    document.addEventListener("touchstart", handleTouchEvent, false);
+    //    document.addEventListener("touchend", handleTouchEvent, false);
+    //    document.addEventListener("touchmove", handleTouchEvent, false);
+  </script>
+
+  <div id="output5"></div>
+  <script>
+    function handleGestureEvent(event) {
+      var output = document.getElementById("output");
+      switch (event.type) {
+        case "gesturestart":
+          output.innerHTML = "Gesture started (rotation=" + event.rotation
+            + ",scale=" + event.scale + ")";
+          break;
+        case "gestureend":
+          output.innerHTML += "<br>Gesture ended (rotation=" + event.rotation
+            + ",scale=" + event.scale + ")";
+          break;
+        case "gesturechange":
+          output.innerHTML += "<br>Gesture changed (rotation=" + event.rotation
+            + ",scale=" + event.scale + ")";
+          break;
+      }
+    }
+    //    document.addEventListener("gesturestart", handleGestureEvent, false);
+    //    document.addEventListener("gestureend", handleGestureEvent, false);
+    //    document.addEventListener("gesturechange", handleGestureEvent, false);
+  </script>
+</body>
+
+</html>

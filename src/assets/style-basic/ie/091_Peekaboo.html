@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>ie6 躲猫猫，捉迷藏</title>
+        <style type="text/css">
+            #clear {
+                clear: both;
+            }
+            #layout {
+                background: #e6e6e6;
+            }
+            #layout a:hover{
+                background: #333;
+            }
+            #left {
+                float : left;
+                border: 4px solid #333;
+                padding : 5px;
+                width : 200px;
+                height: 200px;
+            }
+            #right div {
+                border: 3px solid #0c0; 
+                background: #dde;
+            }
+
+        </style>
+    </head>
+    <body>
+
+<div>在IE中预览页面，会发现刚打开时#right中的内容竟然没有显示出来，当鼠标选择这个区域时，内容的确在页面中，而再当鼠标移上左边的链接时，右边内容就奇怪的跑了出来。</div>
+        <div id="layout">
+            <div id="left">#left<a href="#">链接A</a></div>
+
+            <div id="right">
+                #right<br/>
+                被隐藏的文本<br>
+                <a href="#">链接B</a> <br />
+                <br />
+                <div>#right中的div. <a href="#">链接C</a></div>
+                #right中的文本. <a href="#">链接D</a>
+                <div>#right中的div. <a href="#">链接E</a></div>
+                #right中的文本. <a href="#">链接F</a> </div>
+            <div id="clear">bottom</div>
+        </div>
+
+    </body>
+</html>

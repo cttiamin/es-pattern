@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>弹性盒模型 Flexible Box / Flexbox</title>
+    <style type="text/css">
+        /*
+        From: 
+        http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html
+        http://www.ruanyifeng.com/blog/2015/07/flex-examples.html
+
+        称为Flex容器（flex container），简称”容器”。
+        它的所有子元素自动成为容器成员，称为Flex项目（flex item），简称”项目”
+
+        容器的属性 : 
+        flex-direction : 属性决定主轴的方向（即项目的排列方向）
+            row（默认值）：主轴为水平方向，起点在左端。
+            row-reverse：主轴为水平方向，起点在右端。
+            column：主轴为垂直方向，起点在上沿。
+            column-reverse：主轴为垂直方向，起点在下沿。
+        flex-wrap : 如果一条轴线排不下，如何换行
+            nowrap | 不换行
+            wrap | 换行，第一行在上方
+            wrap-reverse 第一行在下方
+        flex-flow : flex-direction属性和flex-wrap属性的简写形式
+            默认值为 row nowrap
+        justify-content : 项目在主轴上的对齐方式
+            flex-start（默认值）：左对齐
+            flex-end：右对齐
+            center： 居中
+            space-between：两端对齐，项目之间的间隔都相等。
+            space-around：每个项目两侧的间隔相等。
+                所以，项目之间的间隔比项目与边框的间隔大一倍。
+        align-items : 项目在交叉轴上如何对齐
+            flex-start：交叉轴的起点对齐。
+            flex-end：交叉轴的终点对齐。
+            center：交叉轴的中点对齐。
+            baseline: 项目的第一行文字的基线对齐。
+            stretch（默认值）：如果项目未设置高度或设为auto，将占满整个容器的高度。
+        align-content : 多根轴线的对齐方式。如果项目只有一根轴线，该属性不起作用。
+            flex-start：与交叉轴的起点对齐。
+            flex-end：与交叉轴的终点对齐。
+            center：与交叉轴的中点对齐。
+            space-between：与交叉轴两端对齐，轴线之间的间隔平均分布。
+            space-around：每根轴线两侧的间隔都相等。所以，轴线之间的间隔比轴线与边框的间隔大一倍。
+            stretch（默认值）：轴线占满整个交叉轴。
+
+        项目的属性：
+        order ： 项目的排列顺序。数值越小，排列越靠前，默认为 0
+        flex-grow ： 项目的放大比例，默认为 0
+        flex-shrink ： 项目的缩小比例，默认为 1
+        flex-basis ： 在分配多余空间之前，项目占据的主轴空间（main size）
+        flex : flex-grow, flex-shrink 和 flex-basis 的简写
+            默认值为 0 1 auto。后两个属性可选。
+        align-self : 允许单个项目有与其他项目不一样的对齐方式
+            auto | flex-start | flex-end | center | baseline | stretch
+
+         */
+
+        /*
+        flex 布局测试
+        问题： 
+        1. #dad => align-items: baseline/stretch 无效
+        */
+
+        #dad {
+            background-color: gray;
+            width: 100%;
+            height: 500px;
+
+            display: flex;
+            justify-content: center;
+            /*
+            flex-start : 左;
+            flex-end 右
+            center 中
+            space-around ：平均左右有距离
+            space-between 平均两端相切
+            */
+            align-items: center;
+            /*
+            flex-start 上 => Def
+            flex-end 下
+            center 中
+            baseline text 行基线
+            stretch 拉伸
+            */
+            /*主轴方向*/
+            flex-direction: row;
+            /* 
+             row 向右 => Def
+             column: 向下;
+             row-reverse 
+             column-reverse
+            */
+            /*设置换行方式：*/
+            flex-wrap: wrap;
+            /* nowrap : 不换行
+            wrap: 换行;
+            wrap-reverse
+            */
+            /* 换行流向
+            flex-direction 与 flex-wrap 简写
+            */
+            flex-flow: row wrap;
+
+            /*
+            多根轴线的对齐方式
+            flex-start
+            flex-end
+            center 
+            space-between: 上 & 下顶满;
+            space-around:每根轴线两侧的间隔都相等。
+                轴线之间的间隔比轴线与边框的间隔大一倍;
+            stretch :
+            */
+            align-content: stretch;
+
+        }
+
+        #son-1,
+        #son-2,
+        #son-3,
+        #son-4,
+        #son-5 {
+            width: 200px;
+            height: 200px;
+        }
+
+        #son-1 {
+            /*width: 120px;*/
+            background-color: #39ADD1;
+
+            /* same #dad => align-items
+            son 优先  */
+            align-self: center;
+            /*
+            auto: Def;
+            flex-start ：上
+            flex-end: 下
+            center;
+            baseline : text 行基线
+            stretch: 拉伸;
+            */
+
+            /* 缩写 (basis, grow, shrink)
+            Single value: 
+                has px => basis
+                no px => grow
+            Double value:
+                no px => grow & shrink
+                has px => grow & basis
+            Three val :
+                grow & shrink & basis
+            */
+            /*flex: 1;*/
+            
+            /*不伸缩的情况下子 容器占据固定空间 
+            */
+            flex-basis: 120px;
+
+            /*设置扩展比例
+            0: Def, 即如果存在剩余空间，也不放大
+            1: 等分剩余空间;
+            */
+            /*flex-grow: 1;*/
+
+            /*设置收缩比例：
+            0: 不缩小;
+            1: Def, 即如果空间不足，该项目将缩小 
+            */
+            flex-shrink: 1;
+
+            /*设置排列顺序：
+            数值越小, 排列越靠前, Def:0
+            order: integer*/
+        }
+
+        #son-2 {
+            /*width: 80px;*/
+            background-color: #3079AB;
+            flex: 1;
+            /*flex-grow: 2;*/
+        }
+
+        #son-3 {
+            /*width: 100px;*/
+            background-color: #e15258;
+            flex: 1;
+        }
+
+        #son-4 {
+            background-color: #cc6699;
+            flex: 1;
+
+        }
+
+        #son-5 {
+            background-color: #982551;
+            flex: 1;
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="dad">
+        <div id="son-1"></div>
+        <div id="son-2"></div>
+        <div id="son-3"></div>
+        <div id="son-4"></div>
+        <div id="son-5"></div>
+    </div>
+</body>
+
+</html>

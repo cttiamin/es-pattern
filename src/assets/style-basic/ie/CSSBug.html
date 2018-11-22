@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>IE中常见Bug</title>
+
+
+    </head>
+    <body>
+        <h2>IE中常见Bug</h2>
+
+        <h3> 1.  居中布局</h3>
+        <p>解决方法: 最简单的方法是在父元素中使用 text-align: center 属性，而在元件中使用 text-align: left 。
+        </p>
+        <style type="text/css">
+            #container
+            {
+                border: solid 1px #000;  
+                background: #777;  
+                width: 400px;  
+                height: 160px;  
+                margin: 30px 0 0 30px;  
+                /* text-align: center;*/
+            }
+
+            #element
+            {
+                background: #95CFEF;  
+                border: solid 1px #36F;  
+                width: 300px;  
+                height: 100px;  
+                margin: 30px auto;  
+            }
+
+        </style>
+
+        <div id="container">
+            The container
+            <div id="element">
+                The element
+            </div>
+        </div>
+
+
+        <h3>2. 楼梯式的效果</h3>
+        <style type="text/css">
+            ul {  
+                list-style: none;  
+            }  
+
+            /*解决方式*/
+            ul li {
+
+                /* 第1种 解决方法 
+                float: left;*/
+
+                /* 第2种
+                display: inline; */
+            }
+            ul li a {  
+                display: block;  
+                width: 130px;  
+                height: 30px;  
+                text-align: center;  
+                color: #fff;  
+                float: left;  
+                background: #95CFEF;  
+                border: solid 1px #36F;  
+                margin: 30px 5px;  
+            } 
+
+
+        </style>
+        <ul>
+            <li><a href="#">1</a></li> 
+            <li><a href="#">2</a></li> 
+            <li><a href="#">3</a></li> 
+        </ul> 
+
+        <div style="overflow:hidden; clear:both;"></div>
+
+        <h3>3. float元件的两倍空白</h3>
+        <style type="text/css">
+            #example03 {
+                background: #95CFEF;  
+                width: 300px;  
+                height: 100px;  
+                float: left;  
+                margin: 30px 0 0 30px;  
+                border: solid 1px #36F;
+
+                /*IE6 */
+                /* display: inline; */
+            }
+
+        </style>
+        <div id="example03"></div>
+
+        <div style="overflow:hidden; clear:both;"></div>
+
+        <h3>4. 无法设置微型高度</h3>
+        <style type="text/css">
+            #example04{  
+                background: #95CFEF;  
+                border: solid 1px #36F;  
+                width: 300px;  
+                height: 2px;  
+                margin: 30px 0;
+                /* solve 1: */
+                /* font-size:0px;*/
+
+                /* solve 2 (best) */
+                overflow: hidden;
+
+            }  
+        </style>
+        <div id="example04"> </div>
+
+        <h3>5. 跨出边界</h3>
+        <style type="text/css">
+            #element05 {  
+                background: #95CFEF;  
+                border: solid 1px #36F;  
+                width: 300px;  
+                height: 150px;  
+                margin: 30px 0;  
+                overflow: auto;  
+                /*solve */
+                /* position: relative; */
+            }  
+
+            #anotherelement05 {
+                background: #555;  
+                width: 150px;  
+                height: 175px;
+                position: relative;  
+                margin: 30px;
+            }
+
+
+        </style>
+        <div id="element05">
+            <div id="anotherelement05"></div>
+        </div>
+
+
+
+
+    </body>
+</html>

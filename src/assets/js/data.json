@@ -1,0 +1,6 @@
+{
+  "name": "es-basic",
+  "version": "1.0.0",
+  "description": "npm install webpack webpack-cli --save-dev",
+  "main": "webpack.config.js"
+}

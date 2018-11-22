@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>inline-format-context</title>
+  <style>
+    /* 
+    1 框会从包含块的顶部开始，一个接一个地水平摆放。
+    2 摆放这些框时，它们在水平方向的 内外边距 + 边框 
+      所占用的空间都会被考虑；在垂直方向上，这些框可能会以不同形式来对齐：
+      水平的 margin、padding、border 有效，垂直无效。不能指定宽高;
+    3 行框的宽度是 由包含块和存在的浮动来决定; 行框的高度 由行高来决定。
+
+    1. 在IFC中，盒子水平放置，一个接着一个，从包含块的顶部开始。
+      水平margins,borders,和 padding 在这些盒子中被平分。
+      这些盒子也许通过不同的方式进行对齐:他们的地步和顶部也许被对齐，或者通过文字的基线进行对齐。
+      矩形区域包含着来自一行的盒子叫做line box
+
+    主要影响IFC内布局的 css:
+    font-size
+    line-height
+    height
+    vertical-aligin 
+    */
+
+    .p2 EM {
+      padding: 2px;
+      margin: 1em;
+      border-width: medium;
+      border-style: dashed;
+      line-height: 2.4em;
+    }
+
+    .container {
+      width: 800px;
+      height: 200px;
+      /* .right 会向下窜位 */
+      font-size: 0;
+    }
+
+    .left {
+      font-size: 14px;
+      background: red;
+      display: inline-block;
+      width: 200px;
+      height: 200px;
+    }
+
+    .right {
+      font-size: 14px;
+      background: blue;
+      display: inline-block;
+      width: 600px;
+      height: 200px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <P>Several <EM>emphasized words</EM> appear
+    <STRONG>in this</STRONG> sentence, dear.
+  </P>
+
+  <P class="p2">Several <EM>emphasized words</EM> appear here.</P>
+
+  <div class="container">
+    <div class="left">
+      左
+    </div>
+    <div class="right">
+      右
+    </div>
+  </div>
+</body>
+
+</html>

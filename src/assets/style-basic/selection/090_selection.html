@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>选择器详解</title>
+    <style type="text/css">
+        /*通配概念, 只要id包含div*/
+
+        [id*=div] {
+            color: lime;
+        }
+
+
+        /* 首字母包含div */
+
+        [id^=div] {
+            color: darkmagenta;
+        }
+
+        /* 结束字符 包含1*/
+
+        [id$=\1] {
+            color: crimson;
+        }
+
+        /* 文本的首行 */
+
+        .class1:first-line {
+            color: crimson;
+            font-variant: small-caps;
+        }
+
+        /* 向文本的首字母设置 */
+
+        .class1:first-letter {
+            color: darkblue;
+        }
+
+        /* 元素的内容前面插入新内容 */
+
+        .class2:before {
+            content: "--";
+        }
+
+        /* 元素的内容之后插入新内容 */
+
+        .class2:after {
+            content: "[This is a after]";
+            font-size: 10px;
+            color: darkgrey;
+        }
+
+        /* 元素最根本修改 */
+
+        :root {
+            background-color: darkgrey;
+        }
+
+        /* 排除当前元素下子元素结构 */
+
+        div *:not(h3) {
+            color: crimson;
+        }
+
+        /*标签内容为空*/
+
+        :empty {
+            background-color: darkviolet;
+        }
+
+        /*对某个target指定样式, 只对用户被击超链接时调用*/
+
+        :target {
+            background-color: orange;
+        }
+    </style>
+</head>
+
+<body>
+    <p>CSS3: [arr*=val], [att^=val]和[att$=val]</p>
+
+    <div id="mydiv1">示例文本1</div>
+    <div id="div2">示例文本2</div>
+    <div id="div3">示例文本3</div>
+    <div id="div4">示例文本4</div>
+    <div id="my">示例文本45</div>
+
+    <h2>伪元素</h2>
+    <h4>:first-line, :first-letter, :before, :after </h4>
+    <p class="class1">
+        This is one line content.
+        <br> That is a second content.
+    </p>
+
+    <p class="class2">
+        Class :before.
+    </p>
+
+    <h2>root, not, empty, target</h2>
+    <div>
+        <h2>Root element, h2</h2>
+        <h3>Not element, h3</h3>
+        <p>This is a "p" target .</p>
+    </div>
+    <table>
+        <tr>
+            <td>123123</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>123123</td>
+        </tr>
+    </table>
+
+    <br>
+    <a href="#a1">menu1</a>
+    <a href="#a2">menu2</a>
+    <a href="#a3">menu3</a>
+    <a href="#a4">menu4</a>
+    <div id="a1">
+        <h1>menu 1</h1>
+        <p>menu content 1</p>
+    </div>
+    <div id="a2">
+        <h1>menu 2</h1>
+        <p>menu content 2</p>
+    </div>
+    <div id="a3">
+        <h1>menu 3</h1>
+        <p>menu content 3</p>
+    </div>
+    <div id="a4">
+        <h1>menu 4</h1>
+        <p>menu content 4</p>
+    </div>
+
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title> IE BUG - 3像素文本偏移</title>
+<style type="text/css">
+* {margin:0; padding:0;}
+body {font:11px Verdana, Geneva, sans-serif; padding:10px; }
+
+/* 例1.*/
+.box-model {
+    width:400px;
+}
+
+.box-model p { 
+    line-height:180%; 
+}
+
+.box-float { 
+    float:left; 
+    padding:10px; 
+    border:1px solid black; 
+    background:#cf0; 
+}
+
+*html .box-float {
+    /* 解决方案1，此方法当父类为float会失效，*/
+    /*margin-right:-3px;*/
+}
+
+
+
+/* 
+解决方案2：
+
+.box-float {
+    float:left; width:70px; 
+    height:120px; 
+    border:1px #68f solid; 
+}
+
+.box-model-01 {
+    border:1px #000 solid; 
+    margin-top:10px;
+}
+
+.box-model-02 {
+    margin-left:90px; 
+    border:1px #666 solid; 
+    margin-top:10px;
+}
+
+*html .box-float {
+    margin-right:-3px;
+}
+*html .box-model-01 {height:1%;}
+*html .box-model-02 {height:1%;}
+*/
+
+
+</style>
+
+</head>
+
+<body>
+    <div>
+当使用float浮动容器后，在IE6下会产生3px的空隙
+    </div>
+
+<h2>例1:浮动与内容3px</h2>
+<div class="box-model">
+    <div class="box-float">Mozilla Firefox</div>	
+
+    <p>
+        Mozilla Firefox Mozilla Firefox Mozilla Firefox Mozilla Firefox Mozilla Firefox Mozilla Firefox Mozilla Firefox Mozilla Firefox Mozilla Firefox Mozilla Firefox Mozilla Firefox Mozilla Firefox
+    </p>	
+</div>
+
+
+
+<h2>例2</h2>
+
+<div class="box-float">浮动元素</div>
+
+跟在浮动元素后面的文字
+
+<div class="box-model-01">
+    这个多了个容器
+</br>还给这个容器加了个边框器
+</br>还给这个容器加了个边框器
+</br>还给这个容器加了个边框器
+</br>还给这个容器加了个边框器
+</br>还给这个容器加了个边框器
+</br>还给这个容器加了个边框器
+</br>还给这个容器加了个边框器
+</br>还给这个容器加了个边框器
+</br>还给这个容器加了个边框器
+</div>
+
+<div class="box-model-02">
+    这个多了个margin-left <br/>
+    传说中的测试文字<br/>
+    传说中的测试文字
+</div>
+
+</body>
+</html>

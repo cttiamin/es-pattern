@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>自定义字体</title>
+    <style>
+        /* 
+        生成 iconfont
+        http://www.iconfont.cn/
+        */
+        @font-face {
+            font-family: WebFont;
+            /* 
+            format:  
+            ttf:t => truetype  
+            otf:o => opentype
+            */
+            src: url('./PWJunefont.ttf')format("truetype");
+            /*可用绝对路径*/
+            font-weight: normal;
+        }
+
+        /*First introducing client, if none include server*/
+
+        @font-face {
+            font-family: WebFont2;
+            src: local("FlowersPower"),
+                url('./FlowersPower.ttf')format("truetype");
+            font-weight: normal;
+        }
+
+        .test01 {
+            /* 水平阴影 垂直阴影 模糊距离 阴影颜色 */
+            text-shadow: 5px 5px 5px red;
+            color: black;
+            font-size: 40px;
+            font-weight: bold;
+            /* fallback 定义机制 */
+            font-family: WebFont2, "aaaaa", "monaco", "PingFang SC";
+        }
+
+        .test02 {
+            font-family: WebFont, "Microsoft Yahei", serif;
+        }
+
+        #test03 {
+            font-family: Menlo, "PingFang SC", "Microsoft Yahei", monospace;
+            font-size: 16px;
+            /* 调整字体大小 */
+            font-size-adjust: 0.60;
+        }
+
+        #test04 {
+            font-family: cursive;
+            font-size: 16px;
+            font-size-adjust: 0.57;
+        }
+
+        #test05 {
+            font-family: "Lantinghei SC";
+            font-size: 16px;
+            font-size-adjust: 0.57;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div class="test01">字体阴影 + WebFont 2 + Hello World</div>
+    <hr>
+    <div class="test02">
+        服务器字体 This is my page web.
+    </div>
+    <hr>
+    <p>字体大小计算： x-height:58, font-size:100px, aspect:0.58 => c = (a/b) s</p>
+    <div id="test03">03 font-size-adjust: 0.60;</div>
+    <div id="test04">04 font-size-adjust: 0.57</div>
+    <div id="test05">05 font-size-adjust: 0.57</div>
+
+    <script>
+        // 原生实现 rem
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                recalc = function () {
+                    var clientWidth = docEl.clientWidth;
+                    if (!clientWidth) return;
+                    if (clientWidth >= 640) {
+                        docEl.style.fontSize = '100px';
+                    } else {
+                        docEl.style.fontSize = 100 * (clientWidth / 640) + 'px';
+                    }
+                };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+
+    </script>
+
+    <!-- rem 进阶版 -->
+    <!-- 阿里高清方案 -->
+    <script>!function (e) { function t(a) { if (i[a]) return i[a].exports; var n = i[a] = { exports: {}, id: a, loaded: !1 }; return e[a].call(n.exports, n, n.exports, t), n.loaded = !0, n.exports } var i = {}; return t.m = e, t.c = i, t.p = "", t(0) }([function (e, t) { "use strict"; Object.defineProperty(t, "__esModule", { value: !0 }); var i = window; t["default"] = i.flex = function (e, t) { var a = e || 100, n = t || 1, r = i.document, o = navigator.userAgent, d = o.match(/Android[\S\s]+AppleWebkit\/(\d{3})/i), l = o.match(/U3\/((\d+|\.){5,})/i), c = l && parseInt(l[1].split(".").join(""), 10) >= 80, p = navigator.appVersion.match(/(iphone|ipad|ipod)/gi), s = i.devicePixelRatio || 1; p || d && d[1] > 534 || c || (s = 1); var u = 1 / s, m = r.querySelector('meta[name="viewport"]'); m || (m = r.createElement("meta"), m.setAttribute("name", "viewport"), r.head.appendChild(m)), m.setAttribute("content", "width=device-width,user-scalable=no,initial-scale=" + u + ",maximum-scale=" + u + ",minimum-scale=" + u), r.documentElement.style.fontSize = a / 2 * s * n + "px" }, e.exports = t["default"] }]); flex(100, 1);</script>
+    <!-- 高清方案 -->
+
+    <script>
+
+        'use strict';
+
+        /**
+         * @param {Number} [baseFontSize = 100] - 基础fontSize, 默认100px;
+         * @param {Number} [fontscale = 1] - 有的业务希望能放大一定比例的字体;
+         */
+        const win = window;
+        export default win.flex = (baseFontSize, fontscale) => {
+            const _baseFontSize = baseFontSize || 100;
+            const _fontscale = fontscale || 1;
+
+            const doc = win.document;
+            const ua = navigator.userAgent;
+            const matches = ua.match(/Android[\S\s]+AppleWebkit\/(\d{3})/i);
+            const UCversion = ua.match(/U3\/((\d+|\.){5,})/i);
+            const isUCHd = UCversion && parseInt(UCversion[1].split('.').join(''), 10) >= 80;
+            const isIos = navigator.appVersion.match(/(iphone|ipad|ipod)/gi);
+            let dpr = win.devicePixelRatio || 1;
+            if (!isIos && !(matches && matches[1] > 534) && !isUCHd) {
+                // 如果非iOS, 非Android4.3以上, 非UC内核, 就不执行高清, dpr设为1;
+                dpr = 1;
+            }
+            const scale = 1 / dpr;
+
+            let metaEl = doc.querySelector('meta[name="viewport"]');
+            if (!metaEl) {
+                metaEl = doc.createElement('meta');
+                metaEl.setAttribute('name', 'viewport');
+                doc.head.appendChild(metaEl);
+            }
+            metaEl.setAttribute('content', `width=device-width,user-scalable=no,initial-scale=${scale},maximum-scale=${scale},minimum-scale=${scale}`);
+            doc.documentElement.style.fontSize = `${_baseFontSize / 2 * dpr * _fontscale}px`;
+        };
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>变动(mutation)事件</title>
+  <script type="text/javascript" src="../assets/js/event-util.js"></script>
+  <script type="text/javascript" src="../assets/js/when-ready.js"></script>
+  <script>
+    ///////////////////////////////////
+    //  13.4.6 变动(mutation)事件
+    //  DOMSubtreeModified: 在 DOM 结构中发生任何变化时触发, Opera不支持
+    //  DOMNodeInserted: 在一个节点作为子节点被插入到另一个节点中时触发
+    //  DOMNodeRemoved: 在节点从父节点中被移除时触发
+    //  DOMNodeInsertedIntoDocument:在一个节点被直接插入文档或通过子树间接插入文档之后
+    //       触发,这个事件在DOMNodeInserted之后触发
+    //  DOMNodeRemovedFromDocument:在一个节点被直接从文档中移除或通过子树间接从文档中移
+    //       除之前触发,这个事件在DOMNodeRemoved之后触发
+    //  DOMAttrModified: 在特性被修改之后触发
+    //  DOMCharacterDataModified: 在文本节点的值发生变化时触发
+
+    //  1.删除节点
+    //  relatedNode: 相关的事件节点
+
+    //  移除 myList 元素和其子元素的触发顺序:
+    //  1.在 <\ul> 元素上触发DOMNodeRemoved事件,relatedNode属性等于document.body
+    //  2.在 <\ul> 元素上触发DOMNodeRemovedFromDocument事件
+    //  3.在身为<\ul>元素子节点的每个<\li>元素及文本节点上触发DOMNodeRemovedFromDocument
+    //  4.在document.body上触发DOMSubtreeModified事件,因为<\ul>元素是document.body的直接子元素
+
+    document.implementation.hasFeature("MutationEvents", "2.0");
+
+    EventUtil.addHandler(window, "load", function (event) {
+      var list = document.getElementById("myList");
+
+      EventUtil.addHandler(document, "DOMSubtreeModified", function (event) {
+        console.log(event.type);
+        console.log(event.target);
+      });
+      EventUtil.addHandler(document, "DOMNodeRemoved", function (event) {
+        console.log(event.type);
+        console.log(event.target);          //当前的
+        console.log(event.relatedNode);     //相关的事件节点
+      });
+
+      list.parentNode.removeChild(list);
+
+      // 插入节点 触发顺序：
+      //  DOMNodeInserted : 事件的目标是被插入的节点, 而event.relatedNode属性中包含一个对
+      //    父节点的引用,在触发时,节点已经被插入到了新的父节点中. 冒泡
+      //  DOMNodeInsertedIntoDocument: 不冒泡,插入节点之前为它添加这个事件处理程序,事件的
+      //    目标是被插入的节点
+      //  DOMSubtreeModified: 触发于新插入节点的父节点, 冒泡
+
+      EventUtil.addHandler(list.firstChild, "DOMNodeRemovedFromDocument",
+        function (event) {
+          console.log(event.type);
+          console.log(event.target);
+      });
+      EventUtil.addHandler(document, "DOMNodeInserted", function (event) {
+        console.log(event.type);
+        console.log(event.target);
+        console.log(event.relatedNode);
+      });
+
+      var item = document.createElement("li");
+      item.appendChild(document.createTextNode("Item 4"));
+
+
+      EventUtil.addHandler(item, "DOMNodeInsertedIntoDocument", function (event) {
+        console.log(event.type);
+        console.log(event.target);
+      });
+
+      list.appendChild(item);
+
+    });
+
+
+  </script>
+</head>
+
+<body>
+
+  <ul id="myList">
+    <li>Item 1</li>
+    <li>Item 2</li>
+    <li>Item 3</li>
+  </ul>
+
+
+
+</body>
+
+</html>

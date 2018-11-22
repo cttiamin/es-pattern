@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>图片颜色渐变相册</title>
+
+    <style>
+        .cardfan {
+            width: 30%;
+            margin: 4em auto;
+            position: relative;
+        }
+
+        .cardfan img {
+            position: absolute;
+            width: 100%;
+            height: 193px;
+            border: 10px solid #fee;
+            box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, .2);
+            transform-origin: center 600px;
+            transition: all .9s;
+            cursor: pointer;
+        }
+
+        .cardfan img:nth-child(1) {
+            /* 定义 2D 旋转 */
+            transform: rotate(-5deg);
+            z-index: 3;
+            /* 置灰 */
+            filter: grayscale(1);
+        }
+
+        .cardfan img:nth-child(1):hover {
+            /*添加滤镜 取消置灰*/
+            filter: grayscale(0);
+        }
+
+        .cardfan:hover img:nth-child(1) {
+            transform: rotate(-25deg);
+        }
+
+        .cardfan img:nth-child(2) {
+            filter: sepia(1);
+        }
+
+        .cardfan img:nth-child(2):hover {
+            filter: sepia(0);
+        }
+
+        .cardfan img:nth-child(3) {
+            transform: rotate(5deg);
+            z-index: -1;
+            /*模糊滤镜*/
+            filter: blur(3px);
+        }
+
+        .cardfan img:nth-child(3):hover {
+            filter: blur(0);
+        }
+
+        .cardfan:hover img:nth-child(3) {
+            transform: rotate(25deg);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cardfan">
+        <img src="../asset/07.png" alt="">
+        <img src="../asset/08.jpg" alt="">
+        <img src="../asset/09.jpg" alt="">
+    </div>
+</body>
+
+</html>

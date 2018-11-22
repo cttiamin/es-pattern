@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>垂直居中12种实现</title>
+</head>
+
+<body>
+  <style>
+    /* 1.绝对定位和负边距法 */
+
+    /* .box {
+      width: 300px;
+      height: 300px;
+      background: #ddd;
+      position: relative;
+    } */
+
+    /* 
+    .child {
+      width: 150px;
+      height: 100px;
+      background: orange;
+      position: absolute;
+      top: 50%;
+      margin: -50px 0 0 0;
+    } */
+
+
+    /* 2.绝对定位和 transform */
+    /* .child {
+      width: 150px;
+      height: 100px;
+      background: orange;
+      position: absolute;
+      top: 50%;
+      transform: translate(0, -50%);
+    } */
+
+
+    /* 3.绝对定位结合 margin: auto */
+    /* .child {
+      width: 50%;
+      height: 30%;
+      top: 50%;
+      margin: -15% 0 0 0;
+      background: orange;
+      position: absolute;
+    } */
+
+
+    /* 4.padding实现 */
+    /* .box {
+      width: 300px;
+      background: #ddd;
+      padding: 100px 0;
+    }
+
+    .child {
+      width: 200px;
+      height: 100px;
+      background: orange;
+    } */
+
+
+    /* 5.table */
+    .box {
+      width: 300px;
+      height: 300px;
+      background: #ddd;
+      display: table;
+    }
+
+    .child {
+      display: table-cell;
+      vertical-align: middle;
+    }
+  </style>
+  <!-- 
+  <div class="box">
+    <div class="child">aaa</div>
+  </div>
+  -->
+
+  <script>
+    if(!("gm" in window)) {
+      var gm = 123;
+    }
+    console.log(null == undefined)
+  </script>
+
+  <input type="text" id="msg">
+  <button onclick="message()">click</button>
+  <script>
+    function message() {
+      var msg = document.getElementById('msg')
+      alert(msg.value)
+    }
+  </script>
+
+
+
+</body>
+
+</html>

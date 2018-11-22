@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script type="text/javascript" src="lib/130_eventUtil.js"></script>
+  <script type="text/javascript" src="lib/231_CookieUtil.js"></script>
+  <script type="text/javascript" src="lib/232_SubCookieUtil.js"></script>
+</head>
+
+<body>
+  <script>
+    /**************************
+     *  Cookie
+     *          HTTP Cookie
+     *  1.限制
+     *      IE6：一个域名下最多 20个， IE7+/FireFox 50个
+     *      长度限制在 4095B(字节) 以内
+     *
+     *  2.构成
+     *      名称: 不区分大小写, myCookie
+     *      值: 储存在cookie 中的字符串值.值必须被URL编码
+     *      domain(有效作用域): 跨域名访问cookie, 设置:".example.com",
+     *      那么该cookie就对所有 catalog.example.com, orders.example.com 
+     *      及任何其他example.com域下可见.
+     *      
+     *      path(路径): 对指定域中的那个路径, 
+     *          例指定 cookie 只有从 http://www.wrox.com/books/中才能访问,
+     *          有效路径, "/":任何页面都可见, 
+     *          等于是让 cookie 和 localStorage 拥有同样的作用域.
+     *      失效时间: 表示 cookie 何时应该被删除的时间戳
+     *
+     *      secure(安全标志):boolean, cookie默让是不安全的, 
+     *          如果为true那么将以HTTPS或其他安全协议连接的时候才能传递它.
+     *          cookie只有在使用SSL连接的时候才发送到服务器.
+     *
+     *  3.JavaScript 中的 cookie
+     *      document.cookie
+     *      navigator.cookieEnabled : cookie 是否开启
+     */
+
+
+    /***********
+     * cookie的名/值不允许包含"逗号,空白符,分号; 
+     * 因此在存储前采用全局函数 encodeURIComponent() 对值进行编码.
+     * 读取时采用 decodeURIComponent() 解码
+     *  
+     * encodeURIComponent():
+     * decodeURIComponent():
+     */
+
+    //document.cookie = "name=Nicholas";
+    //document.cookie = encodeURIComponent("name") + "="
+    //        + encodeURIComponent("Nicholas");//编码
+    //document.cookie = encodeURIComponent("name") + "=" 
+    //          + encodeURIComponent("Nicholas")
+    //        + "; domain=localhost; path=/";//指定额外的信息
+    //console.log(decodeURIComponent(document.cookie));
+
+    /**
+     * cookie只在当前Web浏览器的会话内, 一旦用户关闭browser, cookie就丢失了,
+     * 如果要延长cookie的有效期就需要设置
+     * max-age: 指定cookie的有效期(单位是秒).name=value; max-age=seconds
+     *
+     * 以名/值的形式存储cookie
+     * 同时采用encodeURIComponent()函进行编码,来转义分号,逗号和空白符
+     * 如果dayToLive是一个数字, 
+     * 设置max-age属性为该数值表示cookie直到指定的天数到了才会过期.
+     * 如果daysToLive是0就表示删除cookie
+     */
+    function setcookie(name, value, daysToLive) {
+      var cookie = name + "=" + encodeURIComponent(value);
+      if (typeof daysToLive === "number")
+        cookie += "; max-age=" + (daysToLive * 60 * 60 * 24);
+      document.cookie = cookie;
+    }
+
+    /**
+     * 权威指南 => 20.2.3 读取cookie
+     * 例20-1: 解析document.cookie属性值
+     * Return the document's cookies as an object of name/value pairs.
+     * Assume that cookie values are encoded with encodeURIComponent()
+     */
+    function getCookies() {
+      var cookies = {};           // The object we will return
+      var all = document.cookie;  // Get all cookies in one big string
+      if (all === "")             // If the property is the empty string
+        return cookies;         // return an empty object
+      var list = all.split("; "); // Split into individual name=value pairs
+      for (var i = 0; i < list.length; i++) {  // For each cookie
+        var cookie = list[i];
+        var p = cookie.indexOf("=");        // Find the first = sign
+        var name = cookie.substring(0, p);   // Get cookie name
+        var value = cookie.substring(p + 1);  // Get cookie value
+        value = decodeURIComponent(value);  // Decode the value
+        cookies[name] = value;              // Store name and value in object
+      }
+      return cookies;
+    }
+    //setcookie("UserId", "001", 2);
+    //var cookieStr = getCookies();
+    //console.log(cookieStr);
+
+    /***
+     * CookieUtil.js 实现
+     */
+    //    CookieUtil.set("name", "Nicholas");
+    //    CookieUtil.set("book", "Professional JavaScript");
+    //    console.log(CookieUtil.get("name"));//"Nicholas"
+    //    console.log(CookieUtil.get("book"));//Professional JavaScript
+    //    CookieUtil.unset("name");
+    //    CookieUtil.unset("book");
+    //    CookieUtil.set("name", "Nicholas", "/books/projs", "localhost",
+    //            new Date("January 1, 2010"));//设置cookie,包括它的路径,域,失效日期
+    //    CookieUtil.unset("name", "/books/projs", "www.wrox.com");//删除刚刚设置的cookie
+    //    CookieUtil.set("name", "Nicholas", null, null, null, true);//设置安全的cookie
+
+    /**
+     * 例20-2: 实现基于 cookie 的存储 API
+     * CookieStorage.js
+     * This class implements the Storage API that localStorage and sessionStorage do,
+     * but implements it on top of HTTP Cookies.
+     * 本类实现像localStorage和sessionStorage一样的存储API,不同的是,基于HTTP cookie实
+     * 现它
+     */
+    function CookieStorage(maxage, path) {  // Arguments specify lifetime and scope
+
+      // Get an object that holds all cookies
+      var cookies = (function () { // The getCookies() function shown earlier
+        var cookies = {};           // The object we will return
+        var all = document.cookie;  // Get all cookies in one big string
+        if (all === "")             // If the property is the empty string
+          return cookies;         // return an empty object
+        var list = all.split("; "); // Split into individual name=value pairs
+        for (var i = 0; i < list.length; i++) {  // For each cookie
+          var cookie = list[i];
+          var p = cookie.indexOf("=");        // Find the first = sign
+          var name = cookie.substring(0, p);   // Get cookie name
+          var value = cookie.substring(p + 1);  // Get cookie value
+          value = decodeURIComponent(value);  // Decode the value
+          cookies[name] = value;              // Store name and value
+        }
+        return cookies;
+      }());
+
+      // Collect the cookie names in an array
+      var keys = [];
+      for (var key in cookies) keys.push(key);
+
+      // Now define the public properties and methods of the Storage API
+
+      // The number of stored cookies
+      this.length = keys.length;
+
+      // Return the name of the nth cookie, or null if n is out of range
+      this.key = function (n) {
+        if (n < 0 || n >= keys.length) return null;
+        return keys[n];
+      };
+
+      // Return the value of the named cookie, or null.
+      this.getItem = function (name) {
+        return cookies[name] || null;
+      };
+
+      // Store a value
+      this.setItem = function (key, value) {
+        if (!(key in cookies)) { // If no existing cookie with this name
+          keys.push(key);      // Add key to the array of keys
+          this.length++;       // And increment the length
+        }
+
+        // Store this name/value pair in the set of cookies.
+        cookies[key] = value;
+
+        // Now actually set the cookie.
+        // First encode value and create a name=encoded-value string
+        var cookie = key + "=" + encodeURIComponent(value);
+
+        // Add cookie attributes to that string
+        if (maxage) cookie += "; max-age=" + maxage;
+        if (path) cookie += "; path=" + path;
+
+        // Set the cookie through the magic document.cookie property
+        document.cookie = cookie;
+      };
+
+      // Remove the specified cookie
+      this.removeItem = function (key) {
+        if (!(key in cookies)) return;  // If it doesn't exist, do nothing
+
+        // Delete the cookie from our internal set of cookies
+        delete cookies[key];
+
+        // And remove the key from the array of names, too.
+        // This would be easier with the ES5 array indexOf() method.
+        for (var i = 0; i < keys.length; i++) {  // Loop through all keys
+          if (keys[i] === key) {              // When we find the one we want
+            keys.splice(i, 1);               // Remove it from the array.
+            break;
+          }
+        }
+        this.length--;                          // Decrement cookie length
+
+        // Finally actually delete the cookie by giving it an empty value
+        // and an immediate expiration date.
+        document.cookie = key + "=; max-age=0";
+      };
+
+      // Remove all cookies
+      this.clear = function () {
+        // Loop through the keys, removing the cookies
+        for (var i = 0; i < keys.length; i++)
+          document.cookie = keys[i] + "=; max-age=0";
+        // Reset our internal state
+        cookies = {};
+        keys = [];
+        this.length = 0;
+      };
+    }
+
+//var cookieStorageStr = new CookieStorage(2, "/");
+//cookieStorageStr.setItem("UserId", "001");
+//cookieStorageStr.setItem("UserName", "ZhangSan");
+//console.log(cookieStorageStr.getItem("UserName"));
+//console.log(cookieStorageStr.key(3));
+//console.log(cookieStorageStr.length);
+//cookieStorageStr.removeItem("UserName");
+//console.log(cookieStorageStr.length);
+//cookieStorageStr.clear();
+//console.log(cookieStorageStr.length);
+
+/**
+ * 4.子 cookie
+ *  为绕开浏览器的单域名下的cookie数限制,一些开发人员使用了一种称为子cookie(subcookie)的概念.
+ *  格式:name=name1=value1&name2=value2&name3=value3&name4=value4&name5=value5
+ */
+//    document.cookie = "data=name=Nicholas&book=Professional%20JavaScript";
+//    console.log(document.cookie);
+//    var data = SubCookieUtil.getAll("data");//取得全部
+//    console.log(data.name); //"Nicholas"
+//    console.log(data.book); //"Professional JavaScript"
+//    console.log(SubCookieUtil.get("data", "name"));//"Nicholas", 逐个获取
+//    console.log(SubCookieUtil.get("data", "book"));//"Professional JavaScript"
+
+//    SubCookieUtil.set("data", "name", "Nicholas");
+//    SubCookieUtil.set("data", "book", "Professional JavaScript");
+//    SubCookieUtil.setAll("data", {name: "Nicholas", book: "Professional JavaScript"},
+//            new Date("January 1, 2010"));
+  </script>
+</body>
+
+</html>

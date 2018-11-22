@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script type="text/javascript" src="../assets/js/event-util.js"></script>
+
+  <script>
+    ///////////////////////
+    // 20140901, Monday
+    // 事件委托
+    //
+    // 模拟事件
+    // createEvent: (notIE)
+    //    UIEvents: UI 事件. 鼠标事件和键盘事件都继承自 UI 事件.
+    //      DOM3 级中是 UIEvent.
+    //    MouseEvents: 鼠标事件
+    //    MutationEvents: DOM变动事件
+    //    HTMLEvents: HTML事件
+    // dispatchEvent: 触发事件 传入 event 对象
+
+
+    // 模拟鼠标事件
+    // initMouseEvent()方法 接收15个参数:
+    //  type(字符串):表示要触发的事件类型,例如"click"
+    //  bubbles(布尔值):表示事件是否应该冒泡,为精确地模拟鼠标事件,应把这个参数设置为true
+    //  cancelable(boolean):事件是否可以取消,为精确地模拟鼠标事件,应把这个参数设置为true
+    //  view(AbstractView):与事件关联的视图.
+    //          这个参数几乎总是要设置为document.defaultView.
+    //  detail(整数): 与事件有关的详细信息, 这个值一般只有事件处理程序使用,
+    //          但通常都设置为0. /鼠标单击量
+    //  screenX(整数):事件相对于屏幕的X坐标
+    //  screenY(整数):事件相对于屏幕的Y坐标
+    //  clientX:  指定 Event 的客户机 x 坐标
+    //  clientY:  指定 Event 的客户机 y 坐标
+    //  ctrlKey(boolean):表示是否按下了Ctrl键,默认为false
+    //  altKey(boolean):表示是否按下了Alt键,默认为false
+    //  shiftKey: 指定是否在 Event 期间按下 shift 键。
+    //  metaKey(boolean):表示是否按下了Meta键,默认为false
+    //  button(整数): 表示按下了哪一个鼠标键.默认值为0
+
+
+    // 模拟键盘事件
+    // createEvent:
+    //  @param: KeyboardEvent
+    //  @param: KeyEvents
+    //
+    // initKeyboardEvent: DOM3
+    //  type(String): 表示要触发的事件类型，如"keydown"
+    //  bubbles(boolean): 是否应该冒泡,为精确模拟鼠标事件,应该设置为true
+    //  cancelable(boolean): 表示事件是否可以取消,为精确模拟鼠标事件,应该设置为true
+    //  view(AbstractView):与事件关联的视图.这个参数几乎总是要设置为
+    //          document.defaultView.
+    //  key(boolean):表示按下的键的键码
+    //  location(integer):表示按下了哪里的建. 0:默认主键盘, 1:表示左, 
+    //          2表示右, 3数字键盘, 4移动设备, 5手柄
+    //  modifiers(字符串): 空格分隔的修改键列表, 如"Shift"
+    //  repeat(integer): 在一行中按了这个键多少次
+    //
+    //  const AtomicString& type, 
+    //  bool canBubble, 
+    //  bool cancelable, 
+    //  AbstractView// view,
+    // 
+    //  const String &keyIdentifier, 
+    //  unsigned location,
+    //  bool ctrlKey, 
+    //  bool altKey, 
+    //  bool shiftKey, 
+    //  bool metaKey, 
+    //  bool altGraphKey
+    //
+    // initKeyEvent: (FF) 接受10个参数
+    //  eventName(String): 表示要触发的事件类型，如"keydown"
+    //  bubbles(boolean): 是否应该冒泡,为精确模拟鼠标事件,应该设置为true
+    //  cancelable(boolean): 表示事件是否可以取消,为精确模拟鼠标事件,应该设置为true
+    //  view(AbstractView):与事件关联的视图.这个参数几乎总是要设置为
+    //          document.defaultView.
+    //  ctrlKey(boolean):表示是否按下了Ctrl键, 默认值为false
+    //  altKey(boolean):表示是否按下了Alt键, 默认值为false
+    //  shiftKey(boolean):表示是否按下了Shift键, 默认值为false
+    //  metaKey(boolean):表示是否按下了Meta键, 默认值为false
+    //  keyCode(integer): 被按下或释放键的键码, 这个参数对keydown, 
+    //          keyup事件有用,默认值为0
+    //  charCode(integer): 通过按键生成的字符的ASCII编码, 
+    //          这个参数对keypress事件有用,默认值为0
+
+
+    // 自定义 DOM 事件
+    // initCustomEvent(): 参数
+    //      type(String): 表示要触发的事件类型，如"keydown"
+    //      bubbles(boolean): 是否应该冒泡,为精确模拟鼠标事件,应该设置为true
+    //      cancelable(boolean): 表示事件是否可以取消, 为精确模拟鼠标事件,应该设置为true
+    //      detail(Object):任意值, 保存在event对象的detail属性中
+
+  </script>
+
+</head>
+
+<body>
+  事件委托
+  <ul id="myLinks">
+    <li id="goSomewhere">Go somewhere</li>
+    <li id="doSomething">Do something</li>
+    <li id="sayHi">Say hi</li>
+  </ul>
+  <hr>
+  <input type="button" value="#myBtn2=> Click me " id="myBtn2" onclick="execMyBtn2()" />
+  <input type="button" value="#myBtn1=> Click me " id="myBtn1" />
+
+  <script>
+    // 传统: 
+    //    goSomewhere.onclick = function(){}
+    //    doSomething.onclick = function(){}
+    //    sayHi.onclick = function(){}
+
+    // 委托只为 ul 元素添加一个 onclick 事件处理程序
+    //  与采用传统做法具有以下优点:
+    //  1.document 对象很快就可以访问, 
+    //    而且可以在页面生命周期的任何时点上为它添加事件处理程序
+    //  2.在页面中设置事件处理程序所需的时间更少, 
+    //    只添加一个事件处理程序所需的DOM引用更少
+    //  3.整个页面占用的内存空间更少, 能够提升整体性能
+    (function () {
+      var list = document.getElementById("myLinks");
+      EventUtil.addHandler(list, "click", function (event) {
+        event = EventUtil.getEvent(event);
+        // 获取触发元素的 target
+        var target = EventUtil.getTarget(event);
+        switch (target.id) {
+          case "doSomething":
+            document.title = "I changed the document's title";
+            break;
+          case "goSomewhere":
+            location.href = "http://www.baidu.com";
+            break;
+          case "sayHi":
+            console.log("hi");
+            break;
+        }
+      });
+    })();
+
+
+    // 移除事件处理程序
+    var btn1 = document.getElementById("myBtn1");
+    btn1.onclick = function () {
+      // 先执行某些 action
+      btn1.onclick = null;  // 移除事件处理程序
+    }
+
+
+    // 创建鼠标事件
+    var btn2 = document.getElementById("myBtn2");
+    var event = document.createEvent("MouseEvents");
+    event.initMouseEvent("click", true, true, document.defaultView,
+      0, 0, 0, 0, 0,
+      false, false, false, false, 0, btn2);
+    btn2.dispatchEvent(event);
+    function execMyBtn2() {
+      console.log('Mouse Events => execMyBtn2');
+    }
+
+  </script>
+
+  <hr>
+  <input type="text" value="" id="myTextbox3" />
+  <input type="button" value="#myBtn3 =>Send keydown to the textbox" id="myBtn3" />
+  <script>
+    // 模拟键盘事件
+    // 模以按住 Shift + A 键
+    (function () {
+      var btn3 = document.getElementById("myBtn3");
+      var textbox = document.getElementById("myTextbox3");
+
+      EventUtil.addHandler(textbox, "keydown", function (event) {
+        console.log(event.type);
+        console.log(event.keyCode);
+      });
+      EventUtil.addHandler(btn3, "click", function (event) {
+        //create event object
+        var event;
+        // DOM Level 3 implementation
+        if (document.implementation.hasFeature("KeyboardEvent", "3.0")) {
+          event = document.createEvent("KeyboardEvent");
+          event.initKeyboardEvent("keydown", true, true, document.defaultView, "a", 0, "Shift", 0);
+        } else {
+          try {
+            //Firefox implementation
+            event = document.createEvent("KeyEvents");
+            event.initKeyEvent("keydown", true, true, document.defaultView, false, false,
+              true, false, 65, 65);
+          }
+          // others
+          catch (ex) {
+            event = document.createEvent("Events");
+            event.initEvent("keydown", true, true);
+            event.view = document.defaultView;
+            event.altKey = false;
+            event.ctrlKey = false;
+            event.shiftKey = false;
+            event.metaKey = false;
+            event.keyCode = 65;
+            event.charCode = 65;
+          }
+        }
+        textbox.dispatchEvent(event);
+      });
+    })();
+
+
+  </script>
+
+  <hr>
+  <div id="myDiv4"></div>
+  <input type="button" value="#myBtn4=> Send textInput to the textbox" id="myBtn4" />
+  <script type="text/javascript">
+
+    // 自定义 DOM 事件
+    var btn4 = document.getElementById("myBtn4");
+    var div = document.getElementById("myDiv4"),
+      event;
+
+    EventUtil.addHandler(div, "myevent", function (event) {
+      console.log("DIV: " + event.detail);
+    });
+    EventUtil.addHandler(document, "myevent", function (event) {
+      console.log("DOCUMENT: " + event.detail);
+    });
+
+    if (document.implementation.hasFeature("CustomEvents", "3.0")) {
+      event = document.createEvent("CustomEvent");
+      event.initCustomEvent("myevent", true, false, "Hello world!");
+      div.dispatchEvent(event);
+    }
+    
+    var event2 = new Event('custome')
+    btn4.addEventListener('custome', function(){
+      console.log('custome')
+    })
+    btn4.dispatchEvent(event2);
+    
+  </script>
+
+  <hr>
+  <input type="button" value="Click me" id="myBtn5" />
+  <input type="button" value="Send click to the other button" id="myBtn6" />
+  <input type="text" value="" id="myTextbox" />
+  <script type="text/javascript">
+    /**
+     *  IE 中 的事件模拟
+     *  document.createEventObject()
+     *  fireEvent()
+     */
+    //    (function () {
+    //        var btn = document.getElementById("myBtn");
+    //        var btn2 = document.getElementById("myBtn2");
+    //        EventUtil.addHandler(btn, "click", function (event) {
+    //            alert("Clicked!");
+    //            alert(event.screenX);   //100
+    //        });
+    //        EventUtil.addHandler(btn2, "click", function (event) {
+    //            var event = document.createEventObject();//create event object
+    //            event.view = window;//initialize the event object
+    //            event.detail = 0;
+    //            event.screenX = 100;
+    //            event.screenY = 0;
+    //            event.clientX = 0;
+    //            event.clientY = 0;
+    //            event.ctrlKey = false;
+    //            event.altKey = false;
+    //            event.metaKey = false;
+    //            event.shiftKey = false;
+    //            event.button = 0;
+    //            event.relatedTarget = null;
+    //            btn.fireEvent("onclick", event);//fire the event
+    //        });
+    //    })();
+
+    //    (function () {
+    //        var btn = document.getElementById("myBtn");
+    //        var textbox = document.getElementById("myTextbox");
+    //        EventUtil.addHandler(textbox, "keypress", function (event) {
+    //            event = EventUtil.getEvent(event);
+    //            var charCode = EventUtil.getCharCode(event);
+    //            alert(charCode);
+    //        });
+    //        EventUtil.addHandler(btn, "click", function (event) {
+    //            var event = document.createEventObject();//create event object
+    //            event.altKey = false;//initialize the event object
+    //            event.ctrlKey = false;
+    //            event.shiftKey = false;
+    //            event.keyCode = 65;
+    //            textbox.fireEvent("onkeypress", event);//fire the event
+    //        });
+    //    })();
+  </script>
+</body>
+
+</html>

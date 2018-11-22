@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>选择器2-伪类</title>
+    <style type="text/css">
+        h3 {
+            color: blue;
+        }
+
+        /*选择元素的第一个子元素*/
+
+        #wrapper0 p:first-child {
+            font-weight: bold;
+        }
+
+        #wrapper0 li:first-child {
+            text-transform: uppercase;
+            background-color: yellow;
+        }
+
+        /*选择元素最后一个元素*/
+
+        #wrapper0 li:last-child {
+            background-color: grey;
+        }
+
+        /*从上往下数*/
+
+        #wrapper0 li:nth-child(2) {
+            background-color: firebrick;
+        }
+
+        /*从下往上数*/
+
+        #wrapper0 li:nth-last-child(3) {
+            background-color: darkgreen;
+        }
+
+        /* 跟据奇数 odd /偶数 even */
+
+        #wrapper0 li:nth-child(even) {
+            color: blue;
+        }
+
+        /* 连同父级一起计算 */
+
+        #wrapper h2:nth-child(odd) {
+            background-color: firebrick;
+        }
+
+        #wrapper h2:nth-of-type(odd) {
+            background-color: yellow;
+        }
+
+        /*使用公式 (an + b)。
+        表示周期的长度，n 是计数器（从 0 开始），b 是偏移值。*/
+
+        #wrapper2 li:nth-child(4n+1) {
+            background-color: aqua;
+        }
+
+        /*规定属于其父元素的唯一子元素的每个 li 元素*/
+
+        #wrapper3 li:only-child {
+            background-color: firebrick;
+        }
+
+        /**/
+
+        /**/
+    </style>
+</head>
+
+<body>
+    <h2>first-child, last-child, nth-child, nth-last-child</h2>
+    <h2>nth-of-type, nth-last-of-type</h2>
+    <h2>only-child 选择器</h2>
+
+    <h3>first-child</h3>
+
+    <div id="wrapper0">
+        <p>These are the necessary steps:</p>
+        <ul>
+            <li>Intert Key</li>
+            <li>Turn key
+                <strong>clockwise</strong>
+            </li>
+            <li>Push accelerator</li>
+            <li>This is forth </li>
+            <li>This is five </li>
+            <li>This is six </li>
+        </ul>
+    </div>
+
+    <div id="wrapper">
+        <h2>文章标题1</h2>
+        <p>article content</p>
+        <h2>文章标题2</h2>
+        <p>article content</p>
+        <h2>文章标题3</h2>
+        <p>article content</p>
+        <h2>文章标题4</h2>
+        <p>article content</p>
+    </div>
+
+    <div id="wrapper2">
+        <ul>
+            <li>item 1</li>
+            <li>item 2</li>
+            <li>item 3</li>
+            <li>item 4</li>
+            <li>item 5</li>
+            <li>item 6</li>
+            <li>item 7</li>
+            <li>item 8</li>
+            <li>item 9</li>
+        </ul>
+    </div>
+
+    <div id="wrapper3">
+        <ul>
+            <li>item 1</li>
+        </ul>
+        <ul>
+            <li>item 1</li>
+        </ul>
+        <ul>
+            <li>item 1</li>
+            <li>item2</li>
+            <li>item3</li>
+            <li>item4</li>
+            <li>item5</li>
+            <li>item6</li>
+            <li>item7</li>
+            <li>item8</li>
+            <li>item9</li>
+        </ul>
+    </div>
+</body>
+
+</html>

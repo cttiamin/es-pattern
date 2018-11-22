@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>dom node type </title>
+  <script type="text/javascript">
+    //////////////////////////////////////////////
+    //  Chapter 10: DOM, 20140410, Thursday, 11:18
+    //  Document=> Element => attributes => node
+    //
+    //  Node 类型
+    //    nodeType: 节点的类型
+    //    nodeValue: Text节点或 Comment 节点的文本内容
+    //    nodeName: 元素的标签名, 以大写形式表示.
+    //
+    //    children: 返回元素 input, span, script, div等, 不返回 TextNode  
+    //    childNodes[]: 返回元素，还会返回 TextNode，注释等
+    //    childNodes.item(1) 
+    //    firstChild: 该节点的子节点中第一个
+    //    lastChild: 该节点的子节点中最后一个
+    //    parentNode: 该节点的父节点, Document对象是null
+    //    hasChildNodes: 当前是否有子节点
+    //    nextSibling: 该节点的兄弟节点中的前一个
+    //    previoursSibling: 兄弟节点中下一个
+    //    IE9+/Firefox3.5+/(DOM3)：
+    //    firstElementChild:      =firstChild 比其快
+    //    lastElementChild:       =lastChild 比其快
+    //    previousElementSibling: =previousSibling
+    //    nextElementSilbing:     =nextSibling
+    //    childElementCount:      =childNodes.length; 比其快
+    // 
+    //    appendChild ( chileNode ): 在尾部添加
+    //    insertBefore ( 要插入的节点, 作为参照的节点 ) : 在头部添加
+    //    replaceChild ( 要插入的节点, 要替换的节点 ) : 替换节点
+    //    removeChild (要移除的节点) : 移除节点
+    //    cloneNode(true or false) : 执行深复制
+    //    normalize() : 将相邻文本节点合并
+
+    
+    // Document类型 => nodeType: 9
+    //    body / head / title / URL / domain
+    //    doctype : DOCTYPE
+    //       Dom2: publicId .systemId .internalSubset
+    //    referrer : 来源的URL
+    //    anchors;包含文档中所带name特性的<a>元素
+    //    applets; 不建议使用, 包含 applets 元素
+    //    forms: 包含文档中所有的<\form>元素,
+    //      与document.getElementsByTagName("form") 相同
+    //    images: 文档中所有<\img>元素,
+    //      与document.getElementsByTagName("img")相同
+    //    links; 包含文档中所有带href特性的<\a>元素
+    //    all[]: 所有文档的元素(除Text节点)
+    //    charset: 字符集属性
+    //
+    //    readyState: loading:正在加载文档
+    //      complete:已经加载完文档
+    //    compatMode == "CSS1Compat" 是否为standard模式
+    // 
+    //    getElementById
+    //    getElementsByTagName('ele') : 不区分大小写(XML别区大小写)
+    //    getElementsByName("ele") :
+    //    ie8+
+    //    getElementsByClassName: 
+    //    querySelector(#id .class img)
+    //    querySelectorAll: 比DOM迭代快
+    //    matchesSelector: 是否与当前选择符匹配
+    // 
+    //    implementation.hasFeature("名称", "版本号"):浏览器是否实现某些特性
+    // 
+    //    write:
+    //    writeln: 在末尾添加一个 (\n) 符
+    //    open:
+    //    close:
+    // 
+    //    contains: 是否包含某个元素,IE9+,Firefox,Safari,Opera,Chrome,
+    //    compareDocumentPosition: 与contains相同, 返回位掩码(bitmask) IE9+
+    //      1 : 无关 给定节点不在当前文档中,
+    //      2 : 居前 给定的节点在DOM树中 位于参考节点之前, 
+    //      4 : 居后 给定的节点在DOM树中 位于参考节点之后,
+    //      8 : 包含 给定的节点 是参考节点的祖先,
+    //      16 : 被包含 给定的节点 是参考节点的后代
+    //
+    // Element类型  => nodeType : 1
+    //    id / className / title / lang / dir
+    //    getAttribute: 获取属性
+    //    setAttribute: 设置属性
+    //    removeAttribute: 彻底删除,不常用
+    //    attributes => NamedNodeMap :
+    //      getNamedItem(name) : 返回nodeName属性等于name的节点
+    //      removeNamedItem(name): 从列表中移除nodeName
+    //      setNamedItem(node): 向列表添加节点, 以节点nodeName属性为索引
+    //      item(pos): 返回位于数字pos位置处的节点
+    //    attributes[i].specified : 每个特性节点都有一个名为specified的属性,
+    //      如果为true意味着要么是在HTML中指定了特性,要么通过setAttribute()
+    //      方法设置了该特性.
+    //    document.createElement: 创建元素
+    //    data-: 自定义数据属性 div.dataset.appId
+    //
+    // Text类型 => nodeType : 3 / nodeName: "#text"
+    //    nodeValue: 节点所包含的文本  
+    //    appendData(text): 将text添加到节点的末尾
+    //    deleteDate(offset, count): 从offset指定的位置开始删除count字符
+    //    insertData(offset, text): 在offset指定的位置插入text
+    //    replaceData(offset, count, text): text替换从offset指定的位置
+    //      开始到offset+count处为止
+    //    substringData(offset, count): 提取从offset 到offset+count的
+    //      字符串
+    //    createTextNode(): 创建文本节点
+    //    splitText(offset):分割节点从offset位置把文本节点分成两个
+    //      
+    // Comment类型 => 注释 => nodeType: 8
+    //    nodeName: "#comment"
+    //    document.createComment: 创建注释
+    //
+    // CDATASection类型 nodeType: 4
+    //    nodeName: "#cdata-section"
+    //
+    // DocumentFragmet类型 nodeType: 11
+    //    document.createDocumentFragment: 代码片段
+    //
+    // Attr类型 = > nodeType:2
+    //    document.createAttribute:
+    //    
+    //    Node.ENTITY_SECTION_NODE;   //5 实体引用
+    //    Node.ENTITY_NODE;   //6 实体
+    //    Node.PROCESSING_INSTRUCTION_NODE; //7
+    //    Node.DOCUMENT_TYPE_NODE;    //10
+    //    Node.NOTATION_NODE;     //12
+
+    //为元素加粗(外套b元素)
+    // @n: 元素ID
+    function embolden(n) {
+      if (typeof n == "string") n = document.getElementById(n);
+      var parent = n.parentNode;
+      var b = document.createElement("b");
+      parent.replaceChild(b, n);
+      b.appendChild(n);
+    }
+
+    // Document 类型
+    (document.documentElement); // => <html>...</html>
+    (document.childNodes);  // => [<!DOCTYPE>, html, item:function]
+    (document.firstChild);  // => <!DOCTYPE>
+    (document.title);       // => Chapter 10:Dom...
+    (document.URL);  // => http://localhost/100_Dom.html
+    (document.domain); // => localhost 
+    (document.referrer); // => ""
+
+    // document.getElmentsByName("span");
+    // document.getElementsByTagName("p")[0];
+
+    // 4.特殊集合 HtmlCollection对象, 为访问文档常用的部分提供了快捷方式
+    (document.anchors); // 包含文档中所带 name 特性的 <a> 元素
+    document.applets;   // 不建议使用, 包含applets元素
+    (document.forms);
+    (document.images);
+    (document.links); // 文档中所有带href特性的<a>元素
+
+    document.all[0];  //文档中第一个元素
+    document.all["navbar"]; // id或name为"navbar"的元素(或多个元素)
+    document.all.navball;   // 同上
+    //document.all.tags("div"); //文档中所有的<div>元素
+    //document.all.tags("p")[0];  //文档中第一个<p>元素
+
+    // doc.getElementsByClassName("fatal error");
+
+    // head 属性
+    document.head || document.getElementsByTagName("head")[0];
+
+    /****************************
+    * 11.3.4 字符集属性
+    * document.charset : 表示文档中实际使用的字符集, 
+    *   也可通过<\meta>元素响应疛部或直接设置
+    */
+    document.charset;  //"UTF-8
+    document.charset = "UTF-8";
+    if (document.charset != document.defaultCharset) {
+      ("Custom character set being used.");
+    }
+
+    //  DOM一致性检测
+    document.implementation.hasFeature("XML", "1.0");
+
+    // readyState属性: 
+    //  loading:正在加载文档, 
+    //  complete:已经加载完文档)
+    if (document.readyState === "complete") {
+      console.log("readyState => complete");
+    }
+
+    // 兼容模式 IE
+    if (document.compatMode == "CSS1Compat") {
+      ("Standards mode");
+    } else {
+      ("Quirks mode");
+    }
+
+    // 11.1.3 matchesSelector:是否与当前选择符匹配
+    function matchesSelector(element, selector) {
+      if (element.matchesSelector) {
+        return element.matchesSelector(selector);
+      } else if (element.msMatchesSelector) {
+        // IE9+
+        return element.msMatchesSelector(selector);
+      } else if (element.mozMatchesSelector) {
+        // Firefox
+        return element.mozMatchesSelector(selector);
+      } else if (element.webkitMatchesSelector) {
+        //chrome / Safari
+        return element.webkitMatchesSelector(selector);
+      } else {
+        throw new Error("Not supported.");
+      }
+    }
+    // if (matchesSelector(document.body, "body.page1")) {
+    //   ("It's page 1!");  // => "It's page 1"
+    // }
+
+    ///////////////////////////////////
+    // Element 属性
+    var div1 = document.createElement('div');
+    div1.id = 'div1'
+    div1.tagName == div1.nodeName;   // true
+    // tagName输出"DIV", 在HTML中标签都是大写, XML(XHTML)标签名与源码一致
+    div1.tagName.toLowerCase() == "div" // true
+
+    div1.attributes.getNamedItem("id").nodeValue;    //取得节点的值
+    div1.attributes["id"].nodeValue;                 //用方括号语法
+    div1.attributes["id"].nodeValue = "someOtherId"; //设置新值
+    // 与 removeAttribute() 区别是有返回
+    // div1.arrtibutes.removeNamedItem("id");    // => error!
+
+    //迭代元素的属性
+    function outputAttributes(element) {
+      var pairs = new Array(),
+        attrName,
+        attrValue,
+        i,
+        len;
+      for (i = 0, len = element.attributes.length; i < len; i++) {
+        attrName = element.attributes[i].nodeName;
+        attrValue = element.attributes[i].nodeValue;
+        if (element.attributes[i].specified) { // 是否设置了该特性
+          pairs.push(attrName + "=\"" + attrValue + "\" ");
+        }
+      }
+      return pairs.join(" ");
+    }
+
+    ///////////////////////////////////
+    // 10.1.4 Text类型
+    function addNode() {
+      var element = document.createElement("div");
+      element.className = "message";
+      var textNode = document.createTextNode("Hello world!");
+      var anotherTextNode = document.createTextNode("Yippee!");
+      element.appendChild(textNode);
+      element.appendChild(anotherTextNode);
+      document.body.appendChild(element);
+
+      element.childNodes.length;    // => 2
+      element.normalize();          // 合并相邻的文本节点
+      element.childNodes.length;    // => 1
+      element.firstChild.nodeValue; // => Hello world!Yippee!
+
+      var newNode = element.firstChild.splitText(5);  //从索引5开始分割
+      element.firstChild.nodeValue;  // => " hello "
+      newNode.nodeValue;             // => "world!Yippee!"
+      element.childNodes.length;     // => 2
+    }
+  </script>
+</head>
+
+<body>
+  <script src="../lib/client.js"></script>
+  <script>
+    var myList = document.createElement('ul');
+    myList.id = 'list-2';
+    document.body.appendChild(myList);
+
+    // DocumentFragmet => nodeType: 11
+    function addItems() {
+      var fragment = document.createDocumentFragment();
+      var ul = myList;
+      var li = null;
+      for (var i = 0; i < 3; i++) {
+        li = document.createElement("li");
+        li.appendChild(document.createTextNode("Item " + (i + 1)));
+        fragment.appendChild(li);
+      }
+      ul.appendChild(fragment);
+    }
+    addItems();
+
+    /**
+     * 6.元素子节点
+     * IE 解析为 3个子节点, 分别是3个<li>元素, 
+     * 但其它浏览器中是7个, 3个<li>和4个文本节点(表示li元素之间空白符)
+     */
+    for (var i = 0, len = myList.childNodes.length; i < len; i++) {
+      if (myList.childNodes[i].nodeType == 1) { // 是元素节点时
+        (myList.childNodes[i].tagName); // => LI LI LI
+      }
+    }
+
+    // 倒序排列节点n的子节点
+    function reverse(n) {
+      //创建一个DocumentFragment作为临时容器
+      var f = document.createDocumentFragment();
+      //从后至前循环子节点, 将每一个子节点移动到文档片段中
+      while (n.lastChild) {
+        f.appendChild(n.lastChild);
+      }
+      n.appendChild(f);
+    }
+    // reverse(myList);
+
+    //  10.1.9  Attr类型 = > nodeType:2
+    var element6 = document.createElement('div');
+    element6.id = 'myDiv6';
+    var attr6 = document.createAttribute("align");
+    attr6.value = "left";
+    attr6.nodeType;  // 2
+    element6.setAttributeNode(attr6);
+    element6.attributes["align"].value;       //"left"
+    element6.getAttributeNode("align").value; //"left"
+    element6.getAttribute("align");           //"left"
+
+
+    // 10.2.1 动态脚本 => 需在body中运行
+    function loadScript(url) {
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = url;
+      document.body.appendChild(script);
+    }
+    //loadScript("lib/090_client.js");
+
+    // 通用动态创建方法
+    function loadScriptString(code) {
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      try {   // safair3之前 不支持 text 属性
+        script.appendChild(document.createTextNode(code));
+      } catch (ex) {  // if ie
+        script.text = code;
+      }
+      document.body.appendChild(script);
+    }
+    function addScript() {
+      loadScriptString("function sayHi(){alert('hi');}");
+      sayHi();
+    }
+    // addScript();
+
+
+    // 兼容的 contains
+    function contains(refNode, otherNode) {
+      if (typeof refNode.contains == "function" &&
+        (!client.engine.webkit || client.engine.webkit >= 522)) {
+        return refNode.contains(otherNode);
+      } else if (typeof refNode.compareDocumentPosition == "function") {
+        return !!(refNode.compareDocumentPosition(otherNode) & 16);
+      } else {
+        var node = otherNode.parentNode;
+        do {
+          if (node === refNode) {
+            return true;
+          } else {
+            node = node.parentNode;
+          }
+        } while (node !== null);
+        return false;
+      }
+    }
+    contains(document.documentElement, document.body);
+    // => true
+    
+  </script>
+</body>
+
+</html>

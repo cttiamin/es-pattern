@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title> IE BUG - 相对容器中的绝对定位</title>
+        <style type="text/css">
+            * {
+                margin:0; padding:0;
+            }
+
+            body {
+                font:11px Verdana, Geneva, sans-serif; 
+                padding:10px; 
+            }
+
+
+            .box-model-01{ 
+                position:relative; 
+                border:1px solid black; 
+                background:#cf0; 
+                padding:10px;
+            }
+            
+            .box-model-02{ 
+                width:100px; 
+                height:100px; 
+                border:1px solid black; 
+                background:#fc0; 
+                padding:10px; 
+                position:absolute; 
+                right:10px; 
+                bottom:10px;
+            }
+
+            /*IE6 hack 代码*/
+            *html .box-model-01 { 
+                height:1%;/**/
+            }
+            
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <p>IE6中box-model-02 向右下跑偏</p>
+        <div class="box-model-01">
+            box-model-01
+            <div class="box-model-02">box-model-02</div>
+
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+        </div>
+
+    </body>
+</html>

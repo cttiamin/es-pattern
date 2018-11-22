@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Canvas 使用路径</title>
+</head>
+<body>
+
+   <h2>绘制图形</h2>
+    <h3>beginPath, closePath,</h3>
+   <canvas id="canvas" width="600px" height="700px"></canvas>
+   <script>
+       function draw(id){
+           var canvas = document.getElementById(id);
+           if(canvas == null){
+               return false;
+           }
+           var context = canvas.getContext("2d");
+           context.fillStyle = "#eeeeef";
+           context.fillRect(0, 0, 600, 700);
+           for(var i = 0; i <= 10; i++){
+               context.beginPath();
+               context.arc(i*25, i*25, i*10, 0, Math.PI*2, true);
+               context.closePath();
+               context.fillStyle = "rgba(255, 0, 0, 0.25)";
+               //红色填充， 半透明
+               context.fill();
+           }
+       }
+       //draw("canvas");
+   </script>
+
+<h3>move to , line to</h3>
+<canvas id="canvas2" width="300" height="400"></canvas>
+<script>
+    function draw2(id){
+        var canvas = document.getElementById(id);
+        var context = canvas.getContext("2d");
+        context.fillStyle = "#eeeeef";
+        context.fillRect(0, 0, 300, 400);
+        var dx = 150;
+        var dy = 150;
+        var s = 100;
+        context.beginPath();
+        context.fillStyle = "rgb(100, 255, 100)";
+        context.strokeStyle = "rgb(0, 0, 100)";
+        //图形过框样式
+        var x = Math.sin(0);
+        var y = Math.cos(0);
+        var dig = Math.PI / 15*11;
+        for(var i = 0; i < 30; i++){
+            var x = Math.sin(i * dig);
+            var y = Math.cos(i * dig);
+            context.lineTo(dx+x*s, dy+y*s);
+            //绘制直线， 坐标点的x, y
+        }
+        context.closePath();
+        context.fill();
+        context.stroke();
+    }
+    // draw2("canvas2");
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

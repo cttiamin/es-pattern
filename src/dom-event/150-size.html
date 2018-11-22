@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>offset scroon</title>
+</head>
+<body>
+  <script>
+    /////////////////////////////
+    //  元素大小
+    //    offsetHeight: 元素高加边框,在垂直方向上占用的空间大小,以像素计
+    //    offsetWidth: 元素宽加边框,在水平方向上占用的空间大小,以像素计
+    //    offsetLeft: 左边距,元素左外边框到包含元素的左内边框之间的像素距离
+    //    offsetTop:  上边距,元素的上外边框到包含元素的上内边框之间的像素距离
+    //    offsetParent:
+    //    clientWidth : 宽,滚动条占空间不计?
+    //    clientHeight: 
+    //    document.documentElement.clientWidth
+    //    scrollHeight: 在没有滚动条的情况下, 元素内容的总高度
+    //    scrollWidth:  在没有滚动条的情况下, 元素内容的总宽度
+    //    scrollLeft: 被隐藏在内容区域左侧的像素数. 通过设置这个属性可以
+    //      改变元素的滚动位置
+    //    scrollTop:  被隐藏在内容区域上方的像素数. 通过设置这个属性可以
+    //      改变元素的滚动位置 
+
+    var myDiv = document.createElement('div');
+    document.body.appendChild(myDiv);
+    myDiv.id = 'myDiv';
+    myDiv.innerText = 'This is create div';
+
+    // 取得左偏移量 offsetLeft 与 offsetParent 的累加
+    function getElementLeft(element) {
+      var actualLeft = element.offsetLeft;
+      var current = element.offsetParent;
+      var i = 1
+      while (current !== null) {
+        // console.log(i + ":" + actualLeft);
+        actualLeft += current.offsetLeft;
+        current = current.offsetParent;
+      }
+      return actualLeft;
+    }
+    // 取得上偏移量 offsetTop 与 offsetParent 的累加
+    function getElementTop(element) {
+      var actualTop = element.offsetTop;
+      var current = element.offsetParent;
+      while (current !== null) {
+        actualTop += current.offsetTop;
+        current = current.offsetParent;
+      }
+      return actualTop;
+    }
+    getElementLeft(myDiv);
+    getElementTop(myDiv);
+
+
+    // 客户区大小 client dimension
+    function getViewport() {
+      // 确定是否在混杂模式, Safari3.1之前不支持这个属性
+      if (document.compatMode == "BackCompat") {
+        return {
+          width: document.body.clientWidth,
+          height: document.body.clientHeight
+        };
+      } else {
+        return {
+          width: document.documentElement.clientWidth,
+          height: document.documentElement.clientHeight
+        };
+      }
+    }
+    // getViewport();
+
+    // 滚动大小 ( scroll dimension )
+    var docHeight = Math.max(document.documentElement.scrollHeight,
+      document.documentElement.clientHeight);
+    var docWidth = Math.max(document.documentElement.scrollWidth,
+      document.documentElement.clientWidth);
+    //取得scrollTop值
+    document.documentElement.scrollTop;
+    "height: " + docHeight + " width:" + docWidth;
+    // => height:1504,  width:687
+
+
+    // <IE8 (2,2), IE9+:(0,0),
+    //获取客户端矩形边界的4个点: 返回一个矩形对象
+    //使用自身属性来确定是否要对坐标进行调整
+    function getBoundingClientRect(element) {
+      var scrollTop = document.documentElement.scrollTop;     //0
+      var scrollLeft = document.documentElement.scrollLeft;   //0
+
+      //属性是否有定义,offset设置为新元素上坐标负值
+      if (element.getBoundingClientRect) {
+        if (typeof arguments.callee.offset != "number") { //undefined,
+          //创建一个临时元素
+          var temp = document.createElement("div");
+          //将位置设置在(0,0)
+          temp.style.cssText = "position:absolute;left:0;top:0;";
+          document.body.appendChild(temp);
+          //计算不同浏览器的位置(ie:-2,other:-0)
+          arguments.callee.offset = -temp.getBoundingClientRect().top
+            - scrollTop;
+          document.body.removeChild(temp);    //移除元素
+          temp = null;                         //去除引用
+        }
+        var rect = element.getBoundingClientRect();
+        var offset = arguments.callee.offset;   // 0
+        return {
+          left: rect.left + offset,
+          right: rect.right + offset,
+          top: rect.top + offset,
+          bottom: rect.bottom + offset
+        };
+        //对于不支持getBoundingClientRect()的浏览器, 使用offsetWidth
+      } else {
+        var actualLeft = getElementLeft(element);
+        var actualTop = getElementTop(element);
+        return {
+          left: actualLeft - scrollLeft,
+          right: actualLeft + element.offsetWidth - scrollLeft,
+          top: actualTop - scrollTop,
+          bottom: actualTop + element.offsetHeight - scrollTop
+        }
+      }
+    }
+    getBoundingClientRect(myDiv);
+
+
+  </script>
+</body>
+
+</html>

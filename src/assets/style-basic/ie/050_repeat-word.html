@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title> IE BUG - 重复字</title>
+<style type="text/css">
+
+* {margin:0; padding:0;}
+
+body {font:11px Verdana, Geneva, sans-serif; padding:10px; }
+
+.box-model{ 
+    width:600px;
+}
+
+.box-model div{ 
+    float:left; 
+    width:150px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h3>在"一只鱼"元素前加入注释会引起 重复字Bug</h3>
+<div class="box-model">
+    <div class="box-model-01">重复文字：</div>
+    <!--  -->
+    <div class="box-model-02">需要你我是一只鱼</div>
+</div>
+
+
+</body>
+</html>

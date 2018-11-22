@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <title>Chapter 15, 使用Canvas绘图</title>
+</head>
+<body>
+15.2.2 绘制矩型
+<canvas id="drawing" width="200" height="200">A drawing of something.</canvas>
+<script type="text/javascript">
+    /**
+     * Chapter 15, 使用Canvas绘图, 20140527, Tuesday
+     *
+     * 15.1 基本用法
+     * 15.2 2D上下文
+     * 15.2.1 填充和描边
+     *      Element.getContext: 获取绘制上下文,确定browser support canvas element
+     * 15.2.2 绘制矩形
+     *      fillStyle:    指定填充颜色
+     *      fillRect()  : 参数:x坐标,y坐标,宽度,高度, 绘制矩形用指定颜色填充
+     *      strokeStyle ; 指定描边的颜色
+     *      strokeRect(): 参数:x坐标,y坐标,宽度,高度, 绘制矩形用指定颜色搭边
+     *      clearRect() : 清除画布上的矩形区域
+     * 15.2.3 绘制路径
+     *      beginPath(): 表示开始路径.要绘制路径必须调用此方法.
+     *      arc(x, y, radius, startAngle, endAngle, counterclockwise):以(x,y)为圆心绘制一条弧线,半
+     *      径为:radius,起始和结束角度,是否按逆时方向计算
+     *      arcTo(x1, y1, x2, y2, radius):从上一点开始绘制一条弧线,到(x2,y2)为止,并且心给定的半径
+     *      radius穿过(x1,y1)
+     *      bezierCurveTo(c1x, c1y, c2x, c2y, x, y):从上一点开始绘制一条曲线,到(x,y)为止,并且以
+     *      (c1x,c1y)和(c2x,c2y)为控制点
+     *      lineTo(x, y) :从上一点开始绘制一条直线,到(x,y)为止
+     *      moveTo(x, y): 将绘图游标移动到(x,y),不画线
+     *      quadraticCurveTo(cx, cy, x, y):从上一点开始绘制一条二次曲线,到(x,y)为止,并且以(cx,cy)
+     *      作为控制点
+     *      rect(x, y, width, height):从点(x,y)开始绘制一个矩形,宽度和高度分别由width和height指定.
+     *      只绘制矩形路径
+     *      closePath():
+     *      stroke():
+     *      lineclip(): 如何渲染线段的末端
+     *      lineJoin(); 如何渲染顶点
+     *      lineWidth(): 外框线的宽度
+     *      isPointInPath(): 在路径被关闭之前确定画布上的某一点是否位于路径上.
+     * 15.2.4 绘制文本
+     *      fillText(文本字符串, x, y, 最大像素宽度):  绘制文本
+     *      strokeText(): 绘制文本
+     *      font: 文本样式, 大小及字体, 用CSS中指定字
+     *      textAlign: start/end/left/right/center, 建议使用start,end,不要left/right
+     *      textBaseline: 表示文本基线 top/hanging/middle/alphabetic/ideographic/bottom
+     *      measureText() : 利用font,textAlign,textBaseline的当前值计算指定文本大小
+     * 15.2.5 变换
+     *      rotate(angle): 围绕原点旋转图像angle弧度
+     *      scale(scaleX, scaleY):缩放图像,在x方向乖以scaleX, 在y方向乖以scaleY. scaleX和
+     *      scaleY默认值都是1.0
+     *      translate(x,y):将坐标原点移动到(x,y).执行这个变换后,坐标(0,0)会变成之前由(x,y)
+     *      表示的点.
+     *      transform(m1_1, m1_2, m2_1, m2_2, dx, dy):直接修改变换矩阵,方式是乘以如下矩阵
+     *      setTransform(m1_1, m1_2, m2_1, m2_2, dx, dy): 将变换矩阵重置为默认状态,然后在调
+     *      用transform()
+     * 15.2.6 绘制图像
+     *      drawImage(要绘制的图像, 源图像x坐标, 原图像y坐标, 源图像的宽度, 源图像高度,
+     *      目标图像x坐标, 目标图像y坐标, 目标图像宽度, 目标图像高度): 把image绘制到画布上
+     * 15.2.7 阴影
+     *     shadowBlur:模糊的像素数,默认0,即不模糊
+     *     shadowColor:用CSS颜色格式表示的阴影颜色,默认为黑色
+     *     shadowOffsetX:形状或路径x轴方向的阴影偏移量,默认为0
+     *     shadowOffsetY:形状或路径y轴方向的阴影偏移量,默认为0
+     * 15.2.8 渐变
+     *      CanvasGradient(起点的X, 起点Y, 终点X, 终点Y):創建一個新的线性渐变
+     *      addColorStop(色标位置, CSS颜色值):指定色标
+     *      createRadialGradient(起点原心x, y, 内半径, 终点原心x, y, 外半径):
+     * 15.2.9 模式
+     *      createPattern(img元素, 重复图像的字符串):
+     * 15.2.10 使用图像数据
+     *      getImageData(坐标x, y, width, height):取得原始图像数据
+     * 15.2.11 合成
+     *      globalAlpha : 0-1之间的值,指定draw透明度, 默认值:0,
+     *      globalCompositionOperation : 后绘制的图形怎样与先绘制的图形结合. 值如下:
+     *          source-over: (default)后绘制的图形位于先绘制的图形上方
+     *          source-in: 后draw与先draw重叠部分可见,两者其它部分完全透明
+     *          source-out:后draw与先draw不重叠部分可见,先draw图形完全透明
+     *          source-atop:后draw与先draw重叠部分可见,先draw不受影响
+     *          destination-over:后draw位于先draw的下方,只有之前透明像素下的部分才可见
+     *          destination-in:后draw位于先draw的下方,两者不重叠部份完全透明
+     *          destination-out:后draw的图形擦除与先draw的图形重叠的部分
+     *          destination-atop:后draw的图形位于先draw的下方, 在两者不重叠的地方,先draw的变透明
+     *          lighter:后draw的图形与先draw的图形重叠部分的值相加,使该部分变亮
+     *          copy:后draw完全替代之重叠的先draw图形
+     *          xor:后draw的图形与先draw执行"异或"操作
+     * 15.3 WebGL
+     * 15.3.1 类型化数组
+     * 15.3.2 WebGL 上下文
+     * 15.3.3 支持
+     *
+     * canvas与SVG之间区别:canvas绘制图形是通过调用它提供的方法而使用 SVG是通过构建一棵XML元素树
+     * 来实现.
+     */
+
+    var drawing = document.getElementById("drawing");
+
+    //    if (drawing.getContext) { //确定browser支持canvas元素
+    //        var context = drawing.getContext("2d");//取得2D上下文对象
+    //        var imgURI = drawing.toDataURL("image/png");//取得图像的数据URI
+    //        var image = document.createElement("img");//显示图像
+    //        image.src = imgURI;
+    //        document.body.appendChild(image);
+    //    }
+
+    /**
+     * 15.2 2D上下文
+     * 15.2.1 填充和描边
+     * 15.2.2 绘制矩形
+     *      fillStyle:    指定填充颜色
+     *      fillRect()  : 参数:x坐标,y坐标,宽度,高度, 绘制矩形用指定颜色填充
+     *      strokeStyle ; 指定描边的颜色
+     *      strokeRect(): 参数:x坐标,y坐标,宽度,高度, 绘制矩形用指定颜色搭边
+     *      clearRect() : 清除画布上的矩形区域
+     */
+
+    if (drawing.getContext) {   //绘制两个填充矩形
+        var context = drawing.getContext("2d");
+        context.fillStyle = "#ff0000";//绘制红色矩形
+        context.fillRect(10, 10, 50, 50);
+        context.fillStyle = "rgba(0, 0, 255, 0.5)";//绘制半透明蓝色矩形
+        context.fillRect(30, 30, 50, 50);
+    }
+
+    if (drawing.getContext) {//绘制两个描边矩形
+        var context = drawing.getContext("2d");
+        context.strokeStyle = "#ff0000";//绘制红色描边矩形
+        context.strokeRect(10, 10, 50, 50);
+        context.strokeStyle = "rgba(0, 0, 255, 0.5)";
+        context.strokeRect(30, 30, 50, 50);//绘制半透明的蓝色描边矩形
+    }
+
+    if (drawing.getContext) {   //清除画面上的矩形区域
+        var context = drawing.getContext("2d");
+        context.fillStyle = "#ff0000";//绘制红色矩形
+        context.fillRect(10, 10, 50, 50);
+        context.fillStyle = "rgba(0, 0, 255, 0.5)";//绘制半透明
+        context.fillRect(30, 30, 50, 50);
+        context.clearRect(40, 40, 10, 10);//在两个矩形重叠的地方清除一个小矩形
+    }
+</script>
+
+<hr>
+15.2.3 绘制路径
+<canvas id="drawing2" width="200" height="200">A drawing of something.</canvas>
+<canvas id="drawing9" width="200" height="200">A drawing of something.</canvas>
+<script type="text/javascript">
+    /**
+     * 15.2.3 绘制路径
+     * beginPath(): 表示开始路径.要绘制路径必须调用此方法.
+     * arc(x, y, radius, startAngle, endAngle, counterclockwise):以(x,y)为圆心绘制一条弧线,半
+     * 径为:radius,起始和结束角度,是否按逆时方向计算
+     * arcTo(x1, y1, x2, y2, radius):从上一点开始绘制一条弧线,到(x2,y2)为止,并且心给定的半径
+     * radius穿过(x1,y1)
+     * bezierCurveTo(c1x, c1y, c2x, c2y, x, y):从上一点开始绘制一条曲线,到(x,y)为止,并且以
+     * (c1x,c1y)和(c2x,c2y)为控制点
+     * lineTo(x, y) :从上一点开始绘制一条直线,到(x,y)为止
+     * moveTo(x, y): 将绘图游标移动到(x,y),不画线
+     * quadraticCurveTo(cx, cy, x, y):从上一点开始绘制一条二次曲线,到(x,y)为止,并且以(cx,cy)
+     * 作为控制点
+     * rect(x, y, width, height):从点(x,y)开始绘制一个矩形,宽度和高度分别由width和height指定.
+     * 只绘制矩形路径
+     * closePath():
+     * fill():
+     * stroke():
+     * isPointInPath(): 在路径被关闭之前确定画布上的某一点是否位于路径上.
+     */
+    var drawing = document.getElementById("drawing2");
+
+    if (drawing.getContext) {       //绘制一个钟表盘
+        var context = drawing.getContext("2d");
+        context.beginPath();//开始路径
+        //绘制外圆,以(100,100)为圆心,99为半径,0-1圈,顺时针计算
+        context.arc(100, 100, 99, 0, 2 * Math.PI, false);
+        context.moveTo(194, 100);   //移动游标,
+        context.arc(100, 100, 94, 0, 2 * Math.PI, false);//绘制内圆
+        context.moveTo(100, 100);
+        context.lineTo(100, 15);    //绘制分针
+        context.moveTo(100, 100);
+        context.lineTo(35, 100);    //绘制时针
+        context.stroke();   //描边路径
+    }
+
+    /**
+     * 15.2.4 绘制文本
+     *      fillText(文本字符串, x, y, 最大像素宽度):  绘制文本
+     *      strokeText(): 绘制文本
+     *      font: 文本样式, 大小及字体, 用CSS中指定字
+     *      textAlign: start/end/left/right/center, 建议使用start,end,不要left/right
+     *      textBaseline: 表示文本基线 top/hanging/middle/alphabetic/ideographic/bottom
+     *      measureText() : 利用font,textAlign,textBaseline的当前值计算指定文本大小
+     */
+    if (context.strokeText) { //绘制一个字体12
+        context.font = "bold 14px Arial";
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        context.fillText("12", 100, 20);//字名:12, x:100, y:20
+        context.textAlign = "start";//起点对齐
+        context.fillText("12", 100, 40);
+        context.textAlign = "end";//终点对齐
+        context.fillText("12", 100, 60);
+    } else {
+        console.log("This browser doesn't support the canvas text API");
+    }
+    /**
+     * 在140宽, 绘制一个 Hello world!文本, 从100px开始递减
+     */
+    var fontSize = 100;
+    context.font = fontSize + "px Arial";
+    while (context.measureText("Hello world!").width > 140) {
+        fontSize--;
+        context.font = fontSize + "px Arial";
+    }
+    context.fillText("Hello world!", 120, 100);
+    context.fillText("Font size is " + fontSize + "px", 120, 150);
+
+    /**
+     * 权威指南 21.4 canvas中的图形
+     * 例21-4: 使用moveTo(), lineTo()和closePath()方法绘制规则多边形
+     * Define a regular polygon with n sides, centered at (x,y) with radius r.
+     * The vertices are equally spaced along the circumference of a circle.
+     * Put the first vertex straight up or at the specified angle.
+     * Rotate clockwise, unless the last argument is true.
+     */
+    function polygon(c, n, x, y, r, angle, counterclockwise) {
+        angle = angle || 0;
+        counterclockwise = counterclockwise || false;
+        c.moveTo(x + r * Math.sin(angle),  // Begin a new subpath at the first vertex
+                y - r * Math.cos(angle)); // Use trigonometry to compute position
+        var delta = 2 * Math.PI / n;         // Angular distance between vertices
+        for (var i = 1; i < n; i++) {     // For each of the remaining vertices
+            angle += counterclockwise ? -delta : delta; // Adjust angle
+            c.lineTo(x + r * Math.sin(angle),         // Add line to next vertex
+                    y - r * Math.cos(angle));
+        }
+        c.closePath();                   // Connect last vertex back to the first
+    }
+    var drawing9 = document.getElementById("drawing9");
+    if (!drawing9.getContext) Error("Not support drawing");
+    var c = drawing9.getContext("2d");
+    // Start a new path and add polygon subpaths
+    c.beginPath();
+    polygon(c, 3, 50, 70, 50);                   // Triangle
+    polygon(c, 4, 150, 60, 50, Math.PI / 4);       // Square
+    polygon(c, 5, 255, 55, 50);                  // Pentagon
+    polygon(c, 6, 365, 53, 50, Math.PI / 6);       // Hexagon
+    polygon(c, 4, 365, 53, 20, Math.PI / 4, true); // Small square inside the hexagon
+
+    // Set some properties that control how the graphics will look
+    c.fillStyle = "#ccc";    // Light gray interiors
+    c.strokeStyle = "#008";  // outlined with dark blue lines
+    c.lineWidth = 5;         // five pixels wide.
+
+    // Now draw all the polygons (each in its own subpath) with these calls
+    c.fill();                // Fill the shapes
+    c.stroke();              // And stroke their outlines
+
+    /**
+     * 权威指南 21.4
+     * 例21-5: 图形状态管理工具
+     * Revert to the last saved graphics state, but don't pop the stack.
+     */
+    CanvasRenderingContext2D.prototype.revert = function () {
+        this.restore();  // Restore the old graphics state.
+        this.save();     // Save it again so we can go back to it.
+        return this;     // Allow method chaining.
+    };
+
+    // Set the graphics attributes specified by the properties of the object o.
+    // Or, if no argument is passed, return the current attributes as an object.
+    // Note that this does not handle the transformation or clipping region.
+    CanvasRenderingContext2D.prototype.attrs = function (o) {
+        if (o) {
+            for (var a in o)       // For each property in o
+                this[a] = o[a];   // Set it as a graphics attribute
+            return this;          // Enable method chaining
+        }
+        else return {
+            fillStyle: this.fillStyle, font: this.font,
+            globalAlpha: this.globalAlpha,
+            globalCompositeOperation: this.globalCompositeOperation,
+            lineCap: this.lineCap, lineJoin: this.lineJoin,
+            lineWidth: this.lineWidth, miterLimit: this.miterLimit,
+            textAlign: this.textAlign, textBaseline: this.textBaseline,
+            shadowBlur: this.shadowBlur, shadowColor: this.shadowColor,
+            shadowOffsetX: this.shadowOffsetX, shadowOffsetY: this.shadowOffsetY,
+            strokeStyle: this.strokeStyle
+        };
+    };
+
+
+</script>
+
+<hr>
+15.2.5 变换
+<canvas id="drawing3" width="200" height="200">A drawing of something.</canvas>
+<script type="text/javascript">
+    /**
+     * 15.2.5 变换
+     *      rotate(angle): 围绕原点旋转图像angle弧度
+     *      scale(scaleX, scaleY):缩放图像,在x方向乖以scaleX, 在y方向乖以scaleY. scaleX和
+     *      scaleY默认值都是1.0
+     *      translate(x,y):将坐标原点移动到(x,y).执行这个变换后,坐标(0,0)会变成之前由(x,y)
+     *      表示的点.
+     *      transform(m1_1, m1_2, m2_1, m2_2, dx, dy):直接修改变换矩阵,方式是乘以如下矩阵
+     *      setTransform(m1_1, m1_2, m2_1, m2_2, dx, dy): 将变换矩阵重置为默认状态,然后在调
+     *      用transform()
+     */
+    var drawing = document.getElementById("drawing3");
+    if (drawing.getContext) {
+        var context = drawing.getContext("2d");
+
+//        context.beginPath();  //旋转表针, 以圆点为圆心
+//        context.arc(100, 100, 99, 0, 2 * Math.PI, false);
+//        context.moveTo(194, 100);
+//        context.arc(100, 100, 94, 0, 2 * Math.PI, false);
+//        context.translate(100, 100);//变换原点,坐标变成:(100,100)
+//        context.rotate(1);          //围绕原点, 旋转表针
+//        context.moveTo(0, 0);
+//        context.lineTo(0, -85);     //分针
+//        context.moveTo(0, 0);
+//        context.lineTo(-65, 0);     //时针
+//        context.stroke();
+
+        /**
+         * 连续调用save可以把更多的设置保存在栈中, 在调用restore()可一级一级返回
+         */
+        context.fillStyle = "#ff0000";
+        context.save();         //保存上下状态,红色
+        context.fillStyle = "#00ff00";  //绿色
+        context.translate(100, 100);    //把坐标原开变换为(100,100)
+        context.save();
+        context.fillStyle = "#0000ff";  //蓝色
+        context.fillRect(0, 0, 100, 200);   //从点(100, 100)开始绘制蓝色矩形
+        context.restore();//切换绿色
+        context.fillRect(10, 10, 100, 200); //从点(110,110)开始绘制绿色矩形
+        context.restore();//切换红色
+        context.fillRect(0, 0, 100, 200);   //从点(0,0)开始绘制红色矩形
+    }
+</script>
+
+<hr>
+15.2.6 绘制图像
+<canvas id="drawing4" width="200" height="200">
+    Your browser doesn't support the canvas tag.
+</canvas>
+<img id="smiley" src="images/150_smile.gif" border="1" title="Image tag"/>
+<script type="text/javascript">
+    /**
+     * 15.2.6 绘制图像
+     *      drawImage(要绘制的图像, 源图像x坐标, 原图像y坐标, 源图像的宽度, 源图像高度,
+     *      目标图像x坐标, 目标图像y坐标, 目标图像宽度, 目标图像高度): 把image绘制到画
+     *      布上
+     */
+    window.onload = function () {
+        var drawing = document.getElementById("drawing4");
+        if (drawing.getContext) {//make sure <canvas> is completely supported
+            var context = drawing.getContext("2d");
+            var image = document.getElementById("smiley");
+            context.drawImage(image, 10, 10);//draw regular size
+            context.drawImage(image, 50, 10, 20, 30);//draw smaller
+            //draw just part of the image
+            context.drawImage(image, 0, 10, 50, 50, 0, 100, 40, 60);
+        }
+    };
+</script>
+<hr>
+15.2.7 阴影
+<canvas id="drawing5" width="200" height="200">
+    Your browser doesn't support the canvas tag.
+</canvas>
+<canvas id="drawing6" width="200" height="200">
+    Your browser doesn't support the canvas tag.
+</canvas>
+<canvas id="drawing7" width="200" height="200">
+    Your browser doesn't support the canvas tag.
+</canvas>
+<img id="smiley2" src="images/150_smile.gif" border="1" title="Image tag"/>
+<img id="smiley3" src="images/150_smile2.gif" border="1" title="Image tag"/>
+<script type="text/javascript">
+    /**
+     * 15.2.7 阴影
+     *     shadowColor:用CSS颜色格式表示的阴影颜色,默认为黑色
+     *     shadowBlur:模糊的像素数,默认0,即不模糊
+     *     shadowOffsetX:形状或路径x轴方向的阴影偏移量,默认为0
+     *     shadowOffsetY:形状或路径y轴方向的阴影偏移量,默认为0
+     */
+    var drawing = document.getElementById("drawing5");
+    if (drawing.getContext) {
+        var context = drawing.getContext("2d");
+        context.shadowOffsetX = 5;  //设置阴影
+        context.shadowOffsetY = 5;
+        context.shadowBlur = 4;
+        context.shadowColor = "rgba(0, 0, 0, 0.5)";
+        context.fillStyle = "#ff0000";
+        context.fillRect(10, 10, 50, 50);   //绘制红色矩形
+        context.fillStyle = "rgba(0, 0, 255, 1)";
+        context.fillRect(30, 30, 50, 50);   //绘制蓝色矩形
+    }
+
+    /**
+     * 15.2.8 渐变
+     * CanvasGradient(起点的X, 起点Y, 终点X, 终点Y):創建一個新的线性渐变
+     * addColorStop(色标位置, CSS颜色值):指定色标
+     * createRadialGradient(起点原心x, y, 内半径, 终点原心x, y, 外半径):
+     */
+    if (drawing.getContext) {
+        var context = drawing.getContext("2d"),
+        //从(30,30)到(70,70)
+        //gradient = context.createLinearGradient(30, 30, 70, 70);
+        //用函数来确保坐标合适
+        //gradient = createRectLinearGradient(context, 30, 30, 50, 50);
+                gradient = context.createRadialGradient(55, 55, 10, 55, 55, 30);
+        gradient.addColorStop(0, "white");//起点白色
+        gradient.addColorStop(1, "black");//最终黑色
+        context.fillStyle = "#ff0000";//draw a red rectangle
+        context.fillRect(10, 10, 50, 50);
+        context.fillStyle = gradient;//draw a gradient rectangle
+        context.fillRect(30, 30, 50, 50);
+    }
+    function createRectLinearGradient(context, x, y, width, height) {
+        return context.createLinearGradient(x, y, x + width, y + height);
+    }
+
+
+    /**
+     * 15.2.9 模式
+     * createPattern(img元素, 重复图像的字符串):
+     */
+    var drawing6 = document.getElementById("drawing6");
+    if (drawing6.getContext) {
+        var context = drawing6.getContext("2d"),
+                image = document.images[0],
+                pattern = context.createPattern(image, "repeat");
+        context.fillStyle = pattern;//draw a rectangle
+        context.fillRect(10, 10, 150, 150);
+    }
+
+    /**
+     * 15.2.10 使用图像数据
+     *      getImageData(坐标x, y, width, height):取得原始图像数据
+     */
+    //    var drawing7 = document.getElementById("drawing7");
+    //    if (drawing7.getContext) {
+    //        var context = drawing.getContext("2d"),
+    //                image = document.images[1],
+    //                imageData, data,
+    //                i, len, average,
+    //                red, green, blue, alpha;
+    //        context.drawImage(image, 0, 0); //draw 原始image
+    //        imageData = context.getImageData(0, 0, image.width, image.height);
+    //        data = imageData.data;
+    //        for (i = 0, len = data.length; i < len; i += 4) {
+    //            red = data[i];
+    //            green = data[i + 1];
+    //            blue = data[i + 2];
+    //            alpha = data[i + 3];
+    //            average = Math.floor((red + green + blue) / 3);//get the average of rgb
+    //            data[i] = average;//set the colors, leave alpha alone
+    //            data[i + 1] = average;
+    //            data[i + 2] = average;
+    //        }
+    //        imageData.data = data;//assign back to image data and display
+    //        context.putImageData(imageData, 0, 0);
+    //    }
+
+    /**
+     * 15.2.11 合成
+     *      globalAlpha : 0-1之间的值,指定draw透明度, 默认值:0,
+     *      globalCompositionOperation : 后绘制的图形怎样与先绘制的图形结合. 值如下:
+     *          source-over: (default)后绘制的图形位于先绘制的图形上方
+     *          source-in: 后draw与先draw重叠部分可见,两者其它部分完全透明
+     *          source-out:后draw与先draw不重叠部分可见,先draw图形完全透明
+     *          source-atop:后draw与先draw重叠部分可见,先draw不受影响
+     *          destination-over:后draw位于先draw的下方,只有之前透明像素下的部分才可见
+     *          destination-in:后draw位于先draw的下方,两者不重叠部份完全透明
+     *          destination-out:后draw的图形擦除与先draw的图形重叠的部分
+     *          destination-atop:后draw的图形位于先draw的下方, 在两者不重叠的地方,先draw的变透明
+     *          lighter:后draw的图形与先draw的图形重叠部分的值相加,使该部分变亮
+     *          copy:后draw完全替代之重叠的先draw图形
+     *          xor:后draw的图形与先draw 执行"异或"操作
+     */
+    if (drawing.getContext) {
+        var context = drawing.getContext("2d");
+        context.fillStyle = "#ff0000";
+        context.fillRect(10, 10, 50, 50);
+        //        context.globalAlpha = 0.5;  //透明度
+        context.globalCompositeOperation = "destination-over";//后于先上
+        context.fillStyle = "rgba(0, 0, 255, 1)";
+        context.fillRect(30, 30, 50, 50);
+    }
+    /**
+     * 15.3 WebGL
+     * 类型化数组(typed arrays):
+     */
+    var buffer = new ArrayBuffer(20);
+    var bytes = buffer.byteLength;
+
+    /**
+     * 1. 视图
+     * 使用ArrayBuffer(数组缓冲器类型)的一种特别的方式就是用它来创建数组缓冲视图.
+     *      DataView: 最常见的视图,通过它可以选择ArrayBuffer中一小段字节.
+     *      DataView.byteOffset : 字节偏移量
+     *      DataView.byteLength : 字符节长度
+     */
+    var view = new DataView(buffer);//基于整个缓冲器创建一个新视图
+    var view = new DataView(buffer, 9);//创建一个开始于字节9的新视图
+    var view = new DataView(buffer, 9, 10);//创建一个从字节9开始到字节18的新视图
+    //    console.log(view.byteOffset); //9, 字节偏移量
+    //    console.log(view.byteLength); /10, /字符节长度
+
+    var buffer = new ArrayBuffer(20),
+            view = new DataView(buffer),
+            value;
+    view.setUint16(0, 25);
+    view.setUint16(2, 50);//don't start at 1, 16-bit integers take two bytes
+    value = view.getUint16(0);
+    //    console.log(value); //25
+    //    console.log(view.getInt8(0));   //0
+
+    /**
+     * 2. 类型化视图
+     *  Int8Array: 表示8位二补整数
+     *  Uint8Array: 表示8位无符号整数
+     *  Int16Array: 表示16位二补整数
+     *  Uint16Array:
+     *  Int32Array:
+     *  Uint32Array:
+     *  Float32Array:
+     *  Float64Array:
+     *  BYTES_PER_ELEMENT :　类型化数据的第个元素需要多少字节
+     *  subarray: 基于数据底层子集, 创建一个新的数据
+     */
+    //    var int8s = new Int8Array(buffer);
+    //    var int16s = new Int16Array(buffer, 9);
+    //    var uint16s = new Uint16Array(buffer, 9, 10); //只使用从字节9开始到字节18的缓冲器
+    //    var int8s = new Int8Array(buffer, 0, 10);//一部份保存在8位整数,另一部分在16位中
+    //    var uint16s = new Uint16Array(buffer, 11, 10);
+    ////需要10个元素空间
+    //    var int8s = new Int8Array(buffer, 0, 10 * Int8Array.BYTES_PER_ELEMENT);
+    //    var uint16s = new Uint16Array(buffer, int8s.byteOffset + int8s.byteLength,
+    //            5 * Uint16Array.BYTES_PER_ELEMENT);//需要5个元素空间
+
+    //    var int8s = new Int8Array(10);      //保存10个8位整数(10字节)
+    //    var int16s = new Int16Array(10);    //保存10个
+    //    var int8s = new Int8Array([10, 20, 30, 40, 50]);
+
+    //    for(var i= 0,len = int8s.length; i< len; i++){
+    //        console.log("Value at position " + i + " is " + int8s[i]);
+    //    }
+
+    //    var uint16s  = new Uint16Array(10);
+    //    uint16s[0] = 65537;
+    //    console.log(uint16s[0]);//1, max:65535
+
+    //    var uint16s = new Uint16Array(10),
+    //            sub = uint16s.subarray(2, 5);
+</script>
+<hr>
+
+15.2.3 WebGL 上下文件
+<canvas id="drawing8" width="200" height="200">
+    Your browser doesn't support the canvas tag.
+</canvas>
+<script type="text/javascript">
+    /**
+     * 15.3.2 WebGL 上下文
+     *  getContex的第二个参数:
+     *      alpha: 为上下文创建一个通道缓冲区, 默认为true,
+     *      depth: 表示可以使用16位深缓冲区,默认为true
+     *      stencil: 可以使用8位模板缓冲区,default:false
+     *      antialias: 使用默认机制执行抗锯齿操作,default:true
+     *      premultipliedAlpha: 绘图缓冲区有预乖Alpha值;default:true
+     *      preserveDrawingBuffer:,绘图完成后保留绘图缓冲区;default:false
+     *
+     * 1.常量: gl.COLOR_BUFFER_BIT
+     * 2.方法命名: gluniform3iv()
+     * 3.准备绘图:
+     *      clearColor(红, 绿, 蓝, 透明(0-1):指定要使用颜色值
+     */
+    var drawing8 = document.getElementById("drawing8");
+
+    if (drawing8.getContext) {//make sure <canvas> is completely supported
+        var gl;
+        try {
+            gl = drawing8.getContext("experimental-webgl");//检测browser是否支持WebGL
+        } catch (ex) {
+        }
+        if (gl) {   //如果支持WebGL
+            gl.clearColor(0, 0, 0, 1);//set black
+            gl.clear(gl.COLOR_BUFFER_BIT);//
+        } else {
+            console.log("WebGL context could not be created.");
+        }
+    }
+    /**
+     * 4.视口与坐标
+     *  viewport(x, y, width, height): 视口
+     */
+        //视口是<canvas>左下角的四分之一区域
+    gl.viewport(0, 0, drawing.width / 2, drawing.height / 2);
+    //左上角的四分之一
+    gl.viewport(0, drawing.height / 2, drawing.width / 2, drawing.height / 2);
+    //右下角四分之一
+    gl.viewport(drawing.width / 2, 0, drawing.width / 2, drawing.height / 2);
+
+    /**
+     * 5.缓冲区
+     *  gl.createBuffer(); 创建缓冲区
+     *      指定使用缓冲区的方式:
+     *      gl.STATIC_DRAW: 数据只加载一次,在多次绘图中使用(多数使用这种)
+     *      gl.STREAM_DRAW: 数据只加载一次,在几次绘图中使用
+     *      gl.DYNAMIC_DRAW: 数据动态改变, 在多次绘图中使用
+     *  gl.deleteBuffer(buffer): 释放内存
+     */
+    //    var buffer = gl.createBuffer();
+    //    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    //    gl.bufferData(gl.ARRAY_BUFFER, new FLoat32Array([0, 0.5, 1]), gl.STATIC_DRAW);
+
+    /**
+     * 6.错误
+     *  gl.getError(): 返回常量如下:
+     *      gl.NO_ERROR: 上一次操作没有发生错误
+     *      gl.INVALID_ENUM: 应该给方法传入WEBGL常量, 但却传错了参数
+     *      gl.INVALID_VALUE: 在需要无符号数的地方传入了负值
+     *      gl.INVALID_OPERATION: 在当前状下不能完成操作
+     *      gl.OUT_OF_MEMORY: 没有足够的内存完成操作
+     *      gl.CONTEXT_LOST_WEBGL:由于外部事件(如设备断电)干扰丢失了当前WebGL上下文
+     */
+    //    var errorCode = gl.getError();
+    //    while(errorCode){
+    //        console.log("Error occurred: " + errorCode );
+    //        errorCode = gl.getError();
+    //    }
+
+    /**
+     * 7.着色器(shader)
+     * 8.编写着色器
+     */
+
+</script>
+
+<!-- 权威指南 21-2 -->
+
+
+</body>
+</html>

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>dom-interate</title>
+</head>
+
+<body>
+
+  <div id="div01">
+    <p>
+      <b>Hello</b> world!</p>
+    <ul>
+      <li>List item 1</li>
+      <li>List item 2</li>
+      <li>List item 3</li>
+    </ul>
+  </div>
+  <textarea rows="10" cols="40" id="text01"></textarea>
+  <!-- <br/> -->
+  <input type="button" value="Make List 01" onclick="makeList01()" />
+  <input type="button" value="Make List 02" onclick="makeList02()" />
+  <input type="button" value="Make List 04 TreeWalker" onclick="makeList04()">
+  <h1>h1</h1>
+  <h2>h2</h2>
+  <h3>h3</h3>
+  <h4>h4</h4>
+  <h5>h5</h5>
+  <h6>h6</h6>
+  <script>
+    ////////////////////////
+    // 遍历
+    //  NodeIterator
+    //    createNodeIterator(element,int,NodeFilter,boolean): 接收4个参数
+    //  @root: 想要作为搜索起点的树中的节点
+    //  @whatToShow:　表示要访问哪些节点的数字代码
+    //  @filter: NodeFilter 对象或是表示(接受/拒绝)节点的 节点过滤器函数. 
+    //      每个 NodeFilter 对象只有一个方法: acceptNode(node)
+    //    return:
+    //      Filter.FILTER_ACCEPT: 应该访问给定的节点
+    //      Filter.FILTER_SKIP :  不该访问给定的节点
+    //  @entityReferenceExpansion:　布尔值，表示是否要扩展实体引用．
+    //  Filter.SHOW_ALL: 显示所有类型的节点
+    //  Filter.SHOW_ELEMENT:　显示元素节点
+    //  Filter.SHOW_ATTRIBUTE: 显示节点特性.由于DOM结构原因,实际上不
+    //      能使用这个值
+    //  Filter.SHOW_TEXT: 显示文本节点
+    //  Filter.SHOW_CDATA_SECTION: 显示DATA节点, 对HTML页面没有用
+    //  Filter.SHOW_ENTITY_REFERENCE:显示实体引用节点.对HTML页面没有用
+    //  Filter.SHOW_ENTITYE:显示实体节点. 对HTML页面没有用
+    //  Filter.SHOW_PROCESSING_INGITRUCTION:显示处理指令节点.对HTML页面没有用.
+    //  Filter.SHOW_COMMENT:显示注释节点
+    //  Filter.SHOW_DOCUMENT:显示文档节点
+    //  Filter.SHOW_DOCUMENT_TYPE:显示文档类型节点
+    //  Filter.SHOW_DOCUMENT_FRAGMENT:显示文档片段节点,对HTML页面没有用
+    //  Filter.SHOW_NOTATION:显示符号节点.对HTML页面没有用
+
+    //  TreeWalker
+    //    document.createTreeWalker()
+    //    nextNode:
+    //    previousNode:
+    //    parentNode: 遍历到当前节点的父节点:
+    //      过滤其它标签，只保留li标签, 添加到filter函数过滤
+
+
+    // DOM2级 遍历 能力的支持情况
+    document.implementation.hasFeature("Traversal", "2.0");
+    typeof document.createNodeIterator == "function";   // true
+    typeof document.createTreeWalker == "function";     // true
+
+    var filter = {
+      acceptNode: function (node) {
+        return node.tagName.toLowerCase() == "p" ?
+          NodeFilter.FILTER_ACCEPT :
+          NodeFilter.FILTER_SKIP;
+      }
+    };
+
+    var filter2 = function (node) {
+      return node.tagName.toLowerCase() == "p" ?
+        NodeFilter.FILTER_ACCEPT :
+        NodeFilter.FILTER_SKIP;
+    }
+
+    var div = document.getElementById("div01");
+
+    function makeList01() {
+      var iterator = document.createNodeIterator(div,
+        NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, null, false);
+      var output = document.getElementById("text01");
+      var node = iterator.nextNode();
+      while (node !== null) {
+        if (node.nodeType === 3 && node.nodeValue.trim() == '') {
+          node = iterator.nextNode();
+          continue;
+        }
+        if (node.nodeType === 3) {
+          output.value += node.nodeValue + "\n";
+        } else {
+          output.value += node.tagName + "\n";
+        }
+        node = iterator.nextNode();
+      }
+    }
+    // makeList01();
+
+    //  加入过滤器: 在 createNodeIterator 中加入 filter 字面量函数
+    function makeList02() {
+      // var div = document.getElementById("div01");
+      var filter = function (node) {
+        return (node.tagName.toLowerCase() == "li") ?
+          NodeFilter.FILTER_ACCEPT
+          : NodeFilter.FILTER_SKIP;
+      };
+      var iterator = document.createNodeIterator(div
+        , NodeFilter.SHOW_ELEMENT, filter, false);
+      // For Firefox: 
+      // var iterator = document.createTreeWalker(div
+      //   , NodeFilter.SHOW_ELEMENT, filter, false);
+      var output = document.getElementById("text01");
+      var node = iterator.nextNode();
+      while (node !== null) {
+        output.value += node.tagName + "\n";
+        node = iterator.nextNode();
+      }
+    }
+
+    //createTreeWalker 方法实现上面功能
+    function makeList04() {
+      // var div = document.getElementById("div01");
+      var walker = document.createTreeWalker(div, NodeFilter.SHOW_ELEMENT
+        , null, false);
+      var output = document.getElementById("text01");
+      walker.firstChild();   //go to <p>
+      walker.nextSibling();  //go to <ul>
+      var node = walker.firstChild();  //go to <li>
+      while (node !== null) {
+        output.value += node.tagName + "\n";
+        node = walker.nextSibling();
+      }
+    }
+
+    /////////////////////////////
+    // JavaScript the Good Part
+    // 2016 05 02 HanJiaChuan 113.
+    var walk_the_DOM = function walk(node, func) {
+      func(node);
+      node = node.firstChild;
+      while (node) {
+        walk(node, func);
+        node = node.nextSibling;
+      }
+    };
+    walk_the_DOM(div, function (node) {
+      // console.log(node);
+      var results = []
+    });
+
+    // 返回属性匹配的元素集合
+    var getElementByAttribute = function (att, value) {
+      var results = [];
+      walk_the_DOM(document.body, function (node) {
+        var actual = node.nodeType === 1 && node.getAttribute(att);
+        if (typeof actual === 'string' &&
+          (actual === value || typeof value !== 'string')) {
+          results.push(node);
+        }
+      });
+      return results
+    };
+    // getElementByAttribute('id', 'div01');
+
+
+    //返回当前元素 nth 父节点
+    function parent(e, n) {
+      if (n === undefined) n = 1;
+      while (n-- && e) {
+        e = e.parentNode;
+      }
+      if (!e || e.nodeType !== 1) {
+        return null;
+      }
+      return e;
+    }
+    // parent(tbody.rows[0], 2);   // table
+
+    // 返回第 nth 兄弟节点
+    function sibling(e, n) {
+      while (e && n !== 0) {  // If e is not defined we just return it
+        if (n > 0) {  // Find next element sibling
+          if (e.nextElementSibling) e = e.nextElementSibling;
+          else {
+            for (e = e.nextSibling; e && e.nodeType !== 1;
+              e = e.nextSibling) { }
+                        /* empty loop */;
+          }
+          n--;
+        }
+        else {        // Find the previous element sibling
+          if (e.previousElementSibing) e = e.previousElementSibling;
+          else {
+            for (e = e.previousSibling; e && e.nodeType !== 1;
+              e = e.previousSibling) { }
+                        /* empty loop */;
+          }
+          n++;
+        }
+      }
+      return e;
+    }
+    // sibling(tbody.rows[0], 1);
+
+    // 返回第 nth 子节点
+    function child(e, n) {
+      if (e.children) {                      // If children array exists
+        if (n < 0) n += e.children.length; // Convert negative n to array index
+        if (n < 0) return null;            // If still negative, no child
+        return e.children[n];              // Return specified child
+      }
+
+      // If e does not have a children array, find the first child and count
+      // forward or find the last child and count backwards from there.
+      if (n >= 0) { // n is non-negative: count forward from the first child
+        // Find the first child element of e
+        if (e.firstElementChild) e = e.firstElementChild;
+        else {
+          for (e = e.firstChild; e && e.nodeType !== 1; e = e.nextSibling)
+                /* empty */;
+        }
+        return sibling(e, n); // Return the nth sibling of the first child
+      }
+      else { // n is negative, so count backwards from the end
+        if (e.lastElementChild) e = e.lastElementChild;
+        else {
+          for (e = e.lastChild; e && e.nodeType !== 1; e = e.previousSibling)
+                /* empty */;
+        }
+        return sibling(e, n + 1); // +1 to convert child -1 to sib 0 of last
+      }
+    }
+    // child(tbody.rows[1], 0);
+
+    // 在原型对象中用自定义方法扩展它
+    Element.prototype.next = function () {
+      if (this.nextElementSibling) return this.nextElementSibling;
+      var sib = this.nextSibling;
+      while (sib && sib.nodeType !== 1) sib = sib.nextSibling;
+      return sib;
+    };
+
+    // loop 大小写转换
+    function upcase(n) {
+      if (n.nodeType == 3 || n.nodeType == 4)
+        n.data = n.data.toUpperCase();
+      else
+        for (var i = 0; i < n.childNodes.length; i++)
+          upcase(n.childNodes[i]);
+    }
+
+    // 15.7 页面最上方生成链接目录
+    // 收集 h1,h2,h3,h4,h5,h6 标题转换为链接
+    // Anonymous function defines a local scope, onLoad
+    window.onload = (function () {
+      // Find the TOC container element.
+      // If there isn't one, create one at the start of the document.
+      var toc = document.getElementById("TOC");
+
+      if (!toc) {
+        toc = document.createElement("div");
+        toc.id = "TOC";
+        document.body.insertBefore(toc, document.body.firstChild);
+      }
+
+      // Find all section heading elements
+      var headings;
+      if (document.querySelectorAll) // Can we do it the easy way?
+        headings = document.querySelectorAll("h1,h2,h3,h4,h5,h6");
+      else   // Otherwise, find the headings the hard way
+        headings = findHeadings(document.body, []);
+
+      // Recursively traverse the document body looking for headings
+      function findHeadings(root, sects) {
+        for (var c = root.firstChild; c != null; c = c.nextSibling) {
+          if (c.nodeType !== 1) continue;
+          if (c.tagName.length == 2 && c.tagName.charAt(0) == "H")
+            sects.push(c);
+          else
+            findHeadings(c, sects);
+        }
+        return sects;
+      }
+
+      // Initialize an array that keeps track of section numbers.
+      var sectionNumbers = [0, 0, 0, 0, 0, 0];
+
+      // Now loop through the section header elements we found.
+      for (var h = 0; h < headings.length; h++) {
+        var heading = headings[h];
+
+        // Skip the section heading if it is inside the TOC container.
+        if (heading.parentNode == toc) continue;
+
+        // Figure out what level heading it is.
+        var level = parseInt(heading.tagName.charAt(1));
+        if (isNaN(level) || level < 1 || level > 6) continue;
+
+        // Increment the section number for this heading level
+        // and reset all lower heading level numbers to zero.
+        sectionNumbers[level - 1]++;
+        for (var i = level; i < 6; i++) sectionNumbers[i] = 0;
+
+        // Now combine section numbers for all heading levels
+        // to produce a section number like 2.3.1.
+        var sectionNumber = sectionNumbers.slice(0, level).join(".")
+
+        // Add the section number to the section header title.
+        // We place the number in a <span> to make it styleable.
+        var span = document.createElement("span");
+        span.className = "TOCSectNum";
+        span.innerHTML = sectionNumber;
+        heading.insertBefore(span, heading.firstChild);
+
+        // Wrap the heading in a named anchor so we can link to it.
+        var anchor = document.createElement("a");
+        anchor.name = "TOC" + sectionNumber;
+        heading.parentNode.insertBefore(anchor, heading);
+        anchor.appendChild(heading);
+
+        // Now create a link to this section.
+        var link = document.createElement("a");
+        link.href = "#TOC" + sectionNumber; // Link destination
+        link.innerHTML = heading.innerHTML; // Link text is same as heading
+
+        // Place the link in a div that is styleable based on the level.
+        var entry = document.createElement("div");
+        entry.className = "TOCEntry TOCLevel" + level;
+        entry.appendChild(link);
+
+        // And add the div to the TOC container.
+        toc.appendChild(entry);
+      }
+    }());
+
+
+
+
+  </script>
+
+
+
+
+</body>
+
+</html>

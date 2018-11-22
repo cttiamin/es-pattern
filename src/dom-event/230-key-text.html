@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>key-text event</title>
+  <script type="text/javascript" src="../assets/js/event-util.js"></script>
+  <script type="text/javascript" src="../assets/js/when-ready.js"></script>
+  <script type="text/javascript" src="./231-keymap.js"></script>
+
+  <script>
+    ///////////////////////////////////////
+    // 键盘事件:
+    //    keydown: 当按下任意键时触发, 如果按住不放会重复触发此事件
+    //    keypress: 按下字符键时触发, 如果按住不放会重复触发此事件
+    //    keyup: 当用户释放键盘上的键时触发
+    //    keyCode: 键码值与ASCII码中对应小写字母或数字的编码 7=55
+    //    charCode: 键的所代表字符的ASCII编码, keyCode 类似
+    //  DOM3
+    //    key, keyIdentifier, char
+    //    location: 按下了什么位置的键 IE9+
+    // 
+    // 文本事件:
+    //    textInput: 这个事件是对 keypress 的补充
+    //      data: 用户输入的字符
+    //      inputMethod: 把文本输入到文本框中的方式, 只有IE支持
+    //
+    //  用户按下 字符键时会依次触发: keydown > keypress > keyup
+    //
+  </script>
+</head>
+
+<body>
+  <script>
+    var text1 = document.createElement('input');
+    text1.type = 'text';
+    text1.placeholder = 'myText1';
+    document.body.appendChild(text1);
+
+    EventUtil.addHandler(text1, "keypress", function (event) {
+      event = EventUtil.getEvent(event);
+
+      // Opera/FireFox 中按分号 ";" 键时 keyCode: 59
+      // IE / Safari: 186
+      console.log('keyCode: ', event.keyCode,
+        String.fromCharCode(event.keyCode));
+
+      // 在 keyup 事件 不能获取
+      var charCode = EventUtil.getCharCode(event);
+      console.log('charCode: ', charCode,
+        String.fromCharCode(event.keyCode));
+
+      // dom3
+      // 在跨 browser 不推荐用 key, keyIdentifier, char
+      var identifier = event.key || event.keyIdentifier;
+      console.log('key: ', identifier, event.char);
+
+    });
+
+
+    var text2 = document.createElement('input');
+    text2.type = 'text';
+    text2.placeholder = 'myText2';
+    text2.setAttribute('data-messageid', 'zipwarn');
+    text2.setAttribute('data-allowed-chars', '0123456789');
+    // text2.id = 'zip';
+    document.body.appendChild(text2);
+
+    // textInput 事件
+    EventUtil.addHandler(text2, "textInput", function (event) {
+      event = EventUtil.getEvent(event);
+      console.log(event.data, event.keyCode);
+    });
+
+
+    //////////////////////////////////////
+    // 17-6: InputFilter.js 用户输入验证 => 指定用户输入的字符
+    // 
+    // Here is sample HTML that uses this module.
+    //  Zipcode: 
+    //  <input id="zip" type="text"
+    //    data-allowed-chars="0123456789" data-messageid="zipwarn">
+    //  <span id="zipwarn" 
+    //    style="color:red;visibility:hidden">Digits only</span>
+    //
+    // It does not define any symbols in the global namespace.
+    // Run this function when the document is loaded
+    whenReady(function () {
+      // Find all <input> elements
+      var inputelts = document.getElementsByTagName("input");
+      // Loop through them all
+      for (var i = 0; i < inputelts.length; i++) {
+        var elt = inputelts[i];
+        // Skip those that aren't text fields or that don't have
+        // a data-allowed-chars attribute.
+        if (elt.type != "text" || !elt.getAttribute("data-allowed-chars"))
+          continue;
+
+        // Register our event handler function on this input element
+        // keypress is a legacy event handler that works everywhere.
+        // textInput (mixed-case) is supported by Safari and Chrome in 2010.
+        // textinput (lowercase) is the version in the DOM Level 3 Events draft.
+        if (elt.addEventListener) {
+          elt.addEventListener("keypress", filter, false);
+          elt.addEventListener("textInput", filter, false);
+          elt.addEventListener("textinput", filter, false);
+        }
+        else { // textinput not supported versions of IE w/o addEventListener()
+          elt.attachEvent("onkeypress", filter);
+        }
+      }
+
+      // This is the keypress and textInput handler that filters the user's input
+      function filter(event) {
+        // Get the event object and the target element target
+        var e = event || window.event;         // Standard or IE model
+        var target = e.target || e.srcElement; // Standard or IE model
+        var text = null;                       // The text that was entered
+
+        // Get the character or text that was entered
+        if (e.type === "textinput" || e.type === "textInput") text = e.data;
+        else {  // This was a legacy keypress event
+          // Firefox uses charCode for printable key press events
+          var code = e.charCode || e.keyCode;
+
+          // If this keystroke is a function key of any kind, do not filter it
+          if (code < 32 ||           // ASCII control character
+            e.charCode == 0 ||      // Function key (Firefox only)
+            e.ctrlKey || e.altKey)  // Modifier key held down
+            return;                 // Don't filter this event
+
+          // Convert character code into a string
+          var text = String.fromCharCode(code);
+        }
+
+        // Now look up information we need from this input element
+        var allowed = target.getAttribute("data-allowed-chars"); // Legal chars
+        var messageid = target.getAttribute("data-messageid");   // Message id
+        if (messageid)  // If there is a message id, get the element
+          var messageElement = document.getElementById(messageid);
+
+        // Loop through the characters of the input text
+        for (var i = 0; i < text.length; i++) {
+          var c = text.charAt(i);
+          // console.log(c);
+          if (allowed.indexOf(c) == -1) { // Is this a disallowed character?
+            // Display the message element, if there is one
+            if (messageElement) messageElement.style.visibility = "visible";
+
+            // Cancel the default action so the text isn't inserted
+            if (e.preventDefault) e.preventDefault();
+            if (e.returnValue) e.returnValue = false;
+            return false;
+          }
+        }
+
+        // If all the characters were legal, hide the message if there is one.
+        if (messageElement) messageElement.style.visibility = "hidden";
+      }
+    });
+
+    
+    ////////////////////////////
+    // include keymap.js
+    var text3 = document.createElement('input');
+    text3.type = 'text';
+    text3.placeholder = 'myText3';
+    
+    // text2.id = 'zip';
+    document.body.appendChild(text3);
+
+    var keymap1 = new Keymap({});
+    keymap1.install(text3);
+
+
+
+
+  </script>
+  <div style="height: 50px; width: 100px;"></div>
+
+</body>
+
+</html>

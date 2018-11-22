@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>bug 和修复 bug </title>
+</head>
+<body>
+<!-- 
+
+_          IE6
+*          IE6/7
+!important IE7/Firefox
+*+         IE7
+\9         IE浏览器(ie6+)支持 ；IE8不能识别“*”和“_”的css hack *
+\0         IE8+
+
+IE条件注释　
+如果要给IE5+ 加上特定的样式; 可以在HTML文档的开放置
+<div class="ie ie6 ie7 ie8">aaa</div>
+-->
+
+<!--[if IE]>
+<link rel="stylesheet" type="text/css" href="images/ie.css"/>
+<![endif]-->
+
+<!--指定单个浏览器-->
+<!--[if IE 6]>
+<link rel="stylesheet" type="text/css" href="images/ie6.css"/>
+<![endif]-->
+
+<!--指定一组 小于 IE6的 ie5,ie5.5 -->
+<!--[if lt IE 6]>
+<link rel="stylesheet" type="text/css" href="images/ie6.css"/>
+<![endif]-->
+
+<!-- 隐藏 -->
+<!--[if !IE 6]>
+<![endif]-->
+
+<!--[if gte IE 6]>
+<![endif]-->
+
+<!-- 
+常见 Bug 及其修复方法
+1 双边距浮边bug
+    IE6更低的版本中, 修复:display:inline
+    对所有具有水平外边距的元素进行浮动时, 都应该自然的将display属性设置为inline
+
+    2 3像素文本偏移bug
+    IE6-,
+
+<style type="text/css">
+    .myFloat {
+        float: left;
+        width: 200px;
+        height: 50px;
+        margin: 0 -3px; /*edit*/
+    }
+
+    p {
+        margin-left: 200px;
+        height: 1%;/*edit*/
+    }
+</style>
+<div class="myFloat"></div>
+<p>Loren ipsum dolor sit</p>
+<p>amet, consectetuer</p>
+<p>adipiscing elit. Sed sit amet</p>
+
+3 IE6的重复字符 bug
+当在一系列浮动元素中的第一个和最后一个元素之间有多个注释时, 就会
+出现这个bug.
+修复: 设置负的右外边距从最后一个浮动元素上去掉3像素,或扩大3像素,IE7没有这个bug
+    最安全的方法是从HTML代码中删注释
+
+<style type="text/css">
+    #mainContent, #secondaryContent {
+        width: 100px;
+        display: inline;
+        float: left;
+        border: 1px solid #ccc;
+    }
+</style>
+-->
+<div id="content">
+    <!--mainContent-->
+    <div id="mainContent">
+        safdasfasdfsdafafdsa
+    </div>
+    <!-- end mainContent-->
+    <!--secondaryContetn-->
+    <div id="secondaryContent">
+        safdasfasdfsdafafdsa
+    </div>
+</div>
+
+<!--
+9.5.4 IE6的藏猫猫
+9.5.5 相对容器中的绝对定位
+-->
+
+<!--
+外边距叠加的问题
+-->
+<style type="text/css">
+    #box {
+        margin: 10px;
+        padding: 1px; /*加入内边距就不在叠加了*/
+        background-color: #d5d5d5;
+    }
+
+    /*
+    这里的margin会与div中的margin叠加，形成一个margin:20的 上下叠加
+    原因是具有块级子元素的元素的元素计算其高度的方式造成的
+    解决: 添加一个垂直边框或内边距, 外边距就不在叠加了, 元素的高度就是它包含的子元素的顶部
+        和底部外边距边缘之间的距离
+        Firebug 中的layout视图:检查元素的各个尺寸
+    */
+    p {
+        margin: 20px;
+        background-color: #6699ff;
+    }
+
+    .promol{
+        float: left;
+        margin-left: 20px;
+        border: 1px solid red;
+
+    }
+    .promo2 {
+        float: left;
+        border: 1px solid red;
+    }
+
+</style>
+<div id="box">
+    <p>This paragraph has a 20px margin.</p>
+</div>
+
+<div class="promol">a</div>
+<div class="promo2">b</div>
+
+</body>
+</html>
