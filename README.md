@@ -16,6 +16,16 @@
   // express + webpack 启动
   "server": "node server.js"
 }
+
+
+# lib
+javascript-state-machine 状态机模式
+cheerio: node 爬虫
+handlebars 模块引擎
+yargs 参数管理
+chai 测试库
+mocha  js测试框架
+
 ```
 
 
@@ -172,7 +182,6 @@ DMD => sea.js
 ES Module => es6
 ```
 
-
 ### 核心概念
 ```
 input
@@ -180,3 +189,5 @@ output
 loader
 plugin
 ```
+
+

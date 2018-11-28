@@ -26,3 +26,4 @@ fs.readFile('../../src/assets/img/panda.png', function (err, origin_buffer) {
 	})
 })
 
+

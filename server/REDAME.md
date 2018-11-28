@@ -16,3 +16,39 @@ ab -n1000 -c10 http://localhost:2014/
 
 ```
 
+#### 调试
+```
+1. Inspector
+# node --inspect-brk argv.js
+# chrome://inspect
+// nim-node-inspector
+
+2. VS Code
+条件调试
+n > 8
+
+```
+
+#### 静态资源服务器
+```
+1. anywhere
+
+
+```
+
+
+#### 修改重启服务
+```
+npm i -g superviser 
+superviser app.js
+
+```
+
+
+### 安装包
+```
+handlebars
+yargs
+
+
+```
