@@ -35,5 +35,10 @@ https://travis-ci.org
 图标获得 : repo-badges
 
 
-
 ```
+
+
+[![Build Status](https://travis-ci.org/cttiamin/es-pattern.svg?branch=master)](https://travis-ci.org/cttiamin/es-pattern)
+
+
+[![codecov](https://codecov.io/gh/cttiamin/es-pattern/branch/master/graph/badge.svg)](https://codecov.io/gh/cttiamin/es-pattern)

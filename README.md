@@ -1,6 +1,7 @@
 
 ## webpack 构建
 
+
 ####  package.json 
 ```
 "scripts": {
@@ -27,7 +28,6 @@ chai 测试库
 mocha  js测试框架
 
 ```
-
 
 
 ### install
