@@ -1,5 +1,5 @@
 
-## webpack 构建
+
 
 [![Build Status](https://travis-ci.org/cttiamin/es-pattern.svg?branch=master)](https://travis-ci.org/cttiamin/es-pattern)
 

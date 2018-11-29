@@ -36,5 +36,8 @@ module.exports = {
     } else {
       return min(a, b);
     }
-  }
+  },
+  num1: n => parseInt(n),
+  num2: n => Number(n)
+
 }

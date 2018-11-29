@@ -2,7 +2,6 @@
 
 
 ### http
-
 ```
 查看dns
 chrome://net-internals/
@@ -32,10 +31,7 @@ n > 8
 #### 静态资源服务器
 ```
 1. anywhere
-
-
 ```
-
 
 #### 修改重启服务
 ```
@@ -44,11 +40,21 @@ superviser app.js
 
 ```
 
-
 ### 安装包
 ```
-handlebars
-yargs
+handlebars 模板引擎
+yargs  node 参数管理
+```
+
+#### 爬虫
+```
+cheerio : jquery 获取页面
+
+puppeteer:
+
+
+
+
 
 
 ```

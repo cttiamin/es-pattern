@@ -19,3 +19,6 @@ add(2, 3).should.equal(5);
 
 // TDD
 assert.equal(add(2,3), 5)
+
+
+// const {num1, num2}

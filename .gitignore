@@ -65,3 +65,6 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
+
+# server 
+server/http/screenshot/*.png
