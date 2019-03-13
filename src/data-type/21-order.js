@@ -1,16 +1,22 @@
 'use static'
+////////////////////////////////
+// 原生 sort
+// 冒泡 插入 快速 选择 希尔
+// 二分查找
+// 统计次数
+
 
 var arr = [4, 8, 5, 9, 7, 6, 3, 2, 1, 0];
-
 var arr_number = [5,4,3,2,1,4,3,2,1,7,4];
-
 var arr_obj = [
   { name: 'Zachary', age: 28 }, 
   { name: 'Nicholas', age: 29 }
 ];
-
 var arr_mix = ['aa', 'bb', 'a', 4, 8, 15, 16, 23, 42]
 
+[31,2,3,4,7,6,4,5,2,9,15,3,6,21].sort(function (v1, v2) {
+  return v1 - v2
+})
 
 /**
  * 比较排序,传入两个数返回正数则改变两个数的位置,
@@ -170,7 +176,8 @@ var Sort = {
         // if (arr[j] > arr[j + 1]) {
         if (fn(arr[j], arr[j + 1]) > 0) {
           // arr[j] <=> arr[j + 1]
-          arr[j] = [arr[j + 1], (arr[j + 1] = arr[j])][0]
+          // arr[j] = [arr[j + 1], (arr[j + 1] = arr[j])][0]
+          [arr[j], arr[j+1]] = [arr[j+1], arr[j]]
           count = false;
 
           // es6 
@@ -287,7 +294,7 @@ var Sort = {
   }
 }
 // console.log(arr)
-// var arr_order = Sort.bubble(arr, (a, b)=> b-a);
+// var arr_order = Sort.bubble(arr, (a, b)=> a-b);
 // console.log(arr)
 // Sort.Insert();
 // console.time('quick');

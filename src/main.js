@@ -3,33 +3,10 @@ import './assets/css/style.css'
 // import Icon from './assets/img/clock-icon.png'
 // import printMe from './print.js'
 
-// es5 code
-// import './data-type/01-assign';
-// import './data-type/10-number';
-// import './data-type/20-array';
-// import './data-type/21-order';
-// import './data-type/22-stack';
-// import './data-type/23-es6';
-// import './data-type/24-set-map.js';
-// import './data-type/30-date';
-// import './data-type/31-timer';
-// import './data-type/40-string';
-// import './data-type/41-es6';
-// import './data-type/60-symbol';
-// import './data-type/61-iterator';
+// es5 code => 数据类型
+import './data-type/index';
 
-// import './oop/10-function'
-// import './oop/12-recursion.js'
-// import './oop/13-es6'
-// import './oop/20-getter'
-// import './oop/22-rest'
-// import './oop/30-prototype'
-// import './oop/40-inherit';
-// import './oop/50-closures';
-// import './oop/51-extend';
-// import './oop/60-proxy'
-// import './oop/61-reflect'
-// import './oop/62-class'
+import './oop/index';
 
 // import './async/10-action'
 // import './async/20_cors'
@@ -46,18 +23,10 @@ import './assets/css/style.css'
 // import './dom-event/302-snabbdom'
 // import './dom-event/310-diff'
 
-// import './pattern/010-es6'
-// import './pattern/011-car'
-// import './pattern/012-park'
-// import './pattern/020_standard'
-// import './pattern/030_Function'
-// import './pattern/060-singleton'
-// import './pattern/070-factory'
-// import './pattern/080-Iterator';
-// import './pattern/090-decorator.js'
-// import './pattern/100-observer'
-// import './pattern/120-proxy'
-// import './pattern/130-state'
+// pattern
+import './pattern/index'
+// reg
+import './regex/index';
 
 
 // import $ from "../assets/js/jquery3.3.1";

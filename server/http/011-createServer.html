@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>CreateServer</title>
+</head>
+<body>
+  <script>
+    // 跨域测试
+    // var xhr = new XMLHttpRequest()
+    // xhr.open('GET', 'http://localhost:9012/')
+    // xhr.send()
+
+    // 突破跨域限制测试
+    // fetch('http://localhost:9012/', {
+    //   method: 'PUT',
+    //   headers: {
+    //     'X-Test-Cors': '123'
+    //   }
+    // })
+  </script>
+
+  <!-- 缓存 -->
+  <!-- <script src="/script.js"></script> -->
+
+  <!--  长连接 -->
+  <!-- <img src="/test1.jpg" alt="">
+  <img src="/test2.jpg" alt="">
+  <img src="/test3.jpg" alt="">
+  <img src="/test4.jpg" alt="">
+  <img src="/test5.jpg" alt="">
+  <img src="/test6.jpg" alt="">
+  <img src="/test7.jpg" alt="">
+  <img src="/test11.jpg" alt="">
+  <img src="/test12.jpg" alt="">
+  <img src="/test13.jpg" alt="">
+  <img src="/test14.jpg" alt="">
+  <img src="/test15.jpg" alt=""> -->
+
+  <!-- 带数据请求 
+  application/x-www-form-urlencoded: 字符串传输表单
+  multipart/form-data: 二进制传输文件
+  -->
+  <form action="/form" method="POST"
+  enctype="multipart/form-data">
+    <input type="text" name="name">
+    <input type="password" name="password">
+    <input type="submit">
+  </form>
+
+</body>
+</html>

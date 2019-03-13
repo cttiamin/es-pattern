@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>弹性盒模型 Flexible Box / Flexbox</title>
+    <style type="text/css">
+        /*
+        From: 
+        http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html
+        http://www.ruanyifeng.com/blog/2015/07/flex-examples.html
+
+        Flex（flex container）简称”容器”
+        它的所有子元素成为容器成员，称Flex项目（flex item）简称”项目”
+
+        容器的属性 : 
+        justify-content : 项目在主(x)轴上的对齐方式
+            flex-start（默认值）: 左对齐
+            flex-end: 右对齐
+            center:  居中
+            space-between: 两端对齐，间隔平均分布
+            space-around: 项目两侧的间隔相等
+        align-items : 项目在交叉(y)轴上对齐方式
+            flex-start: 起点对齐
+            flex-end: 终点对齐
+            center: 中点对齐
+            baseline: 项目的第一行文字的基线对齐
+            stretch(默认值):如项目未设置高度或设为auto,将占满整个容器的高度
+        align-content: 多根轴线对齐
+            flex-start: 起点对齐
+            flex-end: 终点对齐
+            center: 中点对齐
+            space-between: 两端对齐，上下顶满 间隔平均分布
+            space-around: 两侧的间隔都相等
+            stretch（默认值）: 轴线占满整个交叉轴。
+
+        flex-direction: 决定主轴的方向（即项目的排列方向）
+            row（默认值): 主轴为水平方向，起点在左端
+            row-reverse: 主轴为水平方向，起点在右端
+            column: 主轴为垂直方向，起点在上沿。
+            column-reverse: 主轴为垂直方向，起点在下沿。
+        flex-wrap : 如果一条轴线排不下，如何换行
+            nowrap 不换行
+            wrap 换行，第一行在上方
+            wrap-reverse 第一行在下方
+        flex-flow : flex-direction 和 flex-wrap 简写形式
+            默认值为 row nowrap
+
+        项目的属性: 
+        order: 排列顺序, 数值越小，排列越靠前，默认为 0
+        flex-grow: 放大比例, 0 def:存在剩余空间也不放大, 1:等分剩余空间
+        flex-shrink: 缩小比例, 0:不缩小 1 Def:空间不足项目缩小
+        flex-basis: 在分配多余空间之前，项目占据的主轴空间（main size）
+        flex : flex-grow flex-shrink flex-basis 简写
+            默认值为 0 1 auto。后两个属性可选。
+        align-self : 允许单个项目有与其他项目不一样的对齐方式
+            auto | flex-start | flex-end | center | baseline | stretch
+        */
+
+        #dad {
+            background-color: gray;
+            width: 100%;
+            height: 500px;
+            display: flex;
+            /* 主轴 */
+            justify-content: center;
+            /* 交叉轴 */
+            align-items: center;
+            /*主轴方向*/
+            /* flex-direction: row; */
+            /*设置换行方式: */
+            /* flex-wrap: wrap; */
+            /* 换行流向 flex-direction 与 flex-wrap 简写 */
+            flex-flow: row wrap;
+            /*多根轴线的对齐方式*/
+            align-content: stretch;
+
+        }
+
+        #son-1,
+        #son-2,
+        #son-3,
+        #son-4,
+        #son-5 {
+            width: 200px;
+            height: 200px;
+        }
+
+        #son-1 {
+            background-color: #39ADD1;
+            /* same #dad => align-itemsson 优先  */
+            align-self: center;
+
+            /* 缩写 (basis, grow, shrink)
+            Single value: 
+                has px => basis
+                no px => grow
+            Double value:
+                no px => grow & shrink
+                has px => grow & basis
+            Three val :
+                grow & shrink & basis
+            */
+            /* flex: 0 1 120px; */
+
+            /*不伸缩的情况下子 容器占据固定空间 */
+            flex-basis: 130px;
+            /*设置扩展比例*/
+            /*flex-grow: 1;*/
+            /*设置收缩比例*/
+            flex-shrink: 1;
+        }
+
+        #son-2 {
+            background-color: #3079AB;
+            flex: 1;
+        }
+        #son-3 {
+            background-color: #e15258;
+            flex: 1;
+        }
+        #son-4 {
+            background-color: #cc6699;
+            flex: 1;
+        }
+        #son-5 {
+            background-color: #982551;
+            flex: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="dad">
+        <div id="son-1"></div>
+        <div id="son-2"></div>
+        <div id="son-3"></div>
+        <div id="son-4"></div>
+        <div id="son-5"></div>
+    </div>
+</body>
+
+</html>

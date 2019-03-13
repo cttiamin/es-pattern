@@ -6,7 +6,7 @@
 //         对非XML数据而言 responseXML 属性的值为 null
 //  status: 响应 HTTP 状态
 //    200:成功
-//    300:多种选择,服务器根据请求可执行多种操作.
+//    300:多种选择 服务器根据请求可执行多种操作.
 //    304:请求的资源并没有修改,可以直接用浏览器中缓存的版本
 //    404:文件不存在
 //    500:服务器内部错误
@@ -47,11 +47,10 @@
 //      也可用表单数据预先向其中填入键值对
 //
 // 超时
-//  xhr.timeout:
-//  xhr.ontimeout:
-//      请求终时,会调用ontimeout事件处理程序, 但此时readyState可能已经改变为4了,
-//      就会调用onreadystatechange事件处理程序,
-//      可是如果在超时终止 请求之后再访问status属性, 就会导致错误, 加 try-catch
+//  xhr.timeout: 
+//  xhr.ontimeout = fn: 超时回调
+//    请求终止时调用 ontimeout 事件处理, 但 readyState 可能已经改变为4了
+//    就会调用 onreadystatechange 事件处理程序
 
 // var local_get = 'http://localhost:18001/?a=1&b=2&c=3';
 var local_get = '/get?a=1&b=2&c=3';

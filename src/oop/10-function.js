@@ -1,169 +1,270 @@
-/***************************************
- * 引用类型　20140321, Friday
- *
- * this: 关键字, 没有作用域的限制, 不会继承
- * arguments: 函数内部属性
- * arguments.callee : 返回正在被执行的对象
- * arguments.callee.caller: 返回调用者，函数体的调用函数体对象
- * length: 返回参数个数
- * prototype : 保存着所有实例方法的真正所在, toString(), valueOf()...
- * apply(@scope, arguments): 在指定作用域调用
- *    apply 与 call 类似,但传入实参的形式和call()有所不同,该实参都放入一个数组当中.
- *    在特定的作用域中调用函数,实际等于设置函数体内的this对象的值
- * call: 与apply()作用机同, 区别仅在于接收参数的方式不同
- * bind: 创建具有与原始函数相同的 主体的绑定函数,
- *      this 对象解析为传入的对象
- * new 运算符原理
- */
+// 2018-12-23
+// this: 没有作用域的限制, 不会继承
+// arguments: 函数内部属性
+// arguments.callee: 返回正在被执行的对象(废)
+// arguments.callee.caller: 返回函数体的调用函数体对象(废)
+// length: 参数个数
+// prototype: 所有实例方法原型
+// apply(@scope, arguments): 指定作用域调用
+//    与 call 类似,传实参形式和call有所不同, 该实参放入数组
+// call: apply作用机同, 接收参数的方式不同
+// bind: 主体的绑定函数, this 对象解析为传入的对象
+// new 运算符原理
+// JavaScript 函数有两个特点
+//  1.函数是一类对象(first-class object)
+//  2.它们可以提供作用域
 
- //////////////////////////
-// 创建对象 Object 实例的 3 种方式
-// 1种
-var obj1 = { name: 'o1' } // 默认指向 object
-var obj2 = new Object({ name: 'o11' })
-// 2种
-var Method2 = function() {
-  this.name = 'o2'
-}
-var obj3 = new Method2()
-// 3种
-var Parent3 = { name: 'o3' }
-var obj4 = Object.create(Parent3)
-Method2.prototype.say = function() {
-  console.log('say hi')
-}
-
-
-////////////////////////////////////
-// apply 的参数数组可以是"类数组"也可以是真实数组
-// 将对象 o 中名为 m() 的方法替换为另一个方法
-// 可以在调用原始的方法之前和之后记录日志消息
-function trace(o, m) {
-  var original = o[m] // 在闭包中保存原始方法
-  o[m] = function() {
-    // 定义新的方法
-    console.log(new Date(), 'Entering;', m) //输出日志消息
-    var result = original.apply(this, arguments) //调用原始函数
-    console.log(new Date(), 'Exiting: ', m) //输出日志消息
-    return result
-  }
-}
-
-////////////////////////////////////
-// call
-// 传入 null 或 undefined 都会被全局对象代替.
-window.color = 'red'
-var o = {
-  color: 'blue'
-}
-function sayColor() {
-  console.log(this.color)
-}
-//sayColor.call(o);       //blue, 以o对象的方法来调用sayColor
-//var objectSayColor = sayColor.bind(o);    //在o作用域 绑定 sayColor方法
-//objectSayColor();       // blue
-
-
-/****************************************
- *  作用域安全的构造函数
- *  当使用 new 调用时, 构造函数内用到的 this 对象会指向新创建的对象实例.
- *  当没有使用 new 操作符来调用该构造函数的情况上,
- *  由于该this对象在运行时绑定的, 所以直接调用 Person(),
- *  this 会映射到全局对象 window 上, 导致错误对象属性的意外增加.
- */
-function Person1(name, age, job) {
-  this.name = name;
-  this.age = age;
-  this.job = job;
-}
-//    var person = Person1("Nicholas", 29, "Software Engineer");
-//    console.log(window.name);  //属性的偶然覆盖
-//    console.log(window.age);
-//    console.log(window.job);
-
-/**
-*  因为构造函数是作为普通函数调用的, 忽略了 new 操作符, 
-*  这个问题是由this对象的晚绑造成的. 在这里this被解析成了window对象,
-*  由于window的name属性是用于识别链接目标和框架的,
-*  所以这里对该属性的偶然覆盖可能会导致该页面上出现其他错误.
-*  解决这个问题就是创建一个作用域安全的构造函数
-*  添加了一个检查并确保this对象是Person实例的if语句,
-*  使调用 Person 构造函数时无论是否使用 new 操作符都会返回一个Person的新实例
-*/ 
-function Person2(name, age, job) { //作用域安全的构造函数
-  if (this instanceof Person2) {
-      this.name = name;
-      this.age = age;
-      this.job = job;
-  } else {
-      return new Person2(name, age, job);
-  }
-}
-  var person1 = Person2("Nicholas", 29, "Software Engineer");
-//    console.log(window.name);     //""
-//    console.log(person1.name);    //"Nicholas"
-  var person2 = new Person2("Shelby", 34, "Ergonomist");
-//    console.log(person2.name);    //"Shelby"
-
+// 跳过函数名称得到(unnameed)表达式，简称函数表达式，
+var add = function(a, b) {
+  return a + b;
+};
+// 函数表达式需加分号";"
 
 ////////////////////////////////
 // new 运算符原理
 var new3 = function(func) {
-  var o = inherit(func.prototype) // 指向原型
-  var k = func.call(o) // 添加属性
+  // var o = inherit(func.prototype) // 指向原型
+  var o = Object.create(func.prototype); // 指向原型
+  var k = func.call(o); // 添加属性
   if (typeof k === 'object') {
-    return k
+    return k;
   } else {
-    return o
+    return o;
   }
-}
+};
 var Method3 = function() {
-  this.name = 'o2'
+  this.name = 'o2';
+};
+var o6 = new3(Method3);
+o6 instanceof Method3; //true
+o6.__proto__.contructor === Method3;
+
+// 变量提升
+var myname = 'global';
+function func2() {
+  console.log(myname); // undefined
+  var myname = 'local';
 }
-// o6 = new3(Method3)
-// o6 instanceof Method3  //true
-// o6.__proto__.contructor === Method3
 
-
-/** 函数柯里化(function currying)
- *  创建已经设置好了一个或多个参数的函数, 
- *  函数柯里化的基本方法和函数绑定是一样的:
- *  使用一个闭包返回一个函数.
- *  区别:
- *  返回的函数还需要设置一些传入的参数.
- */
-function add(num1, num2){
-  return num1 + num2;
+// 函数的提升
+function foo() {}
+function bar() {}
+function hoistMe() {
+  console.log(
+    typeof foo, // output "function"
+    typeof bar  // output "undefined"
+  ); 
+  foo(); // output "local foo"
+  function foo() {}
+  // 表达式: 仅变量'bar'被提升, 函数实现并未被提升
+  var bar = function() {};
 }
-function curriedAdd(num2){
-  return add(5, num2);
-}
-(add(2, 3));
-(curriedAdd(3));
+// hoistMe();
 
-
-/** 动态创建步骤: 调用另一个函数并为它传入要柯里化的的函数和必要参数.
-*  在arguments对象上调用slice方法, 截出第2个开始的参数
-* @param fn
-* @returns {Function}
-*/
-function curry(fn) {
-  var args = Array.prototype.slice.call(arguments, 1);
-  //外部参数,第2个开始参数
-
-  return function () {
-      var innerArgs = Array.prototype.slice.call(arguments),
-          //内部, 当在次调用传参时
-          finalArgs = args.concat(innerArgs);
-          //连接两个
-      return fn.apply(null, finalArgs);
+// Forget new
+function Waff() {
+  return {
+    tastes: 'yummy'
   };
 }
+var first = new Waff(),
+  second = Waff();
+// console.log(first.tastes, second.taste);
+// 自调用构造函数
+function Waffle2() {
+  if (!(this instanceof Waffle2)) {
+    return new Waffle2();
+  }
+  this.tastes = 'yummy';
+}
+Waffle2.prototype.wantAnother = true;
+var first_2 = new Waffle2(),
+  second_2 = Waffle2();
+//console.log(first_2.tastes, first_2.tastes);
 
-var curriedAdd = curry(add, 5);
+////////////////////////////////
+// Callback and Scope 回调与作用域
+var myapp = {};
+myapp.color = "green";
+myapp.paint = function(node){
+    node.style.color = this.color;
+};
+var findNodes3 = function(callback, callback_obj){
+  var found = document.body;
+	if(typeof callback === "function"){
+    // this.color 没有定义
+    // findNodes 是全局函数，对象this引用了全局对象
+    // 解决方案：传递回调函数所属对象
+		callback.call(callback_obj, found);
+    }
+    // 另一种选择是： 将其中的方法作为字符串来传递
+    if(typeof callback === "string"){
+		callback = callback_obj[callback];
+	}
+};
+findNodes3(myapp.paint, myapp);
 
-(curriedAdd(3));   //8
-(curriedAdd(4));   //9
-var curriedAdd2 = curry(add, 5, 12);
-(curriedAdd2());   //17
+///////////////////////////
+// self-defining function 自定义函数
+var scareMe = function(){
+  console.log("Boo!");
+  scareMe = function(){
+  console.log("Double boo!");
+  };
+};
+//scareMe();  //output Boo!
+//scareMe();  //output Double boo!
+// 这种模式也叫"惰性函数定义", 缺点:
+// 1.重定义自身时旧函数属性都会丢失.
+// 2.如果使用了不同的名称, 将执行旧函数.
 
+//////////////////////////////
+// 将以第一类对象使用的方式: 
+// 1.添加一个新属性
+scareMe.property = "properly";
+// 2.赋值给另一个不同名称的变量
+var prank = scareMe;
+//3. 作为一个方法使用
+var spooky = {
+    boo: scareMe
+};
+// calling with a new name
+prank(); //=> "Boo!"
+prank(); //=> "Boo!"
+//console.log(prank.property); //properly
+//作为一个方法来调用
+spooky.boo();   // => Boo!
+spooky.boo(); // => Boo!
+//console.log(spooky.boo.property); //=> "properly"
+// 自定议函数
+scareMe();  // Double boo!
+scareMe();  // Double boo!
+//console.log(scareMe.property); //=> undefined
+
+
+// 即时对象初始化 immediate object initialization
+({
+    // 配置常数
+    maxwidth: 600,
+    maxheight: 400,
+    //定义一些实用的方法
+    gimmeMax: function(){
+        return this.maxwidth + "x" + this.maxheight;
+    },
+    // 初始化
+    init: function (){
+        (this.gimmeMax());
+    }
+ }).init();
+// 有同等效果的 init
+({
+    init:function(){
+    } 
+}.init());
+
+
+//////////////////
+// 初始化分支
+//之前
+var utils_1 = {
+    addlistener: function(el, type, fn){
+        if(typeof window.addEventListener === 'function'){
+            el.addEventListener(type, fn, false);
+        }else if(typeof document.attachEvent === 'function'){
+            el.attachEvent('on' + type, fn);
+        }else{
+            el['on' + type] = fn;
+        }
+    },
+    removeListener: function(el, type, fn){}
+};
+// 这段代码效率低下, 每次调用utils.addListener(),removeListener
+// 都会执行相同检查
+var utils_2 = {
+    addListener: null,
+    removeListener: null
+};
+// 之后 实现
+if(typeof window.addEventListener === 'function'){
+    utils_2.addListener = function(el, type, fn){
+        el.addEventListener(type, fn, false);    
+    };
+    utils_2.removeListener = function(el, type, fn){
+        el.removeEventListener(type, fn, false);    
+    };
+}else if(typeof document.attachEvent === 'function'){
+    utils_2.addListener = function(el, type, fn){
+        el.attachEvent('on' + type, fn);
+    };
+    utils_2.removeListener = function(el, type, fn){
+        el.detachEvent('on' + type, fn);
+    };
+}else{
+    utils_2.addListener = function(el, type, fn){
+        el['on' + type] = fn;
+    };
+    utils_2.removeListener = function(el, type, fn){
+        el['on' + type] = null;
+    };
+}
+
+
+//////////////////
+// 备忘模式 => 缓存值
+var myFunc = function(param){
+    if(!myFunc.cache[param]){
+        var result = {};
+        // ... 开销很大的操作
+        myFunc.cache[param] = result;
+    }
+    return myFunc.cache[param];
+};
+// 缓存存储
+myFunc.cache = {};
+
+// 如果有更复杂的参数解决方式:
+// 将对象序列化为一个 JSON 字符串
+var myFunc2 = function() {
+    var cachekey = JSON.stringify(Array.prototype.slice.call(arguments)),
+        result;
+    if(!myFunc2.cache[cachekey]){
+        result = {};
+        // ... 开销很大的操作
+        myFunc2.cache[cachekey] = result;
+    }
+    return myFunc2.cache[cachekey];
+};
+// 缓存存储
+myFunc2.cache = {};
+myFunc2('name')
+
+////////////////////
+// 使用arguments.call
+// ECMAScript 5 严格模式中不支持 arguments.callee
+var myFunc3 = function(param){
+    var f = arguments.callee,
+        result;
+    if(!f.cache[param]){
+        result = {};
+        // ... 开销很大的操作
+        f.cache[param] = result;
+    }
+    return f.cache[param];
+};
+// 缓存存储
+myFunc3.cache = {};
+
+
+// 配置对象
+function addPerson(args){
+    console.log(args.username);
+}
+var conf = {
+    username: "batman",
+    first: "Bruce",
+    last: "Wayne",
+    dob: 'DOb',
+    gender: "IT",
+    address: "Lishuiqiao"
+};
+// addPerson(conf);

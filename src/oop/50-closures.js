@@ -1,42 +1,14 @@
-/*********************************************************
- * 函数声明提升 (function declaration hoisting):
- *      执行代码前会先读取函数声明
- *
- * 匿名函数(anonymous function): function 后没有标识符,也叫拉姆达函数
- *
- * 闭包
- *      在函数内定义了其它函数就定义了闭包;
- *
- *      函数对象可以通过作用域链相互关联起来,
- *      函数体内部的变量都可以保存在函数作用域内,
- *      这种特性在计算机科学文献中称为"闭包"
- *      有权访问另一下函数作用域的变量函数
- *
- *      执行环境(execution context)
- *      特殊的内部属性(Scope)
- *      活动对象(activation object)
- *      作用域链(scope chain)
- ****************************/
+// 闭包
+//   在函数内定义了其它函数就定义了闭包;
+//   函数对象可以通过作用域链相互关联起来,
+//   函数体内部的变量都可以保存在函数作用域内,
+//   这种特性在计算机科学文献中称为"闭包"
 
-//  在一个函数内部创建另一个函数
-function createComparisonFunction(propertyName) {
-  return function(object1, object2) {
-    var value1 = object1[propertyName]
-    var value2 = object2[propertyName]
-    if (value1 < value2) {
-      return -1
-    } else if (value1 > value2) {
-      return 1
-    } else {
-      return 0
-    }
-  }
-}
-var compareNames = createComparisonFunction('name') //创建函数
-var arr = [{ name: 'Nicholas' }, { name: 'Greg' }]
-arr.sort(compareNames) // [{name:"Greg"},{name:"Nicholas"}]
-// 解除对匿名函数的引用(以便释放内存), 拉圾回收例程将其清除
-compareNames = null
+//   执行环境(execution context)
+//   特殊的内部属性(Scope)
+//   活动对象(activation object)
+//   作用域链(scope chain)
+
 
 /**
  *  闭包可以捕捉到局部变量, 并一直保存下去
@@ -127,9 +99,7 @@ o.getName() // Get the property value
 
 
 //////////////////////////////////
-// 闭包与变量
-// 嵌套的函数不会将作用域内私有成员复制一份
-// 也不会对所绑定的变量生成静态快照(static snapshot)
+// 嵌套的函数不会 将作用域内私有成员复制一份
 function constFunc3() {
   var result = []
   for (var i = 0; i < 10; i++) {
@@ -146,21 +116,6 @@ function constFunc3() {
 var funcs3 = constFunc3()
 // funcs3[6]() // => 6
 // console.log(funcs3[1]())
-
-// 闭包 10 事件
-function constFunc4 () {
-  for(var i = 0; i < 10; i++) {
-    (function(num) {
-      var a = document.createElement('a');
-      a.innerHTML = num + '<br>';
-      a.addEventListener('click', function(){
-        alert(num)
-      })
-      document.body.appendChild(a)
-    })(i)
-  }
-}
-// constFunc4();
 
 //////////////////////////////////
 // 在闭包中this的问题：

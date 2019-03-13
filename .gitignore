@@ -68,3 +68,6 @@ yarn-error.log*
 
 # server 
 server/http/screenshot/*.png
+server/http/mn/*.png
+server/http/mn/*.jpg
+server/http/mn/*.git

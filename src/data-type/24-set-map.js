@@ -1,16 +1,6 @@
-// es6 set 
-{
-  let list = new Set()
-  list.add(5)
-  list.add(7)
-  // console.log(list.size)  // => 2
-}
+// ES6 set map
 
-{
-  let arr = [1, 2, 3, 4, 5]
-  let list = new Set(arr)
-  // console.log(list.size) // => 2
-}
+let arr = ['add', 'delete', 'clear', 'has']
 
 {
   let list = new Set()
@@ -21,22 +11,23 @@
 
   let arr = [1, 2, 3, 1, '2']
   let list2 = new Set(arr)
-  // console.log(list2) // {1, 2, 3, "2"}
+  // console.log(list2, // {1, 2, 3, "2"}
+  //   Array.from(list2)
+  //   ) 
+  
 }
 
 // 删除，清空
 {
-  let arr = ['add', 'delete', 'clear', 'has']
   let list = new Set(arr)
-  // console.log(list.has('add'))  // => true
-  // console.log(list.delete('add'), list) 
-  // => {"delete", "clear", "has"}
-  // console.log(list.clear(), list) // => {}
+  // console.log(list.has('add'), // => true
+  //   list.delete('add'), // => {"delete", "clear", "has"}
+  //   list.clear()  // => {}
+  // )  
 }
 
 // 遍历
 {
-  let arr = ['add', 'delete', 'clear', 'has']
   let list = new Set(arr)
 
   for (let key of list.keys()) {
@@ -63,24 +54,27 @@
   // console.log('weakList', weakList)
 }
 
-
 ///////////////////////////
 // map 
 
 {
-  let map = new Map()
-  let arr = ['123']
-  map.set(arr, 456)
-  // console.log(map, map.get(arr))
-  // {Array(1) => 456} 456
-}
-
-{
   let map = new Map([['a', 123], ['b', 456]])
-  // console.log( map)     // {"a" => 123, "b" => 456}
-  // console.log(map.size) // 2
-  // console.log(map.delete('a'), map) // true  {"b" => 456}
-  // console.log(map.clear(), map) // undefined {}
+  let arr = ['123']
+  map.set(arr, '789')
+  map.set(0, {a: '222'});
+  
+  // console.log(map,
+  //   map.size,
+  //   map.get(arr), // => 789
+  //   map.get(0),   // {a: '222'}
+  //   Array.from(map),
+  //   map.delete('a')
+  // )
+  map.clear()
+
+  // for(let key of map.keys()) console.log(key)
+  // for(let value of map.values()) console.log(value)
+  // for(let [key, value] of map.entries()) console.log(key, value)
 }
 
 {
@@ -137,7 +131,7 @@
   map.set('t', 1)
   set.add(item)
   obj['t'] = 1
-  console.log(map, set, obj)
+  // console.log(map, set, obj)
   // {"t" => 1} {t:2} {t: 2}
 
   // 查

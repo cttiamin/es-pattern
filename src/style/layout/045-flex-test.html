@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>弹性盒模型 Flexible Box / Flexbox</title>
+    <style type="text/css">
+        .site {
+          display: flex;
+          min-height: 100vh;
+          flex-direction: column;
+        }
+
+        .site-content {
+          flex: 1;
+          border: 1px solid #ccc;
+          display: flex;
+          /* flex-wrap: wrap; */
+          justify-content: center;
+          align-items: baseline;
+          /* align-content: center; */
+          flex-flow: row wrap;
+          /* flex-direction: column; */
+        }
+        .win2{
+            width: 200px;
+            /* height: 200px; */
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+
+<body class="site">
+<!--     
+    <div id="dad">
+        <div id="son-1"></div>
+        <div id="son-2"></div>
+        <div id="son-3"></div>
+        <div id="son-4"></div>
+        <div id="son-5"></div>
+    </div>
+-->
+
+<header>...</header>
+  <main class="site-content">
+      <div class="win2">aaa</div>
+      <div class="win2">bbb</div>
+      <div class="win2">bbb</div>
+      <div class="win2">bbb</div>
+      <div class="win2">bbb</div>
+      <div class="win2">bbb</div>
+  </main>
+<footer>...</footer>
+
+</body>
+
+</html>

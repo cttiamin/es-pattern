@@ -6,15 +6,6 @@
 // vuex 和 redux 的 store
 // jquery 只有一个 $
 //
-// 设计原则:
-// 代码复用,增加可维护性.
-// 1.开闭原则, 对扩展开放, 对修改关闭, ps高考的试卷
-// 2.里氏转换原则, 子类继承父类, 单独掉完全可以,
-// 3.依赖倒转原则, 引用一个对象, 如果这个对象有底层类型, 直接引用底层
-// 4.接口隔离原则, 每一个接口对应是一个角色
-// 5.合成/聚合复用原则, 新的对象应使用一些已有的对象, 使之成为对象的一部分
-// 6.迪米特原则, 一个对象应对其他对象有尽可能少得了解;
-//
 // 模式作用:
 // 1.模块间通信
 // 2.系统中某个类的对象只能存在一个
@@ -25,7 +16,6 @@
 // 2.闭包容易造成内存泄露, 不需要的赶快干掉.
 // 3.注意new的成本(继承)
 
-///////////////
 // 1.
 function Universe() {
   // do we have an existing instance?
@@ -44,7 +34,6 @@ uni1 === uni2; // true
 Universe.instance;
 // 缺点: instance 方法是公开的
 
-///////////////
 // 2.闭包中的实例
 // 采用闭包保护单体实例，私有静态成员实现
 function Universe_2() {
@@ -58,7 +47,6 @@ function Universe_2() {
     return instance;
   };
 }
-
 Universe_2.prototype.nothing = true;
 var uni_2_1 = new Universe_2();
 Universe_2.prototype.everything = true;
@@ -71,14 +59,13 @@ uni_2_1.nothing; // true
 uni_2_2.nothing; // true
 uni_2_1.everything; // undefined
 uni_2_2.everything; // undefined
-
 // 结果看上去是正确的
 uni_2_1.constructor.name; // Universe_2
-uni_2_1.constructor === Universe_2; // => false 但这是很奇怪的
+uni_2_1.constructor === Universe_2; 
+// => false 但这是很奇怪的
 // 原因是：uni_2_1 指向了原始的构造函数，而不是重新定义的那个函数
 
-///////////////
-// 3. 使原型和构造函数指针 按照预期那样运行
+// 3. 使原型和构造函数指针
 function Universe_3() {
   // the cached instance
   var instance;
@@ -91,7 +78,6 @@ function Universe_3() {
   Universe_3.prototype = this;
   // the instance
   instance = new Universe_3();
-  // console.log();
   // reset the constructor pointer
   instance.constructor = Universe_3;
   // all the functionality
@@ -111,7 +97,6 @@ uni_3_1.nothing && uni_3_2.nothing && uni_3_1.everything && uni_3_2.everything; 
 uni_3_1.bang; // "Big"
 uni_3_1.constructor === Universe_3; //true
 
-///////////////
 // 4. 另一种解决方案也是 将构造函数和实例包装在即时函数中
 var Universe_4;
 (function() {
@@ -131,7 +116,6 @@ var uni_4_2 = new Universe_4();
 uni_4_1 === uni_4_2 //=> true
 
 
-///////////////////////////////
 // ES6
 class SingleObject {
   constructor() {

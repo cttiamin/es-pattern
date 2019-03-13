@@ -8,7 +8,7 @@
  *      abort: 在因为调用 abort 方法而终止连接时触发
  *      load: 在接收到完整的响应数据时触发
  *      loadend: 在通信完成 或者触发 error, abort或load事件后触发
- *      Support: FF3.5, Saf4+,Chr,IOS,Android,IE8+ only support "load" event
+ *      Support: IE8+ only support "load" event
  * */
 
 // 进度事件
@@ -16,7 +16,7 @@
 //  progress 事件
 
 /******
- *  21.3.1 load 事件
+ *  load 事件
  *      代替 readystatechange
  * **/
 var xhr01 = createXHR();
@@ -36,7 +36,7 @@ xhr01.onload = function () {
 
 
 /****************************************
- * 21.3.2 progress 事件
+ * progress 事件
  *      lengthComputable: 一个表示进度信息是否可用的布尔值
  *      position: 已经接收的字节数
  *      totalSize: 根据Content-Length 响应头部确定的预期字数,
