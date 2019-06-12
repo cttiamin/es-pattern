@@ -1,5 +1,4 @@
 // 类型检测
-
 typeof undefined; // undefined
 typeof 'abc'; // string
 typeof 123; // nunber

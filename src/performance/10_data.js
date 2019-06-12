@@ -2,9 +2,8 @@
 // High Performance JavaScript(高性能JavaScript)
 // 2014/03/02
 // 海淀区苏州街3号,大恒科技南座5层
-//
-// 非阻塞 动态载入
 
+// 非阻塞 动态载入
 function loadScript(url, callback){ 
     var script = document.createElement ("script") 
         script.type = "text/javascript"; 
@@ -46,7 +45,7 @@ function loadScript(url, callback){
  * 使用非阻塞方式下载 JavaScript:
  * 1.为<script>标签添加defer属性(只适用于IE和Firefox3.5+)
  * 2.动态创建<script>元素,用它下载并执行代码
- * 3.用XHR对象下载代码,并注入到页面中
+ * 3.用 XHR 对象下载代码,并注入到页面中
  */  
 
 
@@ -206,7 +205,7 @@ function tableInnerHTML() {
 
 
 
-/**********************************************************
+/**********************************************
  * 使用DOM方法代码有些冗长
  **/
 function tableDOM() {
@@ -382,10 +381,9 @@ function collectionNodesLocal() {
 
 /************************************************************
  * Walking the DOM
- * 
  * 采用非递归方式遍历一个元素的子节点
  * childNode, nextSibling;
- * 在IE中nextSibling表现得比childNodes好; IE6快6倍, IE7快105倍
+ * 在IE中 nextSibling 表现比 childNodes 好; IE6快6倍, IE7快105倍
  **/
 function testNextSibling() {
     var el = document.getElementById('mydiv1'),
@@ -413,7 +411,7 @@ function testChildNodes() {
 
 
 /**
- * 用APPI函数返回元素节点比自己在JavaScript中写的滤方法要快.
+ * 用APPI函数返回元素节点比自己在 JavaScript 中写的滤方法要快.
  * 如: 
  * children, childNodes;
  ***/

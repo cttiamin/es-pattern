@@ -148,15 +148,13 @@ function Child5(name, age) {
   Parent5.call(this, name) // 继承父类实例
 }
 // Child5.prototype = inherit(Parent5.prototype) // Object.create
-// Child5.prototype.constructor = Child5; // 构造指向子类
+Child5.prototype.constructor = Child5; // 构造指向子类
 // var instance_child5 = new Child5('Nicholas', 29)
 // instance_child5.name // => "Nicholas"
 
 // 封装在继承函数中
 inherit2(Child5, Parent5)
 var instanceChild5 = new Child5('Nicholas', 29)
-
-
 
 
 //////////////////////

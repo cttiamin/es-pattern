@@ -1,34 +1,26 @@
-/*********************************************************
- *  Chapter 9: 客户端检测
- *      9.1 能力检测(特性检测)
- *              getElement()
- *          9.1.1 更可靠的能力检测
- *          9.1.2 能力检测,不是浏览器检测
- *      9.2 怪癖检测(quirk)
- *      9.3 用户代理检测
- *      navigator.userAgent: 由客户机发送服务器的 user-agent 头部的值
- *              .appcodeName: 浏览器的代码名
- *              .appMinorVersion: 浏览器的次级版本
- *              .appName: 浏览器的名称
- *              .appVersion: 浏览器的平台和版本信息
- *              .browserLanguarge: 当前浏览器的语言
- *              .cookieEnabled: 指明浏览器中是否启用 cookie 的布尔值
- *              .cpuClass: 浏览器系统的 CPU 等级
- *              .onLine: 指明系统是否处于脱机模式的布尔值
- *              .platform: 运行浏览器的操作系统平台
- *              .systemLanguage: OS 使用的默认语言
- *              .userLanguage: OS 的自然语言设置
- *
- *          window.opera:
- *          9.3.1 用户代理字符串的历史
- *          9.3.2 用户代理字符串检测技术
- *          9.3.4 完整的代码
- *          9.3.4 使用方法
- ********************************************************/
+// 客户端检测
+//    能力检测(特性检测)
+//      更可靠的能力检测
+//      能力检测, 不是浏览器检测
+//    怪癖检测(quirk)
+//    用户代理检测
+//    navigator.userAgent: 由客户机发送服务器的 user-agent 头部的值
+//      .appcodeName: 浏览器的代码名
+//      .appMinorVersion: 浏览器的次级版本
+//      .appName: 浏览器的名称
+//      .appVersion: 浏览器的平台和版本信息
+//      .browserLanguarge: 当前浏览器的语言
+//      .cookieEnabled: 指明浏览器中是否启用 cookie 的布尔值
+//      .cpuClass: 浏览器系统的 CPU 等级
+//      .onLine: 指明系统是否处于脱机模式的布尔值
+//      .platform: 运行浏览器的操作系统平台
+//      .systemLanguage: OS 使用的默认语言
+//      .userLanguage: OS 的自然语言设置
+//    window.opera
+//      用户代理字符串的历史
+//      用户代理字符串检测技术
 
-/**
- * 9.1 能力检测
- */
+// 能力检测
 function getElement(id) {
   if (document.getElementById) {
     return document.getElementById(id)
@@ -48,8 +40,8 @@ function getWindowWidth() {
   }
 }
 
-/** 9.1.1 更可靠的能力检测
- *  尽量使用typeof进行能力检测,
+/** 更可靠的能力检测
+ *  尽量使用 typeof 进行能力检测
  */
 function isSortable(object) {
   //检测对象是否存在 sort 方法
@@ -240,7 +232,7 @@ var client = (function() {
   }
 
   return {
-    //在此检测呈现引擎, 平台和设备
+    // 在此检测呈现引擎, 平台和设备
     engine: engine,
     browser: browser
   }
@@ -388,5 +380,3 @@ if (system.win) {
   }
 }
 system.win // => 7
-
-zha123456

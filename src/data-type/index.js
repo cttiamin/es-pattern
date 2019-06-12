@@ -8,7 +8,7 @@
 // import './21-order';
 // import './22-method';
 // import './24-set-map.js';
-// import './30-date';
+import './30-date';
 // import './31-timer';
 // import './40-string';
 // import './50-math';

@@ -2,7 +2,7 @@
   "name": "es-basic",
   "version": "1.0.0",
   "description": "``` # npm install webpack webpack-cli --save-dev",
-  "main": "webpack.config.js",
+  "main": "server/server.js",
   "directories": {
     "lib": "lib"
   },
@@ -11,7 +11,7 @@
     "build": "webpack --env production --config build/webpack.common",
     "dev": "webpack-dev-server --env development --config build/webpack.common.js",
     "watch": "webpack --watch --hotOnly --config build/webpack.config.js --mode development",
-    "server": "node server.js",
+    "server": "node server/server.js",
     "test": "mocha test/mocha.js",
     "cover": "istanbul cover _mocha test/mocha.js",
     "jest": "jest test/demo.test.js --coverage",
