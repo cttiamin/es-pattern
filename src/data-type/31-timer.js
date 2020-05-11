@@ -1,7 +1,7 @@
 //  setInterval(): 间歇调用: 指定时间过后执行代码
 //  clearInterval():
 //  setTimeout:  超时调用: 每隔指定的时间就执行一次代码
-//  clearTimeout():
+//  clearTimeout:
 
 
 // 超时调用:
@@ -30,27 +30,31 @@ function incrementNumber() {
 }
 // intervalId = setInterval(incrementNumber, 500);
 
-/**
- * 使用超时调用来实现
- */
-var num2 = 0;
-var max2 = 10;
-function incrementNumber2() {
-  console.log(num2++);
-  //如果执行次数未达到 max2 设定的值, 则设置另一次超时调用
-  if (num < max2) {
-    setTimeout(incrementNumber2, 500);
-  } else {
-    console.log('Done');
+/////////////////
+// 使用超时调用来实现
+function incrementFun1 () {
+  var num2 = 0;
+  var max2 = 60;
+  var incrementNumber2 = function () {
+    num2++
+    // 如果执行次数未达到 max2 设定的值, 则设置另一次超时调用
+    if (num2 < max2) {
+      console.log(num2)
+      setTimeout(incrementNumber2, 1000);
+    } else {
+      console.log('Done');
+    }
   }
+  return incrementNumber2;
 }
-//setTimeout(incrementNumber, 500);
+// setTimeout(incrementNumber2, 1000);
+// incrementFun1()();
 
 /*
  * 定时器应用函数
  * 函数 f() 在未来的调用模式
  * 在等待了若干毫秒之后调用 f()
- * 如果设置了 interval 并没有设置end参数, 则对 f() 调用将不会停止
+ * 如果设置了 interval 并没有设置 end 参数, 则对 f() 调用将不会停止
  * 如果没有设置 interval 和 end, 只在若干毫秒后调用 f() 一次
  * 中有指定了 f(), 才会从 start=0 的时刻开始
  * 注意,调用invoke()不会阻塞, 它会立即返回
@@ -59,7 +63,7 @@ function invoke(f, start, interval, end) {
   if (!start) start = 0; // Default to 0 ms,
   if (arguments.length <= 2)
     // Single-invocation case 单次调用模式
-    //Single invocation after start ms. 若干毫秒后的单次调用
+    // Single invocation after start ms. 若干毫秒后的单次调用
     setTimeout(f, start);
   else {
     // Multiple invocation case 多次调用模式
@@ -79,18 +83,16 @@ function invoke(f, start, interval, end) {
   }
 }
 
-/*
-invoke(function(){
-      console.log("hello");
-      }, 1000);
+// invoke(function(){
+//   console.log("hello");
+//   }, 1000);
 
-invoke(function(){
-      console.log("hello world!");
-      },
-      1000,
-      1000,
-      5000);
-*/
+// invoke(function(){
+//   console.log("hello world!");
+// },
+// 1000,
+// 1000,
+// 10000);
 
 /**********************************************
  * Yielding Processes (产出 队列进行)
@@ -144,19 +146,52 @@ function printValue(item) {
 //    其实就是替换为一个新的定时器
 var processor = {
   timeoutId: null,
-  //实际执行代码
+  // 实际执行代码
   performProcessing: function() {
     console.log('execute');
   },
   process: function() {
+    // if (this.timeoutId)
     clearTimeout(this.timeoutId);
     var that = this;
     this.timeoutId = setTimeout(function() {
       that.performProcessing();
-    }, 100);
+      // this.timeoutId = null
+    }, 300);
   }
 };
-//processor.process();
+// processor.process();
+
+function debounce(fn, delay = 500) {
+  // timer 是闭包中的
+  let timer = null
+  return function () {
+    if (timer) {
+      clearTimeout(timer)
+    }
+    timer = setTimeout(() => {
+      fn.apply(this, arguments)
+      timer = null
+    }, delay)
+  }
+}
+
+// add input
+var inputTag = document.createElement('input')
+document.body.appendChild(inputTag)
+// inputTag.addEventListener('keyup', debounce( function (e) {
+//   console.log(inputTag.value)
+// }), 500)
+
+inputTag.addEventListener('keyup', function (e) {
+  processor.performProcessing = function (){
+    console.log(inputTag.value)
+  }
+  processor.process()
+})
+
+
+
 
 // onresize
 function throttle(method, scope) {
@@ -168,7 +203,7 @@ function throttle(method, scope) {
 function resizeDiv() {
   console.log(document.body.clientWidth)
 }
-//当浏览器调整大小时
+// 当浏览器调整大小时
 window.onresize = function() {
   throttle(resizeDiv);
 };

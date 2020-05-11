@@ -1,8 +1,17 @@
 {
   "presets": [
-    ["env", {
-      modules: false
-    }],
-    "react"],
-  "plugins": ["transform-class-properties"]
+    [
+      "@babel/preset-env",
+      {
+        // 跟据使用情况 polyfill 填充
+        "useBuiltIns": "usage",
+        "corejs": 3,
+        "targets":
+        {
+          "chrome": "67",
+        }
+      }
+    ]
+  ],
+  "plugins": ["@babel/plugin-syntax-dynamic-import"]
 }

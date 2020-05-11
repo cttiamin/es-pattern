@@ -84,7 +84,6 @@ if (!Function.prototype.bindES3) {
   }
 }
 
-
 function f(y, z) {
   var result = Number(this.x) + Number(y) + Number(z);
   return this.x + y + z;

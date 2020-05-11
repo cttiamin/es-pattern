@@ -9,6 +9,7 @@
 //    与 call 类似,传实参形式和call有所不同, 该实参放入数组
 // call: apply作用机同, 接收参数的方式不同
 // bind: 主体的绑定函数, this 对象解析为传入的对象
+//
 // new 运算符原理
 // JavaScript 函数有两个特点
 //  1.函数是一类对象(first-class object)
@@ -87,20 +88,20 @@ var first_2 = new Waffle2(),
 var myapp = {};
 myapp.color = "green";
 myapp.paint = function(node){
-    node.style.color = this.color;
+  node.style.color = this.color;
 };
 var findNodes3 = function(callback, callback_obj){
   var found = document.body;
-	if(typeof callback === "function"){
+  if(typeof callback === "function"){
     // this.color 没有定义
     // findNodes 是全局函数，对象this引用了全局对象
     // 解决方案：传递回调函数所属对象
-		callback.call(callback_obj, found);
-    }
-    // 另一种选择是： 将其中的方法作为字符串来传递
-    if(typeof callback === "string"){
-		callback = callback_obj[callback];
-	}
+    callback.call(callback_obj, found);
+  }
+  // 另一种选择是： 将其中的方法作为字符串来传递
+  if(typeof callback === "string"){
+    callback = callback_obj[callback];
+  }
 };
 findNodes3(myapp.paint, myapp);
 
@@ -109,7 +110,7 @@ findNodes3(myapp.paint, myapp);
 var scareMe = function(){
   console.log("Boo!");
   scareMe = function(){
-  console.log("Double boo!");
+    console.log("Double boo!");
   };
 };
 //scareMe();  //output Boo!
@@ -126,7 +127,7 @@ scareMe.property = "properly";
 var prank = scareMe;
 //3. 作为一个方法使用
 var spooky = {
-    boo: scareMe
+  boo: scareMe
 };
 // calling with a new name
 prank(); //=> "Boo!"
@@ -144,22 +145,22 @@ scareMe();  // Double boo!
 
 // 即时对象初始化 immediate object initialization
 ({
-    // 配置常数
-    maxwidth: 600,
-    maxheight: 400,
-    //定义一些实用的方法
-    gimmeMax: function(){
-        return this.maxwidth + "x" + this.maxheight;
-    },
-    // 初始化
-    init: function (){
-        (this.gimmeMax());
-    }
- }).init();
+  // 配置常数
+  maxwidth: 600,
+  maxheight: 400,
+  //定义一些实用的方法
+  gimmeMax: function(){
+    return this.maxwidth + "x" + this.maxheight;
+  },
+  // 初始化
+  init: function (){
+    (this.gimmeMax());
+  }
+}).init();
 // 有同等效果的 init
 ({
-    init:function(){
-    } 
+  init:function(){
+  } 
 }.init());
 
 
@@ -167,57 +168,57 @@ scareMe();  // Double boo!
 // 初始化分支
 //之前
 var utils_1 = {
-    addlistener: function(el, type, fn){
-        if(typeof window.addEventListener === 'function'){
-            el.addEventListener(type, fn, false);
-        }else if(typeof document.attachEvent === 'function'){
-            el.attachEvent('on' + type, fn);
-        }else{
-            el['on' + type] = fn;
-        }
-    },
-    removeListener: function(el, type, fn){}
+  addlistener: function(el, type, fn){
+    if(typeof window.addEventListener === 'function'){
+      el.addEventListener(type, fn, false);
+    }else if(typeof document.attachEvent === 'function'){
+      el.attachEvent('on' + type, fn);
+    }else{
+      el['on' + type] = fn;
+    }
+  },
+  removeListener: function(el, type, fn){}
 };
 // 这段代码效率低下, 每次调用utils.addListener(),removeListener
 // 都会执行相同检查
 var utils_2 = {
-    addListener: null,
-    removeListener: null
+  addListener: null,
+  removeListener: null
 };
 // 之后 实现
 if(typeof window.addEventListener === 'function'){
-    utils_2.addListener = function(el, type, fn){
-        el.addEventListener(type, fn, false);    
-    };
-    utils_2.removeListener = function(el, type, fn){
-        el.removeEventListener(type, fn, false);    
-    };
+  utils_2.addListener = function(el, type, fn){
+    el.addEventListener(type, fn, false);    
+  };
+  utils_2.removeListener = function(el, type, fn){
+    el.removeEventListener(type, fn, false);    
+  };
 }else if(typeof document.attachEvent === 'function'){
-    utils_2.addListener = function(el, type, fn){
-        el.attachEvent('on' + type, fn);
-    };
-    utils_2.removeListener = function(el, type, fn){
-        el.detachEvent('on' + type, fn);
-    };
+  utils_2.addListener = function(el, type, fn){
+    el.attachEvent('on' + type, fn);
+  };
+  utils_2.removeListener = function(el, type, fn){
+    el.detachEvent('on' + type, fn);
+  };
 }else{
-    utils_2.addListener = function(el, type, fn){
-        el['on' + type] = fn;
-    };
-    utils_2.removeListener = function(el, type, fn){
-        el['on' + type] = null;
-    };
+  utils_2.addListener = function(el, type, fn){
+    el['on' + type] = fn;
+  };
+  utils_2.removeListener = function(el, type, fn){
+    el['on' + type] = null;
+  };
 }
 
 
 //////////////////
 // 备忘模式 => 缓存值
 var myFunc = function(param){
-    if(!myFunc.cache[param]){
-        var result = {};
-        // ... 开销很大的操作
-        myFunc.cache[param] = result;
-    }
-    return myFunc.cache[param];
+  if(!myFunc.cache[param]){
+    var result = {};
+    // ... 开销很大的操作
+    myFunc.cache[param] = result;
+  }
+  return myFunc.cache[param];
 };
 // 缓存存储
 myFunc.cache = {};
@@ -225,14 +226,14 @@ myFunc.cache = {};
 // 如果有更复杂的参数解决方式:
 // 将对象序列化为一个 JSON 字符串
 var myFunc2 = function() {
-    var cachekey = JSON.stringify(Array.prototype.slice.call(arguments)),
-        result;
-    if(!myFunc2.cache[cachekey]){
-        result = {};
-        // ... 开销很大的操作
-        myFunc2.cache[cachekey] = result;
-    }
-    return myFunc2.cache[cachekey];
+  var cachekey = JSON.stringify(Array.prototype.slice.call(arguments)),
+    result;
+  if(!myFunc2.cache[cachekey]){
+    result = {};
+    // ... 开销很大的操作
+    myFunc2.cache[cachekey] = result;
+  }
+  return myFunc2.cache[cachekey];
 };
 // 缓存存储
 myFunc2.cache = {};
@@ -242,14 +243,14 @@ myFunc2('name')
 // 使用arguments.call
 // ECMAScript 5 严格模式中不支持 arguments.callee
 var myFunc3 = function(param){
-    var f = arguments.callee,
-        result;
-    if(!f.cache[param]){
-        result = {};
-        // ... 开销很大的操作
-        f.cache[param] = result;
-    }
-    return f.cache[param];
+  var f = arguments.callee,
+    result;
+  if(!f.cache[param]){
+    result = {};
+    // ... 开销很大的操作
+    f.cache[param] = result;
+  }
+  return f.cache[param];
 };
 // 缓存存储
 myFunc3.cache = {};
@@ -257,14 +258,14 @@ myFunc3.cache = {};
 
 // 配置对象
 function addPerson(args){
-    console.log(args.username);
+  console.log(args.username);
 }
 var conf = {
-    username: "batman",
-    first: "Bruce",
-    last: "Wayne",
-    dob: 'DOb',
-    gender: "IT",
-    address: "Lishuiqiao"
+  username: "batman",
+  first: "Bruce",
+  last: "Wayne",
+  dob: 'DOb',
+  gender: "IT",
+  address: "Lishuiqiao"
 };
 // addPerson(conf);

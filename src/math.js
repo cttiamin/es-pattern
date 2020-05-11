@@ -8,7 +8,7 @@
 
 function min(a, b) {
   const c = 3;
-  return (b-a) * c;
+  return (b - a) * c;
 }
 
 module.exports = {
@@ -29,7 +29,7 @@ module.exports = {
     return x * x;
   },
   cover: (a, b) => {
-    if( a > b) {
+    if (a > b) {
       return a - b
     } else if (a == b) {
       return a + b

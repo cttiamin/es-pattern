@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <!-- 移动端声明 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no" />
     <meta charset="UTF-8">
     <title>Media Query 媒体查询</title>
 </head>
+
 <body>
     <!--
     两种定义方式
@@ -14,54 +16,61 @@
     -->
     <style>
         /* 所有最小水平 屏幕宽度为800像素的屏幕应用规则 */
-        @media all and(min-width: 800px){}
+        @media all and(min-width: 800px) {}
+
         /* 简写方式, 同上 */
-        @media (min-width:800px){}
+        @media (min-width:800px) {}
+
         /* 介于800px 与 1200之间的屏幕规则 */
-        @media (min-width:800px) and (max-width:1200px){}
+        @media (min-width:800px) and (max-width:1200px) {}
+
         /* 宽度至少是800像素或方向是纵向的 */
-        @media (min-width:800px) or (orientation: portrait){}
+        @media (min-width:800px) or (orientation: portrait) {}
+
         /* 当最小宽度不是800px */
-        @media (not min-width:800px){}
+        @media (not min-width:800px) {}
+
         /* 当屏幕正好是 800px * 400px */
-        @media (width:800px) and (height:400px){}
+        @media (width:800px) and (height:400px) {}
+
         /* 最小宽度为700px, 或是横屏的手持设备上*/
-        @media (min-width:700px), handheldand(orientation:landscape){}
+        @media (min-width:700px),
+        handheldand(orientation:landscape) {}
 
         /* 超小屏幕(手机, 小于768px) */
         /* 没有任何媒体查询相关的代码, 移动设备优先 */
 
         /* 小屏幕(平板,大于等于 768px) */
-        @media(min-width: 768px ) {}
+        @media(min-width: 768px) {}
 
         /* 中等屏幕(桌面显示器, 大于等于992px) */
-        @media( min-width: 992px ) {}
+        @media(min-width: 992px) {}
 
         /* 大屏幕(大桌面显示器, 大于等于1200px ) */
-        @media( min-width: 1200px ) {}
+        @media(min-width: 1200px) {}
     </style>
 
     <h2>屏幕尺寸</h2>
 
     <p>
-    老智能机: 320-480px; 
-    <br>智能手机: >=480; 
-    <br>平板电脑: >=768px; 
-    <br>中等屏幕: >=992
-    <br>大屏幕: >= 1200px
+        老智能机: 320-480px;
+        <br>智能手机: >=480;
+        <br>平板电脑: >=768px;
+        <br>中等屏幕: >=992
+        <br>大屏幕: >= 1200px
     </p>
 
     <h2>反转表格实验</h2>
 
     <style>
-        h1{
+        h1 {
             font-size: 30px;
             text-align: center;
             color: #666;
         }
-        
-        table.responsive{
-            border-collapse:collapse;
+
+        table.responsive {
+            border-collapse: collapse;
             border-spacing: 0;
 
 
@@ -71,98 +80,94 @@
             box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
         }
 
-        table.responsive th, table.responsive td{
+        table.responsive th,
+        table.responsive td {
             border: 1px solid #666;
             padding: .5em 1em;
         }
 
-        table.responsive th{
+        table.responsive th {
             background-color: #35B558;
         }
-        
-        table.responsive .actions a{
+
+        table.responsive .actions a {
             color: #ff5c00;
         }
 
-        table.responsive .number, table.responsive .actions{
+        table.responsive .number,
+        table.responsive .actions {
             text-align: center;
         }
 
-        @media (max-width:480px){
-            table.responsive
-            {
-                box-shadow:none;
-                border: none;    
+        @media (max-width:480px) {
+            table.responsive {
+                box-shadow: none;
+                border: none;
             }
 
-            table.responsive thead
-            {
-                display:none;
+            table.responsive thead {
+                display: none;
             }
 
-            table.responsive tr, table.responsive td
-            {
-                display:block;
+            table.responsive tr,
+            table.responsive td {
+                display: block;
                 border: none;
                 position: relative;
             }
 
-            table.responsive tr{
+            table.responsive tr {
                 margin-bottom: 1em;
-                box-shadow:0 1px 10px 0 rgba(0, 0, 0, .2);
+                box-shadow: 0 1px 10px 0 rgba(0, 0, 0, .2);
             }
 
-            table.responsive .number{
-                text-align:left;
-                background-color:#35b558;
+            table.responsive .number {
+                text-align: left;
+                background-color: #35b558;
                 padding-left: 28%;
             }
 
-            table.responsive .number:before
-            {
-                content:"Menu1";
+            table.responsive .number:before {
+                content: "Menu1";
                 position: absolute;
                 left: .5em;
                 top: .5em;
                 font-weight: bold;
             }
 
-            table.responsive .name{
-                text-align:left;
-                background-color:#35b558;
+            table.responsive .name {
+                text-align: left;
+                background-color: #35b558;
                 padding-left: 28%;
             }
 
-            table.responsive .name:before
-            {
-                content:"Menu3";
+            table.responsive .name:before {
+                content: "Menu3";
                 position: absolute;
                 left: .5em;
                 top: .5em;
                 font-weight: bold;
             }
 
-            table.responsive .actions
-            {
+            table.responsive .actions {
                 position: absolute;
                 right: 0;
-                top:0;
+                top: 0;
             }
 
         }
-
     </style>
 
 
     <table class="responsive">
         <thead>
             <tr>
-            <th>Menu1</th>
-            <th>Menu2</th>
-            <th>Menu3</th>
+                <th>Menu1</th>
+                <th>Menu2</th>
+                <th>Menu3</th>
             </tr>
         </thead>
-        
+
         <tr>
             <td class="number">150406</td>
             <td>Mobile application development</td>
@@ -170,7 +175,7 @@
         </tr>
         <tr>
             <td class="number">140407</td>
-            <td>Web font    </td>
+            <td>Web font </td>
             <td class="actions"><a href="">edit</a> | <a href="">del</a></td>
         </tr>
         <tr>
@@ -187,30 +192,28 @@
 
     <h2>响应式图片</h2>
     <p>
-    及时跟据不同设备加载对应类型图片方式:
-    <br>用srcset 和sizes 加载不同图片(兼容不好)
-    <br>picture, source media加载不同图片
-    <br>用source type指定多种格式
-    <br>超赞 polyfill-picturefill
+        及时跟据不同设备加载对应类型图片方式:
+        <br>用srcset 和sizes 加载不同图片(兼容不好)
+        <br>picture, source media加载不同图片
+        <br>用source type指定多种格式
+        <br>超赞 polyfill-picturefill
     </p>
 
     <h3>srcset 和sizes </h3>
     <p>
-    <img sizes="(min-width:900px) 900px,100vw"
-    srcset="../images/480_320.jpg 480w,
+        <img sizes="(min-width:900px) 900px,100vw" srcset="../images/480_320.jpg 480w,
     ../images/640_427.jpg 480w,
     ../images/720_480.jpg 720w,
-    ../images/900_600.jpg 900w"
-    src="../images/480_320.jpg" alt="responsive images">
+    ../images/900_600.jpg 900w" src="../images/480_320.jpg" alt="responsive images">
     </p>
 
     <h3>picture, source media加载不同图片</h3>
     <picture>
-    <source media="(max-width:480px)" srcset="../images/480_320.jpg">
-    <source media="(max-width:640px)" srcset="../images/640_427.jpg">
-    <source media="(max-width:720px)" srcset="../images/720_480.jpg">
-    <source media="(max-width:900px)" srcset="../images/900_600.jpg">
-    <img src="../images/900_600.jpg" alt="responsive images">
+        <source media="(max-width:480px)" srcset="../images/480_320.jpg">
+        <source media="(max-width:640px)" srcset="../images/640_427.jpg">
+        <source media="(max-width:720px)" srcset="../images/720_480.jpg">
+        <source media="(max-width:900px)" srcset="../images/900_600.jpg">
+        <img src="../images/900_600.jpg" alt="responsive images">
     </picture>
 
     <h3>polyfill</h3>
@@ -220,4 +223,5 @@
 
 
 </body>
+
 </html>

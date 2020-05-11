@@ -199,7 +199,6 @@ var total = data.total();
 
 /////////////////////////////
 // 数组去重
-// 双层循环，外层循环元素，内层循环时比较值
 // Array.prototype.distinct = function(){
 var distinct = function(arr_origin) {
   var arr = arr_origin,
@@ -221,6 +220,27 @@ var distinct = function(arr_origin) {
 var arra = [1, 2, 3, 4, 4, 1, 2, 2, 1, 1, 1];
 // console.log(distinct(arra))
 
+
+// // 传统方式
+// function unique(arr) {
+//     const res = []
+//     arr.forEach(item => {
+//         if (res.indexOf(item) < 0) {
+//             res.push(item)
+//         }
+//     })
+//     return res
+// }
+
+// 使用 Set （无序，不能重复）
+function unique(arr) {
+  const set = new Set(arr)
+  return [...set]
+}
+
+// const res = unique([30, 10, 20, 30, 40, 10])
+// console.log(res)
+
 /////////////////////////////
 // 数组拍平 使用递归
 var arr = [1, 2, 3, [3, 3, 3, [5, 4, 5, 6, 6, 7, 8]], [333, 4444, [551, 552]]];
@@ -237,6 +257,16 @@ var arr_new = [],
   };
 // var arr_concat_res = concatArr(arr);
 // console.log(arr, arr_concat_res)
+
+function flat(arr) {
+  // 验证 arr 中，还有没有深层数组 [1, 2, [3, 4]]
+  const isDeep = arr.some(item => item instanceof Array)
+  if (!isDeep) {
+      return arr // 已经是 flatern [1, 2, 3, 4]
+  }
+  const res = Array.prototype.concat.apply([], arr)
+  return flat(res) // 递归
+}
 
 /////////////////////////////////
 // 遍历对象
@@ -277,3 +307,24 @@ function SpecialArray() {
 }
 var colors = SpecialArray('red', 'blue', 'green'); // new
 // colors.toPipeString();     // "red|blue|green
+
+/////////////////////////////////
+// 统计字符出现次数
+function getMost(str) {
+  // 步骤1
+  var result = {};
+  for(let i in str) {
+      if(str[i] in result) {
+          // 步骤2
+          result[str[i]]++;
+      } else {
+          // 步骤3
+          var object = {};
+          object[str[i]] = 1;
+          result = Object.assign(result, object);
+      }
+  }
+  return result;
+}
+// var result = getMost("xyzzyxyz");
+// console.log(result);        //{x: 2, y: 3, z: 3}

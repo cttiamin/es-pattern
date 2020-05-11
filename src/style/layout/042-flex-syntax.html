@@ -6,21 +6,21 @@
     <title>弹性盒模型 Flexible Box / Flexbox</title>
     <style type="text/css">
         /*
-        From: 
+        From:
         http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html
         http://www.ruanyifeng.com/blog/2015/07/flex-examples.html
 
         Flex（flex container）简称 ”容器”
         它的所有子元素成为容器成员，称 Flex 项目（flex item）简称”项目”
 
-        容器的属性 : 
-        justify-content : 项目在主(x)轴上的对齐方式
+        容器的属性 :
+        justify-content : 项目在主(x)轴上的对齐方式[水平text-align]
             flex-start（默认值）: 左对齐
             flex-end: 右对齐
             center:  居中
             space-between: 两端对齐，间隔平均分布
             space-around: 项目两侧的间隔相等
-        align-items : 项目在交叉(y)轴上对齐方式
+        align-items : 项目在交叉(y)轴上对齐方式[垂直]
             flex-start: 起点对齐
             flex-end: 终点对齐
             center: 中点对齐
@@ -38,15 +38,16 @@
             row-reverse: 主轴为水平方向，起点在右端
             column: 主轴为垂直方向，起点在上沿。
             column-reverse: 主轴为垂直方向，起点在下沿。
-        flex-wrap :  
+        flex-wrap:
             nowrap 不换行
             wrap 换行，第一行在上方
             wrap-reverse 第一行在下方
         flex-flow : flex-direction 和 flex-wrap 简写形式
             默认值为 row nowrap
 
-        项目的属性: 
+        项目的属性:
         order: 排列顺序, 数值越小，排列越靠前，默认为 0
+        
         flex-grow: 放大比例, 0 def:存在剩余空间也不放大, 1:等分剩余空间
         flex-shrink: 缩小比例, 0:不缩小 1 Def:空间不足项目缩小
         flex-basis: 在分配多余空间之前，项目占据的主轴空间（main size）
@@ -108,11 +109,11 @@
             /*设置收缩比例*/
             flex-shrink: 1;
         }
-
         #son-2 {
             background-color: #3079AB;
             flex: 1;
         }
+        
         #son-3 {
             background-color: #e15258;
             flex: 1;

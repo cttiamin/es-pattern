@@ -70,10 +70,10 @@ var parse_url = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-\_A-Za-z]+)(?::(\d+))?(?:\/(
 var url = "http://www.or-_a.com:80/goodparts?q#fragment";
 var result = parse_url.exec(url);
 var names = ['url', 'scheme', 'slash', 'host', 'port',
-    'path', 'query', 'hash'];
+  'path', 'query', 'hash'];
 var i;
 for (i = 0; i < names.length; i++ ){ // i += 1
-    // console.log(names[i] + ':' , result[i]);
+  // console.log(names[i] + ':' , result[i]);
 }
 
 
@@ -83,9 +83,9 @@ for (i = 0; i < names.length; i++ ){ // i += 1
   var arr = reg.exec(str);
   var msg;
   if(arr){
-      msg = arr + ' matching success!';
+    msg = arr + ' matching success!';
   }else{
-      msg = " matching fail!<br>";
+    msg = " matching fail!<br>";
   }
   // console.log(msg)
 }
@@ -99,7 +99,7 @@ for (i = 0; i < names.length; i++ ){ // i += 1
 
 // 匹配 数字
 var parse_number = function(num){
-    (/^-?\d+(?:\.\d*)?(?:e[+\-]?\d+)?$/i.test(num));
+  (/^-?\d+(?:\.\d*)?(?:e[+\-]?\d+)?$/i.test(num));
 }
 parse_number('1');  // true
 parse_number('number'); // false

@@ -1,3 +1,9 @@
+/* webpack test */
+
 .hello {
   color: rgb(247, 162, 162);
+}
+
+.icon-border {
+	border: 1px solid #ccc;
 }

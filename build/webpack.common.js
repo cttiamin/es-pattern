@@ -101,7 +101,6 @@ const generateConfig = env => {
       publicPath: '/',
       filename: '[name].bundle.js',
       chunkFilename: 'js/[name].js'
-      
     },
     // 定义别名
     resolve: {

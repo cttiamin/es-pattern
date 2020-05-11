@@ -18,9 +18,12 @@ module.exports = {
   // /joyreader/lenovo/bookResource/2417/page006/797950
   '/lenovo': {
     target: 'https://provider-joyreader.wawayaya.com',
+    // 解决爬虫限制
     changeOrigin: true,
     // logLevel: 'debug',
+    // secure: false,  // 处理 https
     pathRewrite: {
+      // ^/comments 开头替换 /api/comments
       '^/comments': '/api/comments'
     },
     // 设置请求头

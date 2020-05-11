@@ -22,9 +22,6 @@
   "server": "node server.js"
 }
 
-
-
-
 ```
 
 ### lib
@@ -40,7 +37,7 @@ mocha  js测试框架
 
 ### install
 ```
-// 不能用 cnpm 
+// 不能用 cnpm
 # npm init -y
 # npm install webpack webpack-cli --save-dev
 
@@ -50,9 +47,6 @@ mocha  js测试框架
 },
 // webpack.config.js
 npm run config
-
-
-
 
 ```
 

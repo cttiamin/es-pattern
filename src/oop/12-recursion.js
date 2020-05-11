@@ -18,33 +18,6 @@ var fibonacci2 = (function() {
 })()
 // console.log(fibonacci2(10)) // => 55
 
-// 阶乘 第1种：
-function factorial1(num) {
-  if (num <= 1) {
-    return 1
-  } else {
-    return num * factorial1(num - 1)
-  }
-}
-// console.log(factorial1(5));
-// 弊端：
-// 当函数名发生改变时， 则不能运行
-
-//////////////////////
-// 第2种：用 arguments.callee
-// another way (去除与函数名耦合)
-var factorial2 = function(num) {
-  if (num <= 1) {
-    return 1
-  } else {
-    return num * arguments.callee(num - 1)
-  }
-}
-// console.log(factorial2(5));
-// 弊端：
-// 严格模式下不能访问 argument.callee
-
-
 //////////////////////
 // 第2种 缓存
 // 使用了自身的属性（将自身当做数组来对待）来缓存上一次的计算结果
@@ -64,7 +37,7 @@ function factorial3(n) {
   }
 }
 // 1 作为 factorial3 的属性保存着值 1
-factorial3[1] = 1;
+// factorial3[1] = 1;
 // console.log(factorial3(5)); // 120
 // console.log(factorial3[2]);
 
@@ -83,48 +56,82 @@ var factorial4 = function factorial(n, a) {
   }
   return factorial(n - 1, n * a)
 }
-console.time('fac4')
-factorial4(5) // => 120
-console.timeEnd('fac4')
+// console.time('fac4')
+// factorial4(5) // => 120
+// console.timeEnd('fac4')
 
-// 柯里化 currying
-function currying(fn, n) {
-  return function(m) {
-    return fn.call(this, m, n)
-  }
-}
-const factorial5 = currying(factorial4, 1)
-console.time('fac5')
-factorial5(5) // 120
-console.timeEnd('fac5')
 
 //////////////////
 // 深拷贝,使用递归方式
-function clone(o){
+function cloneDeep(o){
   var temp = {};
   for(var key in o){
-      if(typeof o[key] == 'object') {
-          temp[key] = clone(o[key]);
-      } else {
-          temp[key] = o[key];
-      }
+    if(typeof o[key] == 'object') {
+      temp[key] = clone(o[key]);
+    } else {
+      temp[key] = o[key];
+    }
   }
   return temp;
 }
+// var cloneObj = {
+//   name: 'name1',
+//   age: 22,
+//   arr: [1, 2, 3],
+//   obj: {
+//     o1: 'o1',
+//     o2: 'o2'
+//   }
+// }
+// console.log(clone(cloneObj), '111')
+
+
+//////////////////
+/**
+ * 深拷贝
+ * @param {Object} obj 要拷贝的对象
+ */
+function deepClone2(obj = {}) {
+  if (typeof obj !== 'object' || obj == null) {
+      // obj 是 null ，或者不是对象和数组，直接返回
+      return obj
+  }
+
+  // 初始化返回结果
+  let result
+  if (obj instanceof Array) {
+      result = []
+  } else {
+      result = {}
+  }
+
+  for (let key in obj) {
+      // 保证 key 不是原型的属性
+      if (obj.hasOwnProperty(key)) {
+          // 递归调用！！！
+          result[key] = deepClone(obj[key])
+      }
+  }
+
+  // 返回结果
+  return result
+}
+
+
 
 // 使用递归实现 getElementsByClassName
 function byClass(node, className, arr){
   //得到传入节点的所有子节点
   var lists = node.childNodes;
   for(var i = 0; i< lists.length; i++){
-      //判断是否有相同className元素
-      if(arr[i].className == className){
-          arr.push(arr[i]);
-      }
-      //判断子节点是否还有子节点
-      if(arr[i].childNodes.length > 0){
-          byClass(arr[i], className, arr);
-      }
+    //判断是否有相同className元素
+    if(arr[i].className == className){
+      arr.push(arr[i]);
+    }
+    //判断子节点是否还有子节点
+    if(arr[i].childNodes.length > 0){
+      byClass(arr[i], className, arr);
+    }
   }
 }
 

@@ -12,7 +12,7 @@ function add(num1, num2) {
 // }
 /**
  * 动态创建步骤: 调用另一个函数并为它传入要柯里化的的函数和必要参数.
- *  在arguments对象上调用slice方法, 截出第2个开始的参数
+ *  在arguments对象上调用 slice 方法, 截出第2个开始的参数
  * @param fn
  * @returns {Function}
  */

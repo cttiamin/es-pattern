@@ -5,13 +5,16 @@ isFinite();       // 能接受的最大值,最大整数.
 isNaN();          // 非数字
 // 数值转换
 parseInt('String');   // 转换为数字
-parseFloat('String'); // 转换为小数, parse只适字符串
-// 转换为字符串
-toString();	//转换字符串
-String();
-toFixed();  // 小数格式化
-toExponential(1); // 指数表示法,e表示法, 数格式化
-toPrecision(); // 转换字符串
+// 转换为小数, parse 只适字符串
+parseFloat('22.34.5'); // 22.34
+
+// 转为价格格式 "123,123,123,123,123"
+parseFloat('123123123123123').toLocaleString()
+
+// 小数格式化
+13.37.toFixed(1); // => 13.4"
+// toExponential(1); // 指数表示法, e表示法, 数格式化
+// toPrecision(); // 转换字符串
 
 ///////////////////////////
 // es6:
@@ -19,7 +22,6 @@ Number.isInteger() // 是否 整数
 Number.EPSILON
 // 安全整数和 Number.isSafeInteger()
 // 指数运算符
-
 
 // 十六进制, 前加0x, 大小写不限
 0xa, 0x1f;
@@ -57,8 +59,6 @@ parseInt('70');       // 70    (十)
 parseInt('10', 2);  // 当二进制解析 , 2
 parseInt('10', 8);  // 当八进制解析 , 8
 parseInt('10', 16); // 当十六进制解析, 16
-
-parseFloat('22.34.5'); // 22.34
 
 //es6
 Number.parseInt('12.34');	  // 12
@@ -111,8 +111,6 @@ var num2 = ~num1;   // binary: 00110
 // binary: 0 1001 XOR 0 0011 = 1 1010
 25 ^ 3; // 26
 
-
-'' == '0'; // false
 0 == '';   // true
 0 == '0';  // true
 
@@ -136,19 +134,19 @@ Number.isInteger("15"); // => false
 
 // es5 实现 Number.isInteger()
 (function(global){
-	var floor = Math.floor,
-	isFinte = global.isFinte;
+  var floor = Math.floor,
+    isFinte = global.isFinte;
 
-	Object.defineProperty(Number, 'isInteger', {
-		value: function isInteger(value){
-			return typeof value === 'number' && isFinite(value) 
+  Object.defineProperty(Number, 'isInteger', {
+    value: function isInteger(value){
+      return typeof value === 'number' && isFinite(value) 
 			&& value > -9007199254740992 && value < 9007199254740992 
 			&& floor(value) === value;
-		},
-		configurable: true,
-	    enumerable: false,
-	    writable: true
-	})
+    },
+    configurable: true,
+    enumerable: false,
+    writable: true
+  })
 })
 // (this);
 

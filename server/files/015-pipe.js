@@ -18,7 +18,7 @@ function WritStream() {
   stream.Writable.call(this)
   this._cached = new Buffer('')
 }
-
+ 
 util.inherits(WritStream, stream.Writable)
 
 WritStream.prototype._write = function (chunk, encode, cb) {

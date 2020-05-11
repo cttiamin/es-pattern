@@ -18,9 +18,8 @@
         }
         body {
             margin: 0;
-        } 
+        }
         */
-        
         div {
             border: 1px solid #ccc;
         }
@@ -39,8 +38,12 @@
             /* 清除浮动第二种方式  after */
             /* zoom(IE转有属性)可解决 ie6,ie7 浮动问题 */
             .layout.float .clearfloat:after{
-                display:block;clear:both;content:"";
-                visibility:hidden;height:0}
+                display:block;
+                clear:both;
+                content:"";
+                visibility:hidden;
+                height:0
+            }
             .layout.float .clearfloat {zoom: 1}
 
             .layout.float .left {
@@ -187,13 +190,12 @@
     <hr>
     <section class="layout stream">
         <style>
-            /* 
+            /*
             问题: 在窗口宽度较小的时候列会变得非常窄,有必要使用 min-width
-            设计者使用宽度960; 
+            设计者使用宽度960;
             大多数窗口设置为:1250; (960 / 1250) * 100 = 76.8%
             (670/920) * 100 = 72.82%
             */
-
             .content05 {
                 overflow: hidden;
             }
@@ -241,9 +243,7 @@
     <!-- 高度自适应-->
     <hr>
     <section class="layout auto-height">
-        <!-- 
-            高度与最长列相等的三列布局
-            -->
+        <!-- 高度与最长列相等的三列布局-->
         <style type="text/css">
             h3 {
                 overflow: hidden;

@@ -124,18 +124,13 @@ instance5.colors === instance6.colors // flase
 
 //////////////////////////////
 // 4.组合继承的优化1
-function Parent4() {
-  // this.name = 'parent4'
-  // this.play = [1, 2, 3]
-}
+function Parent4() {}
 function Child4() {
   Parent4.call(this)
-  // this.type = 'child4'
 }
 Child4.prototype = Parent4.prototype
 // construct 错误的指向了 Parent4
 var sub1_type7 = new Child4()
-var sub2_type7 = new Child4()
 // sub1_type7.constructor === Parent4
 // 缺点：Child 实例化的 construct 还是 Parent
 
@@ -156,7 +151,6 @@ Child5.prototype.constructor = Child5; // 构造指向子类
 inherit2(Child5, Parent5)
 var instanceChild5 = new Child5('Nicholas', 29)
 
-
 //////////////////////
 // es6
 // 继承
@@ -168,7 +162,7 @@ var instanceChild5 = new Child5('Nicholas', 29)
   }
   class Child extends Parent {}
   // console.log('继承', new Child());
-}
+} 
 
 // 继承传递参数
 {

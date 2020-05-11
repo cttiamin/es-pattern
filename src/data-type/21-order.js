@@ -5,7 +5,6 @@
 // 二分查找
 // 统计次数
 
-
 var arr = [4, 8, 5, 9, 7, 6, 3, 2, 1, 0];
 var arr_number = [5,4,3,2,1,4,3,2,1,7,4];
 var arr_obj = [
@@ -14,34 +13,10 @@ var arr_obj = [
 ];
 var arr_mix = ['aa', 'bb', 'a', 4, 8, 15, 16, 23, 42]
 
-[31,2,3,4,7,6,4,5,2,9,15,3,6,21].sort(function (v1, v2) {
+arr.sort(function(v1, v2) {
+  // -1, 1, 0
   return v1 - v2
 })
-
-/**
- * 比较排序,传入两个数返回正数则改变两个数的位置,
- * 假设第一个参数应该在前, 比较函数应该返回一个小于0的数值, 返之
- * 假设第一个参数应该在后, 函数应该返回一个大于0的数值,
- * 假设两个值相等, 函数应该返回 0
- * @param value1
- * @param value2
- * @returns {number} : -1 / 0 / 1
- */
-function compare(value1, value2) {
-  if (value1 < value2) {
-    return -1
-  } else if (value1 > value2) {
-    return 1
-  } else {
-    return 0
-  }
-}
-// 第2种方法
-function compare2(value1, value2) {
-  return value1 - value2
-}
-// arr_number.sort(compare2); // [0, 1, 1, 5, 10]
-// console.log(arr_number);
 
 ////////////////////////
 // 字符排序
@@ -59,11 +34,8 @@ arr_str.sort(function(s, t) {
 // console.log(arr_str);
 // => ['ant', 'Bug', 'cat', 'Dog']
 
-
-
 ////////////////////////
 // 字符串排序
-// 跟据某个对象属性对数组进行排序, 传递给 sort
 function createComparisonFunction(propertyName) {
   return function(object1, object2) {
     var value1 = object1[propertyName]
@@ -85,6 +57,7 @@ arr_obj[0].name;   // Zachary
 
 
 ////////////////////////
+// 多种类型
 // Good Part: Sunday, 01/04/2015
 arr_mix.sort(function(a, b) {
   if (a === b) {
@@ -328,7 +301,7 @@ function binarySearch(arr, data) {
 // console.log(arr_number)
 // console.log(binarySearch(arr_number, 1))
 
-///  统计出现次数
+// 统计出现次数
 function count(arr,data){
   var count = 0;
   var position = binarySearch(arr,data);
@@ -352,11 +325,3 @@ function count(arr,data){
   return count;
 }
 // console.log(count(arr_number, 4))
-
-
-////////////////////////
-// es6
-
-// function bubble(arr) {
-// }
-

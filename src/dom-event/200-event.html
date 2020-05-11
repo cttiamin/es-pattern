@@ -9,17 +9,18 @@
   <script>
     /////////////////////////////////////////////
     // 事件流: 
-    // 从页面中接收事件的顺序, IE和Netscape提出相反概念.
-    // IE: 事件冒泡流, Netscape Communicator: 事件捕获流
+    // 从页面中接收事件的顺序, IE 和 Netscape 提出相反概念.
+    // IE: 事件冒泡流, 
+    // Netscape Communicator: 事件捕获流
     //
     // 三个阶段:
     //  事件捕获阶段: (window => document => html => body => )
     //  处于目标阶段: 事件通过 “捕获” 到达目标元素
     //  事件冒泡阶段: 从目标元素在上传到 windows 对象
     //
-    // 冒泡型事件: /捕获型事件(event capturing):
+    // 冒泡型事件 / 捕获型事件(event capturing):
     // 捕获型事件先发生 => 两种事件流会触及 DOM 中的所有对象，
-    // 从 document对象开始，也在document对象结束。
+    // 从 document 对象开始，也在 document 对象结束。
     //
     // DOM0: onclick = function(){} 
     // DOM2: IE9+
@@ -30,16 +31,15 @@
     //  removeEventListener:
     // IE:
     //  attachEvent(name, func): ie9-
-    //  detachEvent :
+    //  detachEvent
     //
-
     // 事件对象
     // type: Event 对象表示的事件的名称
     // currentTarget: 当前正处理事件的那个元素 (dom2)
     // target: 触发此事件的元素
     // eventPhase: 调用事件处理程序的阶段
     //     1 表示捕获阶段, 2表示 "处于目标", 3.表示冒泡阶段
-    // cancelable: 默认为false,是否可取消事件的默认行为     
+    // cancelable: 默认为false, 是否可取消事件的默认行为     
     // bubbles: boolean 事件是否冒泡
     // timeStamp: 
     // no ie:
@@ -51,7 +51,7 @@
     // ie8- :
     // window.event 事件对象包含的属性和方法
     // returnValue: 设置为 false 与 preventDefault 方法作用相同
-    // srcElement: 事件的目标与 DOM 中的 target 属性相同
+    // srcElement: 事件的目标, 与 target 相同
     // cancelBubble: 停止冒泡 与 stopPropagation 相同
     // toElement: 对于 mouseover 和 mouseout 事件，
     //    引用移入鼠标的元素
@@ -155,7 +155,7 @@
   <hr> 13.3.3 跨浏览器的事件对象:
   <br>
   <a href="http://www.nczonline.net/" id="myLink6">myLink6</a>
-  <script type="text/javascript" src="../lib/event-util.js"></script>
+  <script type="text/javascript" src="../assets/js/event-util.js"></script>
   <script>
     var link6 = document.getElementById('myLink6');
     EventUtil.addHandler(link6, 'click', function (event) {

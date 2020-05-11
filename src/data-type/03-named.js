@@ -106,7 +106,7 @@ MYAPP.Person = function(first, last){
  * 错误构造函数以函数形式调用(不带new时)，
  * 其表现行为与构造函数(带new)相同, 返回一个错误对象。
  * */
-try{
+try {
   // 发生意外的事情, 抛出一个错误
   throw {
       name: "MyErrorType",
@@ -126,7 +126,7 @@ function generichErrorHandler(){}
 
 //////////////////////////////////////
 // 即时函数模式 (Immediate Function pattern)
-(function(){
+(function (){
 	//console.log("watch out!");
 }());
 // JSLint偏好使用这种

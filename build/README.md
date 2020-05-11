@@ -1,24 +1,37 @@
 ## webpack 构建
 
-
-
-# 打包速度
-```bash 
- # 它能监控 webpack 每一步操作的耗时
-speed-measure-webpack-plugin 
-
-# 打包结果分析
-webpack --profile --json > stats.json
-
-http://webpack.github.io/analyse/
-cnpm i webpack-bundle-analyzer --save-dev
+```bash
+#不全局安装webpack， 影响其它项目安装的不同版本
+npm uninstall webpack webpack-cli -g
+npm i webpack webpack-cli -D
+#项目根目录下: 
+npx webpack -v
+#查看所有版本号
+npm info webpack
 
 ```
 
+old package.json
+```json
+"imports-loader": "^0.8.0",
+
+"img-loader": "^3.0.1",
+"istanbul": "^0.4.5",
+"postcss": "^7.0.5",
+"postcss-sprites": "^4.2.1",
+"postcss-preset-env": "^6.1.9",
+"jest": "^23.6.0",
+"@babel/polyfill": "^7.6.0",
+"babel-jest": "^23.6.0",
+"babel-plugin-transform-class-properties": "^6.24.1",
+"babel-preset-react": "^6.24.1",
+"enzyme-adapter-react-16": "^1.7.0", ？废弃
+```
 
 
 #### Command:
 ```bash
+
 Webpack hello.js hello.bundle.js
 Webpack hello.js hello.bundle.js --module-binds 'css=style-loader!css-loader'
 --watch 自动打包
@@ -28,20 +41,10 @@ Webpack hello.js hello.bundle.js --module-binds 'css=style-loader!css-loader'
 --config webpack.dev.config.js  指定配置文件
 ```
 
-``` json
- "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --env production --config build/webpack.common.conf.js",
-    "server": "webpack-dev-server --env development --config build/webpack.common.conf.js",
-    "watch": "webpack --watch --config build/webpack.config.js --mode development",
-    "open": "webpack-dev-server --config webpack.config.js"
-}
-```
-
 ### Server
 ```bash 
 # 服务器 + 自动编译 + 刷新浏览器
-cnpm i --save-dev webpack-dev-server
+webpack-dev-server --save-dev
 
 # webpack.config.js
 devServer: {
@@ -70,67 +73,81 @@ devServer.hot = true
 ```
 
 
-
 ### babel
 ```bash
---save-dev babel-core babel-loader babel-preset-env babel-polyfill
-# 最新：--save-dev babel-loader@8.0.0-bate.0 @babel/core
-# 预处理 => 语法 
-babel-preset-env
-# 最新：cnpm i @babel/preset-env --save-dev
-babel-preset-es2015 废弃换 babel-preset-env
+--save-dev:
+babel-loader
+@babel/core # babel 语法库 babel-core 
+# es6 翻译 es5, babel-preset-env
+@babel/preset-env
+# babel-preset-es2015 废弃换 babel-preset-env
 # 预处理 => 函数和方法 generator/Set/Map/Array.from/
-babel-polyfill
 
-# 全局垫片 为应用做准备
-cnpm i babel-plugin-transform-runtime --save-dev
-cnpm i babel-runtime --save
+# 低版本浏览器函数补充(新 preset-env 已包含)
+@babel/polyfill # 依赖 core-js@3
 
-# 创建 json 文件
-.babelrc 
-"presets": ["es2015", "react", "stage-3"]
-"presets": ["env"]
-# 局部垫片 为开发框架/组件, 不污染全局变量
+# For polyfill 全局垫片
+@babel/plugin-transform-runtime
+@babel/runtime --save
+@babel/runtime-corejs2 --save 
 
-# tree-shakng 借助 babel-plugin-lodash 精简代码
-cnpm i babel-plugin-lodash --save-dev
+# ？废 tree-shakng 借助 babel-plugin-lodash 精简代码
+babel-plugin-lodash --save-dev
 ```
 
 
 ### CSS
 ```bash
-cnpm i css-loader style-loader  --save-dev
-cnpm i postcss postcss-loader cssnano 
+css-loader
+style-loader
+
+# 浏览器厂商前缀 -webkit...
+postcss-loader
+# 根目录 postcss.config.js
+autoprefixer
+
+postcss # ？废弃
+cssnano  # ？废弃
+
 postcss-cssnext 废弃换：postcss-preset-env --save-dev
+
 # less
 cnpm i less less-loader --save-dev
-# 额外的 css
-mini-css-extract-plugin --save-dev
 
+# sass
+node-sass sass-loader@7.3.1
 ```
 
 #### plugin 
-```
-cnpm install --save-dev html-webpack-plugin clean-webpack-plugin
+```bash
+--save-dev
+html-webpack-plugin
+clean-webpack-plugin
+# webpack 配置文件合并
 webpack-merge
 webpack-dev-middleware
 webpack-hot-middleware
-
 ```
 
 ### File
-```
-cnpm i ExtractTextWebpackPlugin webpack   --save-dev
-// 外部js/css 引入， 合并雪碧图
-cnpm i file-loader url-loader img-loader postcss-loader postcss-sprites --save-dev
-// 外部js 引入
-cnpm i imports-loader --save-dev
-// html 引入图片
+```bash
+ExtractTextWebpackPlugin webpack   --save-dev
+# 外部js/css 引入， 合并雪碧图 
+file-loader
+# 对图片转 base64
+url-loader 
+
+img-loader	# ？废
+postcss-sprites # ？废
+
+# shimming 垫片： this => window
+imports-loader
+
+# html 引入图片
 html-loader --save-dev
-// webpack js 代码载入到 html 页面中
+# webpack js 代码载入到 html 页面中
 html-webpack-inline-chunk-plugin --save-dev
 ```
-
 
 ### source-map: 
 ```
@@ -138,66 +155,93 @@ devtool: 'eval',
 devtool: 'source-map',
 ```
 
+### tree shaking: 
+```javascript
+// package.json:
+"sideEffects": false
+// 忽略 polyfill, .css 文件
+"sideEffects": [
+	"@babel/polyfill",
+	"*.css"
+]
+```
 
+### code split 代码分割
+```bash
+# 动态引入类库
+@babel/plugin-syntax-dynamic-import
+
+#css
+--save-dev
+# css 单独打包出来, pro, 不会即时更新
+mini-css-extract-plugin
+# .css 代码压缩
+optimize-css-assets-webpack-plugin
+
+```
 
 ### eslint 
 ```bash
+eslint
+# 初始化，生成 .eslint 文件
+npx eslint init
+# 检测目录
+npx eslint src
+babel-eslint
+# 打包时显示
+eslint-loader
 
-eslint eslint-loader eslint-plugin-html eslint-friendly-formatter --save-dev
-# .eslintrc.*
-# package.json 中的 eslintConfig
-# https://standardjs.com
-
+# git 钩子 eslint 代码检测
+-----
+eslint-plugin-html 
+eslint-friendly-formatter --save-dev
 # eslint-config
-cnpm i eslint-config-standard eslint-plugin-promise eslint-plugin-node eslint-plugin-import eslint-plugin-standard --save-dev
+eslint-config-standard
+eslint-plugin-promise
+eslint-plugin-node
+eslint-plugin-import
+eslint-plugin-standard --save-dev
 ```
-
 
 # vue
 ```bash
-cnpm i phantomjs-prebuilt --save-dev
-base => output + chunkFilename: '[name].js',
-
-cnpm i --save vue vue-router 
-cnpm i --save-dev vue-loader vue-style-loader vue-template-compiler
+phantomjs-prebuilt
+vue --save
+vue-router --save
+vue-loader
+vue-style-loader
+vue-template-compiler
 # webpack4+ ：
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 ```
 
+# 打包分析
+```bash 
+www.github.com/webpack/analyse
+# 打包结果分析 package.json
+"build": "webpack --profile --json > stats.json --config fileName"
+上传 stats.json 文件 
 
-### 模块化
-```
-Command.js => webpack
-AMD => require.js 
-DMD => sea.js
-ES Module => es6
-```
+chrome: command + shift + p 代码覆盖率
 
-### 核心概念
-```
-input
-output
-loader
-plugin
+# 它能监控 webpack 每一步操作的耗时
+speed-measure-webpack-plugin 
+# 
+cnpm i webpack-bundle-analyzer --save-dev
 ```
 
-## webpack 面试问题
-1. Webpack 是什么, grunt 和 gulp 有什么不同？
-Webpack 是一个模块打包器，他可以递归的打包项目中的所有模块，最终生成几个打包后的文件，他和其他的工具最大的不同在于他支持 code-splitting, 模块化 (AMD, ESM, CommonJs), 全局分析
+### 打包速度
+``` bash
+1. 升级 node, npm, yarn, webpack 
+2. 少的模块上用 loader
+3. 尽可能少用 plugin, 使用官方 plugin, 性能有保障
+4. 使用 DllPlugin，第3方模块打包1次, DllReferencePlugin 查找映射文件
+6. 控制包文件大小
+7. thread-loader, parallel-webpack, happypack 多进程打包
+8. 合理使用 source-map,
+9. 结合 stats 分析打包结果
+10. 开发环境内存编译
+11. 开发环境无用插件剔除
 
-2. Bundle 是由 webpack 打包出来的文件，chunk 是指 webpack 在进行模块的依赖分析的时候，代码分割出来的代码块， module 是开发中的单个模块
-
-3. 什么是 loader？ 什么是 Plugin?
-Loaders 是用来告诉 webpack 如何转化处理某一类型的文件，并且引入到打包出的文件中
-Plugin 是用来自定义webpack 打包过程的方式， 一个插件是含有applay 方法的一个对象， 通过个这方法可以参与到整 webpack 打包的各个流程(生命周期)
-
-1. Webpack-dev-server 和 http 服务器如 nginx 有什么区别？
-Webpack-dev-server 使用内存来存储 webpack 开发环境下的打包文件， 并且可以使用模块热更新，他比传统的 http 服务对开发更简单高效
-
-1. 什么是长缓存？ 在webpack 中如何做到长缓存优化？
-浏览器在用户访问页面的时候，为了加快加载速度，会对用户访问的静态资源进行存储，但是每一次代码升级或是更新，都需要浏览器去下载新的代码，最方便和简单的更新方式就是引入新的文件名称，在 webpack 中可以在output给输出的文件 指定 chunkhash, 并眀分离经常更新的代码和框架代码。通过 NameModulesPlugin 或是 HashedModuleIdsPlugin 使再次打包文件名不变
-
-2. 什么是tree-shaking ? Css 可以 Tree-shaking 码？
-Tree-shaking 是指在打包中去除那些引入了，但是在代码中没有被用到的那些死代码，在 webpack 中 Tree-shaking 是通过 uglifyJSPlugin 来 Tree-shaking Js. Css 需要使用 Purify-CSS
-
+```
 

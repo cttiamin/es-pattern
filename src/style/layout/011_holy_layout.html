@@ -1,71 +1,71 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>圣杯布局</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>圣杯布局</title>
 
-<style>
-    *{
-        margin:0;
-        padding:0;
-        font-size: 12px;
-    }
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-size: 12px;
+        }
 
-    .header {
-        background:orange;
-        height:100px;
-    }
+        .header {
+            background: orange;
+            height: 100px;
+        }
 
-    .footer {
-        background:yellow;
-        height: 100px;
-    }
+        .footer {
+            background: yellow;
+            height: 100px;
+        }
 
-    .article {
-        background:green;
-        /* height:300px; */
-        /***************************
-        Add: 
+        .article {
+            background: green;
+            /* height:300px; */
+            /*
+        Add:
         中间不被左右 margin-left 挡住，加入 padding;
         */
-        padding-left: 150px;
-        padding-right: 100px;
-        overflow: hidden;
-    }
+            padding-left: 150px;
+            padding-right: 100px;
+            overflow: hidden;
+        }
 
-    .article .left{
-        background-color:blue;        
-        color:white;
-        /*height:16px;*/
-        width:150px;
-        float:left;
-        /*add */
-        margin-left: -100%;
-        position: relative;
-        left: -150px;
-    }
+        .article .left {
+            background-color: blue;
+            color: white;
+            /*height:16px;*/
+            width: 150px;
+            float: left;
+            /*add */
+            margin-left: -100%;
+            position: relative;
+            left: -150px;
+        }
 
-    .article .right {
-        background-color: aquamarine;
-        width: 100px;
-        /*height: 16px;*/
-        /*add */
-        float:left;
-        margin-left:-100px;
-        position: relative;
-        right: -100px;
-    }
+        .article .right {
+            background-color: aquamarine;
+            width: 100px;
+            /*height: 16px;*/
+            /*add */
+            float: left;
+            margin-left: -100px;
+            position: relative;
+            right: -100px;
+        }
 
-    .article .middle{
-        background-color:red;
-        /*height:16px;*/
-        /*add */
-        float:left;
-        width:100%;
-    }
-
-
-</style>
+        .article .middle {
+            background-color: red;
+            /*height:16px;*/
+            /*add */
+            float: left;
+            width: 100%;
+        }
+    </style>
 </head>
 
 <body>
@@ -98,11 +98,10 @@
     </div>
 
     <div class="footer">
-        IPC 
+        IPC
     </div>
 
 
 </body>
+
 </html>
-
-

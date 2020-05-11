@@ -1,0 +1,15 @@
+@import './layout.scss';
+/*@import './font.scss';*/
+
+body {
+  .app-wrap {
+    padding: 0;
+    margin: 0 100px;
+
+    .icon-border {
+      border: 1px solid #ccc;
+      transform: translate(100px, 100px);
+    }
+  }
+}
+
