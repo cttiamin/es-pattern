@@ -8,26 +8,25 @@
  *     Array.join(",") : 使用不同的分割符来构造字符串
  *  栈,队列方法:
  *      push: 添加末端
+ *      unshift: 添加前端
  *      pop:  弹出末端
  *      shift: 弹出最前端
- *      unshift: 添加前端
  *  重排序方法:
  *      reverse(): 将数据倒转
  *      sort():正
  *  操作方法:
- *     concat: 合并两个返回一个数组
+ *     concat: 合并数组
  *     slice(startIndex, endIndex): 从已有的数组中返回选定的元素
  *     splice(start, int, addItem): 分割数组, 返回分割后的数组
  *  位置方法:
  *     indexOf():返回数组索引位置
  *     lastIndexOf(): 从尾开始
  *  迭代方法 [ie9+]:
- *      filter: 返回该函数返回true的组成部份
- *      map:    返回调用函数返回
- *      非纯函数会修改数组自身：
+ *      filter: 返回满足条件数组
+ *      map:  返回调用函数返回 项
  *      forEach: 没有返回
- *      every:  每项给定函数, 如果该函数每一项true, 则返回 true
- *      some:   如该函对任一项返回 true, 则返回 true
+ *      every:  全体满足，返回 true
+ *      some:   一项满足，返回 true
  *  缩小方法 [ie9+]:
  *     reduce
  *     reduceRight
@@ -214,7 +213,7 @@ let entries = ['a', 'b', 'c'].entries()
 // console.log(entries.next().value); // [2, 'c']
 
 //////////////////////////////
-// 用法：求和、最大值、字母出现次数、拍平、去重
+// 用法： 累加器，求和、最大值、字母出现次数、拍平[一层]、去重
 // reduce(func(上次回调返回值, 当前元素值, index, reduce 数组))
 // reduceRight: 相同, 反相遍历
 
@@ -230,6 +229,5 @@ var reduceRightSum = values.reduceRight(function(prev, cur, index, array) {
   return prev + cur; // 上次回调函数的返回值 + 当前项
 });
 reduceRightSum; //15
-
 
 

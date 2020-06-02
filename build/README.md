@@ -83,16 +83,17 @@ babel-loader
 # babel-preset-es2015 废弃换 babel-preset-env
 # 预处理 => 函数和方法 generator/Set/Map/Array.from/
 
-# 低版本浏览器函数补充(新 preset-env 已包含)
-@babel/polyfill # 依赖 core-js@3
+# 低版本浏览器函数补丁(新 preset-env 已包含)
+@babel/polyfill -S
+# 依赖： core-js@3、regenerator
 
 # For polyfill 全局垫片
-@babel/plugin-transform-runtime
-@babel/runtime --save
-@babel/runtime-corejs2 --save 
+@babel/plugin-transform-runtime -D
+@babel/runtime -S
+@babel/runtime-corejs2 -S
 
 # ？废 tree-shakng 借助 babel-plugin-lodash 精简代码
-babel-plugin-lodash --save-dev
+babel-plugin-lodash -D
 ```
 
 
@@ -149,12 +150,6 @@ html-loader --save-dev
 html-webpack-inline-chunk-plugin --save-dev
 ```
 
-### source-map: 
-```
-devtool: 'eval',
-devtool: 'source-map',
-```
-
 ### tree shaking: 
 ```javascript
 // package.json:
@@ -166,17 +161,16 @@ devtool: 'source-map',
 ]
 ```
 
-### code split 代码分割
+### 代码分割、css抽离压缩
 ```bash
 # 动态引入类库
 @babel/plugin-syntax-dynamic-import
 
-#css
---save-dev
-# css 单独打包出来, pro, 不会即时更新
+# 生产环境 js 中 css 抽离出来
 mini-css-extract-plugin
-# .css 代码压缩
+# css 抽离后代码 压缩
 optimize-css-assets-webpack-plugin
+terser-webpack-plugin
 
 ```
 
@@ -192,7 +186,6 @@ babel-eslint
 eslint-loader
 
 # git 钩子 eslint 代码检测
------
 eslint-plugin-html 
 eslint-friendly-formatter --save-dev
 # eslint-config
@@ -206,13 +199,45 @@ eslint-plugin-standard --save-dev
 # vue
 ```bash
 phantomjs-prebuilt
-vue --save
-vue-router --save
-vue-loader
-vue-style-loader
-vue-template-compiler
+vue vue-router vuex axios --save
+vue-loader vue-style-loader vue-template-compiler --save-dev
 # webpack4+ ：
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+
+# "vue-lazyload": "^1.2.6",	dev
+# "vue-localstorage": "^0.6.2",
+# "vue-meta": "^1.5.8",
+# "vue-server-renderer": "^2.5.22",
+```
+
+### 性能优化
+```bash
+# 开启多进程打包
+happypack --save-dev
+
+# 多进程压缩 js
+webpack-parallel-uglify-plugin
+
+# Dll 文件 
+webpack.DllPlugin 产出 dll 文件
+webpack.DllReferencePlugin 使用 dll 文件
+
+# 产出性能
+小图片 base64
+bundle 加 hash
+
+# 使用cnd 服务器、js、images
+
+# mode：production 4.x以后
+自动压缩代码、vue react 自动删掉调试代码、
+启用 Tree-shaking： require:commonjs、import:es6 module
+
+# Scope Hosting
+代码体积更小
+创建函数作用域更少、多个函数合并
+代码可读性更好
+
+
 ```
 
 # 打包分析

@@ -5,7 +5,7 @@
 nvm install node
 nvm use node
 node --v8-options | grep harmony 
-// 查看node es6实现的特性
+// 查看node es6 实现的特性
 
 // 检测各种运行环境对 es6 的支持情况
 npm install -g es-checker

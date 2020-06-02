@@ -7,8 +7,7 @@
 // }
 
 function min(a, b) {
-  const c = 3;
-  return (b - a) * c;
+  return (b - a) * 3;
 }
 
 module.exports = {

@@ -5,15 +5,40 @@ const webpack = require('webpack');
 const merge = require('webpack-merge')
 const commonConfig = require('./webpack.config.common.js')
 const proxy = require('./proxy')
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+// const HtmlWebpackPlugin = require('html-webpack-plugin');
+const AddAssetHtmlWebpackPlugin = require('add-asset-html-webpack-plugin')
+const fs = require('fs')
+const path = require('path');
+
+const makePlugins = () => {
+  let plugins = [
+    // new webpack.NamedModulesPlugin(),
+    // HMR 热模块更新
+    new webpack.HotModuleReplacementPlugin(),
+  ];
+  const files = fs.readdirSync(path.resolve(__dirname, '../dll'))
+  files.forEach(file => {
+    if(/.*\.dll.js/.test(file)) {
+      plugins.push(new AddAssetHtmlWebpackPlugin({
+        filepath: path.resolve(__dirname, '../dll/', file)
+      }))
+    }
+    //使用导出 dll 文件
+    if(/.*\.manifest.json/.test(file)) {
+      plugins.push(new webpack.DllReferencePlugin({
+        manifest: path.resolve(__dirname, '../dll', file)
+      }))
+    }
+  })
+  return plugins;
+}
 
 // console.log(__dirname)
 const devConfig = {
-  // development / production
   mode: 'development',
   // 源文件错误显示4 inline-source-map
   // prod: cheap-module-eval-source-map
-  devtool: 'inline-source-map',
+  devtool: 'source-map',
   devServer: {
     // 显示 eslint 错误
     overlay: true,
@@ -60,27 +85,7 @@ const devConfig = {
       }
     ]
   },
-  plugins: [
-    // new webpack.NamedModulesPlugin(),
-    // HMR 热模块更新
-    new webpack.HotModuleReplacementPlugin(),
-
-    // new webpack.optimize.UglifyJsPlugin({
-    //   sourceMap: options.devtool
-    //   && (options.devtool.indexOf("sourcemap") >= 0 || options.devtool.indexOf("source-map") >= 0)
-    // }),
-    // new HtmlWebpackPlugin({
-    //   title: '爱读首页',
-    //   // chunks: ['app'],
-    //   // filename: 'index.html',
-    //   template: 'build/index.html',
-    //   inject: 'body'
-    // }),
-
-    // new webpack.DefinePlugin({
-    //   'process.env.NODE_ENV': JSON.stringify('production')
-    // })
-  ],
+  plugins: makePlugins(),
   output: {
     filename: '[name].js',
     // main 代码中引入 lodash...

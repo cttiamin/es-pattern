@@ -1,43 +1,46 @@
-// 2018-12-23
-Function.prototype.method = function(name, func) {
-  Function.prototype[name] = func
-  return this
+Function.prototype.bind1 = function () {
+  // 将参数拆解为数组
+  const args = Array.prototype.slice.call(arguments)
+  // 获取 this（数组第一项）
+  const t = args.shift()
+  // fn1.bind(...) 中的 fn1
+  const self = this
+  // 返回一个函数
+  return function () {
+    return self.apply(t, args)
+  }
 }
 
 /**
- * 在 bind 中创建一个闭包, 闭包使用 apply 调用传入函数
- * 接收一个函数, 和一个 object 对象,
+ * 在 bind 中创建一个闭包，使用 apply 调用传入函数
+ * 接收一个函数和一个 object 对象
  * @param fn 执行函数
  * @param context 执行环境
  * @returns {Function} 使用闭包返回函数
  */
 function bindFunc(fn, context) {
   var args = Array.prototype.slice.call(arguments, 2)
-  return function() {
+  return function () {
+    Array.prototype.slice.call(arguments)
     var innerArgs = Array.prototype.slice.call(arguments),
-      finalArgs = args.concat(innerArgs)
+      finalArgs = args.concat(innerArgs);
     return fn.apply(context, finalArgs)
   }
 }
+
 var handler = {
   message: 'Event handled',
-  handleClick: function(name, event) {
+  handleClick: function (name, event) {
     console.log(this.message + ':' + name + ':' + event.type)
   }
 }
-// document.body.addEventListener('click', 
-//   bindFunc(handler.handleClick, handler, 'body:bindFunc'))
-// ECMAScript5 bind() 已实现无须自定义
-// document.body.addEventListener('click',
-//   handler.handleClick.bind(handler, "body:bind"));
+document.body.addEventListener('click', bindFunc(handler.handleClick, handler, 'body:bindFunc'));
 
 
-////////////////////////////////////////////////////
-// JavaScript The Good Part
-// Monday 5/1/2015
-// if (typeof Function.prototype.bind === "undefined")
-// Function.prototype.bind2 = function (context) {
-Function.method('bind2', function(context) {
+/////////////////////////////////////////////////
+// GoodPart
+// if (typeof Function.prototype.bind2 === "undefined") 
+Function.prototype.bind2 = function (context) {
   var method = this,
     slice = Array.prototype.slice,
     args = slice.apply(arguments, [1]);
@@ -45,30 +48,26 @@ Function.method('bind2', function(context) {
   if (method.bind(context)) {
     return method.bind(context, args)
   }
-  return function() {
+  return function () {
     return method.apply(context, args.concat(slice.call(arguments)))
   }
-})
-// Function.prototype.bind3 = function(context) {
-//   console.log(2)
-// }
-document.body.addEventListener('click',
-  handler.handleClick.bind2(handler, "body:bind2"));
+}
 
+// document.body.addEventListener('click',
+//   handler.handleClick.bind2(handler, "body:bind2"));
 
-/**
- * ECMAScript 3 版本的 Function.bind() 方法
- * bind 方法返回函数是一个闭包, 在这个闭包的外部函数中声明了self
- */
+////////////////////////////
+// ECMAScript 3 版本 Function.bind  
+// bind 返回个闭包函数
 if (!Function.prototype.bindES3) {
-  Function.prototype.bindES3 = function(o /*, args */) {
+  Function.prototype.bindES3 = function (o /*, args */) {
     // Save the this and arguments values into variables so we can.保存变量中
     // use them in the nested function below.以便在后面嵌套的函数中可以使用它们
     var self = this,
       boundArgs = arguments
 
     // The return value of the bind() method is a function, bind返回的是一个函数
-    return function() {
+    return function () {
       // Build up an argument list, starting with any args passed
       // to bind after the first one, and follow those with all args
       // passed to this function.
@@ -89,5 +88,5 @@ function f(y, z) {
   return this.x + y + z;
   return result
 }
-var g = f.bindES3({ x: 1 }, 2);
-g(3); // => 6
+// var g = f.bindES3({ x: 1 }, 2);
+// g(3); // => 6

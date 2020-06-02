@@ -9,10 +9,9 @@
 // 数组拍平
 // 遍历对象
 // 不用 new 数组封装
+// 统计字符出现次数
 
-// https://juejin.im/entry/58759e79128fe1006b48cdfd
-
-function Stack() {
+var Stack = function () {
   this.items = [];
 }
 Stack.prototype = {
@@ -39,20 +38,6 @@ Stack.prototype = {
     console.log(this.items.toString());
   }
 };
-
-// var stack = new Stack()
-// console.log(stack.isEmpty()) //true
-// stack.push(5)
-// stack.push(8)
-// console.log(stack.peek()) //8
-// stack.push(11)
-// console.log(stack.size()) //3
-// console.log(stack.isEmpty())
-// stack.push(15)
-// stack.pop()
-// stack.pop()
-// console.log(stack.size()) //2
-// console.log(stack.print()) //5,8
 
 function Queue() {
   this.items = [];
@@ -81,21 +66,10 @@ Queue.prototype = {
     console.log(this.items.toString());
   }
 };
-
-var queue = new Queue();
-// console.log(queue.isEmpty()) //true
-queue.enqueue('huang');
-queue.enqueue('cheng');
-// console.log(queue.print()) //huang,cheng
-// console.log(queue.size()) //2
-// console.log(queue.isEmpty()) //false
-queue.enqueue('du');
-// console.log(queue.dequeue()) //huang
-// console.log(queue.print()) //cheng,du
-
+// var queue = new Queue();
 
 //////////////////////////
-// 添加方法
+// 原生添加方法
 Function.prototype.method = function(name, func) {
   this.prototype[name] = func;
   return this;
@@ -111,9 +85,7 @@ Array.method('unshift2', function() {
 });
 
 ///////////////////////////////
-// Good Part
-// Monday, 5/1/2015
-// The splice like this:
+// splice 实现 ：Good Part
 Array.method('splice', function(start, deleteCount) {
   var max = Math.max,
     min = Math.min,
@@ -198,8 +170,7 @@ var total = data.total();
 // total is 108
 
 /////////////////////////////
-// 数组去重
-// Array.prototype.distinct = function(){
+// 数组去重-for
 var distinct = function(arr_origin) {
   var arr = arr_origin,
     result = [],
@@ -220,26 +191,48 @@ var distinct = function(arr_origin) {
 var arra = [1, 2, 3, 4, 4, 1, 2, 2, 1, 1, 1];
 // console.log(distinct(arra))
 
-
-// // 传统方式
-// function unique(arr) {
-//     const res = []
-//     arr.forEach(item => {
-//         if (res.indexOf(item) < 0) {
-//             res.push(item)
-//         }
-//     })
-//     return res
-// }
-
-// 使用 Set （无序，不能重复）
-function unique(arr) {
-  const set = new Set(arr)
-  return [...set]
+/////////////////////////////
+// 数组去重-indexof
+function unique_indexof(arr) {
+  const res = []
+  arr.forEach(item => {
+    if (res.indexOf(item) < 0) {
+      res.push(item)
+    }
+  })
+  return res
 }
+// console.log(unique_indexof([1, 2, 3, 4, 4, 1, 2, 2, 1, 1, 1]))
 
-// const res = unique([30, 10, 20, 30, 40, 10])
-// console.log(res)
+/////////////////////////////
+// 数组去重-Set
+function unique_set(arr) {
+  const set = new Set(arr)
+  return [...set] // 转数组
+}
+// console.log(unique_set([30, 10, 20, 30, 40, 10]))
+
+/////////////////////////////
+// 数组去重-hasOwnProperty
+function unique_has(array) {
+  let hashmap = {}
+  let unique = []
+  for (let i = 0; i < array.length; i++) {
+    if(!hashmap.hasOwnProperty([array[i]])) {
+      hashmap[array[i]] = 1;
+      unique.push(array[i]);
+    }
+  }
+  console.log(unique)
+}
+// unique_has([30, 10, 20, 30, 40, 10])
+
+let obj = {}
+var reductSort = [30, 10, 20, 30, 40, 10].reduce((cur,item) => {
+  obj[item] ? "" : obj[item] = true && cur.push(item);
+  return cur;
+},[]) 
+// log(person);
 
 /////////////////////////////
 // 数组拍平 使用递归
@@ -262,7 +255,7 @@ function flat(arr) {
   // 验证 arr 中，还有没有深层数组 [1, 2, [3, 4]]
   const isDeep = arr.some(item => item instanceof Array)
   if (!isDeep) {
-      return arr // 已经是 flatern [1, 2, 3, 4]
+    return arr // 已经是 flatern [1, 2, 3, 4]
   }
   const res = Array.prototype.concat.apply([], arr)
   return flat(res) // 递归
@@ -311,20 +304,31 @@ var colors = SpecialArray('red', 'blue', 'green'); // new
 /////////////////////////////////
 // 统计字符出现次数
 function getMost(str) {
-  // 步骤1
   var result = {};
   for(let i in str) {
-      if(str[i] in result) {
-          // 步骤2
-          result[str[i]]++;
-      } else {
-          // 步骤3
-          var object = {};
-          object[str[i]] = 1;
-          result = Object.assign(result, object);
-      }
+    if(str[i] in result) {
+      result[str[i]]++;
+    } else {
+      // result = Object.assign(result, { [str[i]]: 1});
+      result[str[i]] = 1
+    }
   }
   return result;
 }
-// var result = getMost("xyzzyxyz");
-// console.log(result);        //{x: 2, y: 3, z: 3}
+const str = 'jshdjsihh';
+// console.log(getMost(str));        
+// {x: 2, y: 3, z: 3}
+
+/////////////////////////////////
+// 统计字符出现次数-reduce
+// var max = {idx : 0, data: 0}
+const obj = str.split('').reduce((pre,item) => {
+  pre[item] ? pre[item] ++ : pre[item] = 1
+  // if (max.data < pre[item]) {
+  //   max.idx = item;
+  //   max.data = pre[item];
+  // }
+  return pre
+},{})
+// console.log(obj)
+// {j: 2, s: 2, h: 3, d: 1, i: 1}

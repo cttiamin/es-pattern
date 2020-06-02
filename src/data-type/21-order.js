@@ -1,22 +1,19 @@
 'use static'
 ////////////////////////////////
 // 原生 sort
-// 冒泡 插入 快速 选择 希尔
+// 排序：冒泡 插入 快速 选择 希尔
 // 二分查找
 // 统计次数
 
 var arr = [4, 8, 5, 9, 7, 6, 3, 2, 1, 0];
-var arr_number = [5,4,3,2,1,4,3,2,1,7,4];
+var arr_number = [5, 4, 3, 2, 1, 4, 3, 2, 1, 7, 4];
 var arr_obj = [
   { name: 'Zachary', age: 28 }, 
   { name: 'Nicholas', age: 29 }
 ];
 var arr_mix = ['aa', 'bb', 'a', 4, 8, 15, 16, 23, 42]
 
-arr.sort(function(v1, v2) {
-  // -1, 1, 0
-  return v1 - v2
-})
+// arr.sort((v1, v2) => v1 -v2)
 
 ////////////////////////
 // 字符排序
@@ -34,6 +31,30 @@ arr_str.sort(function(s, t) {
 // console.log(arr_str);
 // => ['ant', 'Bug', 'cat', 'Dog']
 
+
+
+// '20M'.slice(-1)
+// ['3','20M','1T','3G'].sort(function (s, t) {
+//   var a = s.slice(-1).toLowerCase()
+//   var b = t.slice(-1).toLowerCase()
+//   var v1 = Number(a.slice(0, -1))
+//   var v2 = Number(b.slice(0, -1))
+//   if (a === 'g') {
+//     v1 *= 1000
+//   }
+//   if (a === 't') {
+//     v1 *= 1000000
+//   }
+//   if (b === 'g') {
+//     v2 *= 1000
+//   }
+//   if (b === 't') {
+//     v2 *= 1000000
+//   }
+//   return v1 - v2
+// })
+
+
 ////////////////////////
 // 字符串排序
 function createComparisonFunction(propertyName) {
@@ -50,10 +71,10 @@ function createComparisonFunction(propertyName) {
     // return value2 - value1
   }
 }
-arr_obj.sort(createComparisonFunction('name'))
-arr_obj[0].name;   // Nicholas
-arr_obj.sort(createComparisonFunction('age'))
-arr_obj[0].name;   // Zachary
+// arr_obj.sort(createComparisonFunction('name'))
+// arr_obj[0].name;   // Nicholas
+// arr_obj.sort(createComparisonFunction('age'))
+// arr_obj[0].name;   // Zachary
 
 
 ////////////////////////
@@ -301,26 +322,26 @@ function binarySearch(arr, data) {
 // console.log(arr_number)
 // console.log(binarySearch(arr_number, 1))
 
-// 统计出现次数
+// 统计次数
 function count(arr,data){
   var count = 0;
-  var position = binarySearch(arr,data);
-  if(position>-1){
-      count++;
-      for(var i=position-1;i>0;i--){
-          if(arr[i]==data){
-              count++;
-          }else{
-              break;
-          }
+  var position = binarySearch(arr, data);
+  if(position >- 1){
+    count++;
+    for(var i=position-1;i>0;i--){
+      if(arr[i]==data){
+        count++;
+      }else{
+        break;
       }
-      for(var i=position+1;i<arr.length;i++){
-          if(arr[i]==data){
-              count++;
-          }else{
-              break;
-          }
+    }
+    for(var i=position+1;i<arr.length;i++){
+      if(arr[i]==data){
+        count++;
+      }else{
+        break;
       }
+    }
   }
   return count;
 }

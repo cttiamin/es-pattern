@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-var app = require('../src/serveKoa');
+var app = require('../blogs/serveKoa');
 var debug = require('debug')('demo:server');
 var http = require('http');
 

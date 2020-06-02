@@ -1,54 +1,32 @@
-//  setInterval(): 间歇调用: 指定时间过后执行代码
-//  clearInterval():
-//  setTimeout:  超时调用: 每隔指定的时间就执行一次代码
-//  clearTimeout:
+//  setInterval()
+//  clearInterval()
+//  setTimeout 每隔指定的时间就执行一次代码
+//  clearTimeout
 
-
-// 超时调用:
-// 调用 setTimeout 后, 返回一个数值 ID
-// 超时调用 ID 执行唯一标识
-// clearTimeout 取消
-var timeoutId = setTimeout(function() {
-  //设置超时调用
-  console.log('Hello world!');
-}, 1000);
-// 1000: 告拆 js 在过1秒后, 把它添加到队列中
-// 若队列是空的则执行, 若不是则等前面执行完在执行
-clearTimeout(timeoutId); //把它取消
 
 /////////////////
-// 间歇调用
-var num = 0;
-var max1 = 10;
-var intervalId = null;
-function incrementNumber() {
-  console.log(num++);
-  if (num == max1) {
-    clearInterval(intervalId);
-    console.log('Done');
-  }
-}
-// intervalId = setInterval(incrementNumber, 500);
-
-/////////////////
-// 使用超时调用来实现
-function incrementFun1 () {
-  var num2 = 0;
-  var max2 = 60;
-  var incrementNumber2 = function () {
-    num2++
-    // 如果执行次数未达到 max2 设定的值, 则设置另一次超时调用
-    if (num2 < max2) {
-      console.log(num2)
-      setTimeout(incrementNumber2, 1000);
+// Timeout 例计时
+function incrementFun(num = 60) {
+  var max = num;
+  var incrementNumber = function () {
+    incrementExce(max)
+    max--
+    if (max > 0) {
+      setTimeout(incrementNumber, 1000);
     } else {
       console.log('Done');
     }
   }
-  return incrementNumber2;
+  return incrementNumber;
 }
-// setTimeout(incrementNumber2, 1000);
-// incrementFun1()();
+// var h3Tag = document.createElement('h3')
+// document.body.appendChild(h3Tag)
+// incrementFun(10)();
+// function incrementExce(num) {
+//   h3Tag.innerText = num
+//   console.log(num)
+// }
+
 
 /*
  * 定时器应用函数
@@ -76,7 +54,7 @@ function invoke(f, start, interval, end) {
       // And stop invoking after end ms, if end is defined
       // 在 end 毫秒后停止调用,前提是 end 已经定义了
       if (end)
-        setTimeout(function() {
+        setTimeout(function () {
           clearInterval(h); //remove
         }, end);
     }
@@ -137,31 +115,24 @@ function printValue(item) {
 
 
 ////////////////////////////
-// 函数节流
+// 函数节流-定时器
 //  浏览器计算耗资源, DOM操作, onresize, oninput, 下拉
-//  定时器对函数进行节流:
-//  第一次调用函数, 创建一个定时器, 在指定的时间间隔运行代码.
-//  第二次调用该函数时, 清除前一次定时器并设置另一个
-//  目的: 在执行函数的请求停止了一段时间之后才执行,
-//    其实就是替换为一个新的定时器
+//  对函数进行节流
 var processor = {
   timeoutId: null,
-  // 实际执行代码
-  performProcessing: function() {
-    console.log('execute');
-  },
-  process: function() {
-    // if (this.timeoutId)
+  performProcessing: null,
+  process: function () {
     clearTimeout(this.timeoutId);
-    var that = this;
-    this.timeoutId = setTimeout(function() {
-      that.performProcessing();
-      // this.timeoutId = null
+    // var that = this;
+    this.timeoutId = setTimeout(function () {
+      this.performProcessing();
     }, 300);
   }
 };
 // processor.process();
 
+////////////////////////////
+// 函数节流-定时器2
 function debounce(fn, delay = 500) {
   // timer 是闭包中的
   let timer = null
@@ -179,31 +150,41 @@ function debounce(fn, delay = 500) {
 // add input
 var inputTag = document.createElement('input')
 document.body.appendChild(inputTag)
-// inputTag.addEventListener('keyup', debounce( function (e) {
-//   console.log(inputTag.value)
-// }), 500)
+
+// var inputTag2 = document.createElement('input')
+// document.body.appendChild(inputTag2)
+
+// inputTag.addEventListener('keyup', debounce(function (e) {
+//   console.log(inputTag.value, e)
+// }, 500))
+
 
 inputTag.addEventListener('keyup', function (e) {
-  processor.performProcessing = function (){
-    console.log(inputTag.value)
-  }
   processor.process()
+  processor.performProcessing = function (){
+    console.log(inputTag.value, 'tag1')
+  }
 })
 
+// inputTag2.addEventListener('keyup', function (e) {
+//   processor.process()
+//   processor.performProcessing = function (){
+//     console.log(inputTag2.value, 'tag1')
+//   }
+// })
 
-
-
-// onresize
-function throttle(method, scope) {
-  clearTimeout(method.tId);
-  method.tId = setTimeout(function() {
-    method.call(scope);
-  }, 100);
+// 函数节流-时间戳
+function throttle(fn, wait = 50) {
+  let previous = 0;
+  return function (...args) {
+    let now = +new Date()
+    if (now - previous > wait) {
+      previous = now;
+      fn.apply(this, args)
+    }
+  }
 }
-function resizeDiv() {
-  console.log(document.body.clientWidth)
-}
-// 当浏览器调整大小时
-window.onresize = function() {
-  throttle(resizeDiv);
-};
+
+window.onresize = throttle(function (e) {
+  console.log(document.body.clientWidth, e)
+}, 500)

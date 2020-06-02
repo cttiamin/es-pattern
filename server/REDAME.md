@@ -1,8 +1,6 @@
 
 
-## PM2 线上环境进程守护
 
-```
 rest 6个限制：
 1. 客户端-服务器
 2. 无状态(Stateless)
@@ -15,16 +13,21 @@ http options 方法的作用是什么？
 检测服务器所支持的请求方法
 CORS 中的预检请求
 
+
+```bash
+npm i jwtjsontoken
+node
+jwt = require('jsonwebtoken')
+token = jwt.sign({name: 'lewis617', 'secret'})
 ```
 
-
+## PM2 线上环境进程守护
 ```
 npm install pm2 -g
 pm2 --version
 pm2 list
 pm2 restart/stop/delete/info/log [name]
 pm2 monit     // 程序分析
-
 ```
 
 ### http
@@ -49,6 +52,7 @@ ab -n1000 -c10 http://localhost:2014/
 2. VS Code
 #条件调试
 n > 8
+# 断点调试
 
 ```
 

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>line-height</title>
+    <style>
+        .cc1{
+            font-size:12px;
+            /* 垂直居中 */
+            /* vertical-align: middle; */
+        }
+        .cc2{
+            font-size:18px;
+            /* 顶线 */
+            /* vertical-align: top; */
+        }
+        .cc3{
+            font-size:24px;
+            /* vertical-align: 5px */
+        }
+
+        
+    </style>
+</head>
+<body>
+    <div style="border:solid 1px red;">
+        <!-- 将包含文字元素的容器行高设置为大于字体大小并且等于元素的高度 -->
+        <span style="background:blue;color:#fff;font-size:20px;line-height:60px;">
+            居中-适用于单行文字的垂直居中，如果需要多行文字居中，选择其他方法
+        </span>
+    </div>
+    <div class="c1">
+        <span class="cc1">第一段</span>
+        <span class="cc2">第二段</span>
+        <span class="cc3">第三段</span>
+    </div>
+    <div style="background:red">
+      <!-- 
+        bug: 12px字体 = base-line到底线间距：3px  
+        解决: img + vertical-align: bottom / display:block
+      -->
+        <span>3px</span>
+        <img src="test.png"/>
+    </div>
+    <div>
+        <div style="float:left">
+            <span>第一段</span>
+        </div>
+        <div style="float:left">
+            <span>第二段</span>
+        </div>
+    </div>
+
+    
+</body>
+</html>

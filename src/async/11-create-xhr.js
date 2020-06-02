@@ -81,7 +81,7 @@ export var createXHRState = (function () {
       };
   } else {
       return function () {
-          throw new Error("No XHR object available.");
+          throw new Error("de.");
       };
   }
 })();

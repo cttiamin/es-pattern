@@ -1,6 +1,6 @@
 // import './10-function'
 // import './11-bind'
-// import './12-recursion.js'
+import './12-recursion.js'
 // import './13-arrow'
 // import './14-curry'
 // import './20-getter'
