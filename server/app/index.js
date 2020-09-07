@@ -17,7 +17,6 @@ app.use(koaStatic(path.join(__dirname, 'public')));
 app.use(error({
   postFormat: (e, { stack, ...rest }) => process.env.NODE_ENV === 'production' ? rest : { stack, ...rest }
 }));
-// 天地伟业
 
 // app.use(koaBody({
 //   multipart: true,

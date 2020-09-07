@@ -48,6 +48,7 @@ const devConfig = {
     //     errors: true,
     // },
     contentBase: '../dist',
+    // publicPath: '../',
     open: true,
     // 不刷新热 --mode development 加载数据
     hot: true,

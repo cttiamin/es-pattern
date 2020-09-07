@@ -179,17 +179,19 @@ var distinct = function(arr_origin) {
     len = arr.length;
   for (i = 0; i < len; i++) {
     for (j = i + 1; j < len; j++) {
+      console.log(i, arr[i], j, arr[j])
       if (arr[i] === arr[j]) {
         j = ++i;
         // j 重置指针, i 指向下个索引, 如果之后没有该值才添加
       }
     }
+    console.log('add', i, arr[i]);
     result.push(arr[i]);
   }
   return result;
 };
 var arra = [1, 2, 3, 4, 4, 1, 2, 2, 1, 1, 1];
-// console.log(distinct(arra))
+console.log(distinct(arra))
 
 /////////////////////////////
 // 数组去重-indexof
@@ -322,7 +324,7 @@ const str = 'jshdjsihh';
 /////////////////////////////////
 // 统计字符出现次数-reduce
 // var max = {idx : 0, data: 0}
-const obj = str.split('').reduce((pre,item) => {
+const obj_reduce = str.split('').reduce((pre,item) => {
   pre[item] ? pre[item] ++ : pre[item] = 1
   // if (max.data < pre[item]) {
   //   max.idx = item;
@@ -330,5 +332,5 @@ const obj = str.split('').reduce((pre,item) => {
   // }
   return pre
 },{})
-// console.log(obj)
+// console.log(obj_reduce)
 // {j: 2, s: 2, h: 3, d: 1, i: 1}

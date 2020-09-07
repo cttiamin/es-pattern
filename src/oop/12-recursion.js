@@ -48,7 +48,6 @@ function factorial3(n) {
 // console.log(factorial3(5)); // 120
 // console.log(factorial3[2]);
 
-this
 
 /**
  * 尾递归是一种递归的写法，避免不断的将函数压栈导致堆栈溢出。

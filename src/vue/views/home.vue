@@ -29,7 +29,7 @@ export default {
     ProductList,
     ShoppingCart,
     // 异步加载组件
-    formLogin: () => import("@vue/views/Test.vue")
+    // formLogin: () => import("@vue/views/Test.vue")
   },
   data () {
     return {

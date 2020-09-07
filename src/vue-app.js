@@ -4,6 +4,10 @@ import VueRouter from 'vue-router'
 import store from './vue/store'
 // import Meta from 'vue-meta'
 
+// import ElementUI from 'element-ui';
+// import 'element-ui/lib/theme-chalk/index.css';
+// Vue.use(ElementUI);
+
 // import './assets/scss/reset.scss'
 import createRouter from './vue/routers/router'
 // import VueLocalStorage from 'vue-localstorage'
@@ -67,28 +71,28 @@ const router = createRouter()
 
 export function createApp() {
   const app = new Vue({
-    localStorage: {
-      bookrackList: {
-        type: Object,
-        default: {
-          sum: 0,
-          list: []
-        }
-      },
-      userInfo: {
-        type: Object,
-        default: {
-          token: '',
-          lenovoId: '',
-          deviceId: '',
-          userId: '',
-          userName: ''
-        }
-      },
-      bookrackSum: {
-        type: Number
-      }
-    },
+    // localStorage: {
+    //   bookrackList: {
+    //     type: Object,
+    //     default: {
+    //       sum: 0,
+    //       list: []
+    //     }
+    //   },
+    //   userInfo: {
+    //     type: Object,
+    //     default: {
+    //       token: '',
+    //       lenovoId: '',
+    //       deviceId: '',
+    //       userId: '',
+    //       userName: ''
+    //     }
+    //   },
+    //   bookrackSum: {
+    //     type: Number
+    //   }
+    // },
     router,
     store,
     render: h => h(App)

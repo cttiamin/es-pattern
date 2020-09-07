@@ -29,5 +29,35 @@ export default [
     //     component: Login
     //   }
     // ]
+  }, {
+    name: 'map',
+    path: '/map',
+    component: resolve => {
+      require.ensure([],
+        () => {
+          resolve(require('@vue/views/map.vue'))
+        },
+        'mapPage'
+      )
+    },
+    meat: {
+      title: 'this is map',
+      description: 'map description'
+    }
+  }, {
+    name: 'iframe',
+    path: '/iframe',
+    component: resolve => {
+      require.ensure([],
+        () => {
+          resolve(require('@vue/views/iframe.vue'))
+        },
+        'iframePage'
+      )
+    },
+    meat: {
+      title: 'this is iframe',
+      description: 'iframe description'
+    }
   }
 ]
